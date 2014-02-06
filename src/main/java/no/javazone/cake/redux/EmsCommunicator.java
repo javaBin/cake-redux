@@ -6,6 +6,7 @@ import net.hamnaberg.json.Data;
 import net.hamnaberg.json.Item;
 import net.hamnaberg.json.Property;
 import net.hamnaberg.json.parser.CollectionParser;
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.*;
 import java.net.URL;
@@ -26,6 +27,7 @@ public class EmsCommunicator {
             String eventname = data.propertyByName("name").get().getValue().get().asString();
             String href = item.getHref().get().toString();
 
+            href = Base64Util.encode(href);
 
             System.out.println(eventname);
             System.out.println(href);
