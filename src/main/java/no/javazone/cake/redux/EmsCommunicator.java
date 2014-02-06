@@ -8,6 +8,7 @@ import net.hamnaberg.json.Property;
 import net.hamnaberg.json.parser.CollectionParser;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -16,30 +17,35 @@ import java.util.List;
 
 public class EmsCommunicator {
     public static void main(String[] args) throws Exception {
-        System.out.println(allEvents());
+        System.out.println(new EmsCommunicator().allEvents());
     }
 
 
-    public static String allEvents() throws Exception {
-        String eventStr = readContent("http://test.2014.javazone.no/ems/server/events");
-        Collection events = new CollectionParser().parse(new StringReader(eventStr));
-        List<Item> items = events.getItems();
-        JSONArray eventArray = new JSONArray();
-        for (Item item : items) {
-            Data data = item.getData();
-            String eventname = data.propertyByName("name").get().getValue().get().asString();
-            String href = item.getHref().get().toString();
+    public String allEvents()  {
+        String eventStr = null;
+        try {
+            eventStr = readContent("http://test.2014.javazone.no/ems/server/events");
+            Collection events = new CollectionParser().parse(new StringReader(eventStr));
+            List<Item> items = events.getItems();
+            JSONArray eventArray = new JSONArray();
+            for (Item item : items) {
+                Data data = item.getData();
+                String eventname = data.propertyByName("name").get().getValue().get().asString();
+                String href = item.getHref().get().toString();
 
-            href = Base64Util.encode(href);
+                href = Base64Util.encode(href);
 
-            JSONObject event = new JSONObject();
+                JSONObject event = new JSONObject();
 
-            event.put("name",eventname);
-            event.put("ref",href);
+                event.put("name",eventname);
+                event.put("ref",href);
 
-            eventArray.put(event);
+                eventArray.put(event);
+            }
+            return eventArray.toString();
+        } catch (IOException | JSONException e) {
+            throw new RuntimeException(e);
         }
-        return eventArray.toString();
     }
 
 
