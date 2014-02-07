@@ -1,30 +1,34 @@
 package no.javazone.cake.redux;
 
-import net.hamnaberg.funclite.Optional;
 import net.hamnaberg.json.Collection;
 import net.hamnaberg.json.Data;
 import net.hamnaberg.json.Item;
 import net.hamnaberg.json.Property;
 import net.hamnaberg.json.parser.CollectionParser;
-import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
+import java.util.Map;
 
 public class EmsCommunicator {
     public static void main(String[] args) throws Exception {
-        System.out.println(new EmsCommunicator().allEvents());
+        String eventText = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY=";
+        Configuration.init(args[0]);
+        System.out.println(new EmsCommunicator().talks(eventText));
+        //System.out.println(new EmsCommunicator().allEvents());
     }
 
 
     public String allEvents()  {
         String eventStr = null;
         try {
-            eventStr = readContent("http://test.2014.javazone.no/ems/server/events");
+            eventStr = readContent("http://test.2014.javazone.no/ems/server/events",false);
             Collection events = new CollectionParser().parse(new StringReader(eventStr));
             List<Item> items = events.getItems();
             JSONArray eventArray = new JSONArray();
@@ -48,14 +52,48 @@ public class EmsCommunicator {
         }
     }
 
+    public String talks(String encodedEvent) {
+        String url = Base64Util.decode(encodedEvent) + "/sessions";
 
+        String sessionJson = readContent(url, true);
+        Collection events;
+        try {
+            events = new CollectionParser().parse(new StringReader(sessionJson));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-    private static String readContent(String questionUrl) throws IOException {
-        return readUrl(new URL(questionUrl));
+        List<Item> items = events.getItems();
+        JSONArray eventArray = new JSONArray();
+        for (Item item : items) {
+            Map<String,Property> dataAsMap = item.getData().getDataAsMap();
+
+            for (Map.Entry<String,Property> propentry : dataAsMap.entrySet()) {
+                String ket = propentry.getKey();
+                Property property = propentry.getValue();
+
+            }
+        }
+        return sessionJson;
     }
 
-    private static String readUrl(URL url) throws IOException {
-        return toString(url.openConnection().getInputStream());
+
+
+    private static String readContent(String questionUrl,boolean useAuthorization)  {
+        try {
+            URL url = new URL(questionUrl);
+            URLConnection urlConnection = url.openConnection();
+
+            if (useAuthorization) {
+                String authString = Configuration.getEmsUser() + ":" + Configuration.getEmsPassword();
+                String authStringEnc = Base64Util.encode(authString);
+                urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+            }
+
+            return toString(urlConnection.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String toString(InputStream inputStream) throws IOException {
