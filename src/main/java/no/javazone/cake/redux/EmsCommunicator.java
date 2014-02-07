@@ -58,7 +58,7 @@ public class EmsCommunicator {
         return toString(url.openConnection().getInputStream());
     }
 
-    private static String toString(InputStream inputStream) throws IOException {
+    public static String toString(InputStream inputStream) throws IOException {
         try (Reader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"))) {
             StringBuilder result = new StringBuilder();
             int c;

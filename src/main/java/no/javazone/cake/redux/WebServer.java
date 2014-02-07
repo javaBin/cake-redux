@@ -14,6 +14,11 @@ public class WebServer {
     }
 
     public static void main(String[] args) throws Exception {
+        if (args == null || args.length != 1) {
+            System.out.println("Usage WebServer <Config file name>");
+            return;
+        }
+        Configuration.init(args[0]);
         new WebServer(getPort(8081)).start();
     }
 
