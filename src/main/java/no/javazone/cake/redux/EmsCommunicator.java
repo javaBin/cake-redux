@@ -14,14 +14,14 @@ import java.util.Map;
 
 public class EmsCommunicator {
     public static void main(String[] args) throws Exception {
-        //String eventText = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY=";
+        String eventText = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY=";
        // String ev="http://test.java.no/ems-redux/server/events/cee37cc1-5399-47ef-9418-21f9b6444bfa/sessions/35efacf4-e9be-4980-9fb1-5baa83bb050f";
-        String talkEvent="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWYvc2Vzc2lvbnMvOWQzMWVmZGYtN2MzMi00ZDg1LWEyYjUtYjM2YmVlZjMyYzQ0";
+        //String talkEvent="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWYvc2Vzc2lvbnMvOWQzMWVmZGYtN2MzMi00ZDg1LWEyYjUtYjM2YmVlZjMyYzQ0";
         Configuration.init(args[0]);
         //new EmsCommunicator().readContent(ev, true);
-        //System.out.println(new EmsCommunicator().talks(eventText));
+        System.out.println(new EmsCommunicator().talks(eventText));
         //System.out.println(new EmsCommunicator().allEvents());
-        System.out.println(new EmsCommunicator().fetchOneTalk(talkEvent));
+        //System.out.println(new EmsCommunicator().fetchOneTalk(talkEvent));
     }
 
 
@@ -77,7 +77,14 @@ public class EmsCommunicator {
         // TODO There has to be a better way to do this
         JSONArray talkArray = new JSONArray();
         for (Item item : items) {
-            JSONObject jsonTalk = readTalk(item,connection);
+            URLConnection talkConn = readContent(item.getHref().get().toString(),true);
+            Item talkIktem = null;
+            try (InputStream talkInpStr = talkConn.getInputStream()) {
+                talkIktem = new CollectionParser().parse(talkInpStr).getFirstItem().get();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            JSONObject jsonTalk = readTalk(talkIktem,talkConn);
             talkArray.put(jsonTalk);
         }
 
@@ -92,8 +99,8 @@ public class EmsCommunicator {
         URLConnection speakerConnection = readContent(speakerLink,true);
 
         Collection speakers;
-        try {
-            speakers = new CollectionParser().parse(speakerConnection.getInputStream());
+        try (InputStream speakInpStream = speakerConnection.getInputStream()) {
+            speakers = new CollectionParser().parse(speakInpStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
