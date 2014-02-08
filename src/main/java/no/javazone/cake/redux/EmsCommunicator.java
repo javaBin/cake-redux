@@ -1,9 +1,6 @@
 package no.javazone.cake.redux;
 
-import net.hamnaberg.json.Collection;
-import net.hamnaberg.json.Data;
-import net.hamnaberg.json.Item;
-import net.hamnaberg.json.Property;
+import net.hamnaberg.json.*;
 import net.hamnaberg.json.parser.CollectionParser;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,17 +61,39 @@ public class EmsCommunicator {
         }
 
         List<Item> items = events.getItems();
-        JSONArray eventArray = new JSONArray();
+        // TODO There has to be a better way to do this
+        JSONArray talkArray = new JSONArray();
         for (Item item : items) {
             Map<String,Property> dataAsMap = item.getData().getDataAsMap();
+            JSONObject jsonTalk = new JSONObject();
 
             for (Map.Entry<String,Property> propentry : dataAsMap.entrySet()) {
-                String ket = propentry.getKey();
+                String key = propentry.getKey();
                 Property property = propentry.getValue();
+                if (property.hasArray()) {
+                    List<Value> array = property.getArray();
+                    JSONArray values = new JSONArray();
+                    for (Value val : array) {
+                        values.put(val.asString());
+                    }
+                    try {
+                        jsonTalk.put(key,values);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
 
+                } else {
+                    try {
+                        jsonTalk.put(key, property.getValue().get().asString());
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
+            talkArray.put(jsonTalk);
         }
-        return sessionJson;
+
+        return talkArray.toString();
     }
 
 
