@@ -14,12 +14,14 @@ import java.util.Map;
 
 public class EmsCommunicator {
     public static void main(String[] args) throws Exception {
-        String eventText = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY=";
+        //String eventText = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY=";
        // String ev="http://test.java.no/ems-redux/server/events/cee37cc1-5399-47ef-9418-21f9b6444bfa/sessions/35efacf4-e9be-4980-9fb1-5baa83bb050f";
+        String talkEvent="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWYvc2Vzc2lvbnMvOWQzMWVmZGYtN2MzMi00ZDg1LWEyYjUtYjM2YmVlZjMyYzQ0";
         Configuration.init(args[0]);
         //new EmsCommunicator().readContent(ev, true);
-        System.out.println(new EmsCommunicator().talks(eventText));
+        //System.out.println(new EmsCommunicator().talks(eventText));
         //System.out.println(new EmsCommunicator().allEvents());
+        System.out.println(new EmsCommunicator().fetchOneTalk(talkEvent));
     }
 
 
@@ -49,6 +51,18 @@ public class EmsCommunicator {
         }
     }
 
+    public String fetchOneTalk(String encodedUrl) {
+        String url = Base64Util.decode(encodedUrl);
+        URLConnection connection = readContent(url, true);
+
+        try {
+            Item talkItem = new CollectionParser().parse(connection.getInputStream()).getFirstItem().get();
+            return readTalk(talkItem,connection).toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String talks(String encodedEvent) {
         String url = Base64Util.decode(encodedEvent) + "/sessions";
 
@@ -63,36 +77,41 @@ public class EmsCommunicator {
         // TODO There has to be a better way to do this
         JSONArray talkArray = new JSONArray();
         for (Item item : items) {
-            JSONObject jsonTalk = readItemProperties(item);
-
-            String speakerLink = item.linkByRel("speaker collection").get().getHref().toString();
-
-            URLConnection speakerConnection = readContent(speakerLink,true);
-
-            Collection speakers;
-            try {
-                speakers = new CollectionParser().parse(speakerConnection.getInputStream());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            JSONArray jsonSpeakers = new JSONArray();
-            for (Item speaker : speakers.getItems()) {
-                JSONObject jsonSpeaker = readItemProperties(speaker);
-                jsonSpeakers.put(jsonSpeaker);
-            }
-
-            try {
-                jsonTalk.put("speakers", jsonSpeakers);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            JSONObject jsonTalk = readTalk(item,connection);
             talkArray.put(jsonTalk);
         }
 
         return talkArray.toString();
     }
 
-    private JSONObject readItemProperties(Item item) {
+    private JSONObject readTalk(Item item, URLConnection connection) {
+        JSONObject jsonTalk = readItemProperties(item,connection);
+
+        String speakerLink = item.linkByRel("speaker collection").get().getHref().toString();
+
+        URLConnection speakerConnection = readContent(speakerLink,true);
+
+        Collection speakers;
+        try {
+            speakers = new CollectionParser().parse(speakerConnection.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        JSONArray jsonSpeakers = new JSONArray();
+        for (Item speaker : speakers.getItems()) {
+            JSONObject jsonSpeaker = readItemProperties(speaker,speakerConnection);
+            jsonSpeakers.put(jsonSpeaker);
+        }
+
+        try {
+            jsonTalk.put("speakers", jsonSpeakers);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return jsonTalk;
+    }
+
+    private JSONObject readItemProperties(Item item, URLConnection connection) {
         JSONObject itemAsJson = new JSONObject();
         Map<String,Property> dataAsMap = item.getData().getDataAsMap();
         for (Map.Entry<String,Property> propentry : dataAsMap.entrySet()) {
@@ -123,6 +142,14 @@ public class EmsCommunicator {
             itemAsJson.put("ref", Base64Util.encode(href));
         } catch (JSONException e) {
             throw new RuntimeException(e);
+        }
+        String lastModified = connection.getHeaderField("last-modified");
+        if (lastModified != null) {
+            try {
+                itemAsJson.put("last-modified",lastModified);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
         }
         return itemAsJson;
     }
