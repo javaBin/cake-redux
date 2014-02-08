@@ -15,17 +15,18 @@ import java.util.Map;
 public class EmsCommunicator {
     public static void main(String[] args) throws Exception {
         String eventText = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY=";
+       // String ev="http://test.java.no/ems-redux/server/events/cee37cc1-5399-47ef-9418-21f9b6444bfa/sessions/35efacf4-e9be-4980-9fb1-5baa83bb050f";
         Configuration.init(args[0]);
+        //new EmsCommunicator().readContent(ev, true);
         System.out.println(new EmsCommunicator().talks(eventText));
         //System.out.println(new EmsCommunicator().allEvents());
     }
 
 
     public String allEvents()  {
-        String eventStr = null;
         try {
-            eventStr = readContent("http://test.2014.javazone.no/ems/server/events",false);
-            Collection events = new CollectionParser().parse(new StringReader(eventStr));
+            URLConnection connection = readContent("http://test.2014.javazone.no/ems/server/events", false);
+            Collection events = new CollectionParser().parse(connection.getInputStream());
             List<Item> items = events.getItems();
             JSONArray eventArray = new JSONArray();
             for (Item item : items) {
@@ -51,11 +52,10 @@ public class EmsCommunicator {
     public String talks(String encodedEvent) {
         String url = Base64Util.decode(encodedEvent) + "/sessions";
 
-        String sessionJson = readContent(url, true);
-        System.out.println(sessionJson);
+        URLConnection connection = readContent(url, true);
         Collection events;
         try {
-            events = new CollectionParser().parse(new StringReader(sessionJson));
+            events = new CollectionParser().parse(connection.getInputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,11 +67,11 @@ public class EmsCommunicator {
 
             String speakerLink = item.linkByRel("speaker collection").get().getHref().toString();
 
-            String speakerContent = readContent(speakerLink,true);
+            URLConnection speakerConnection = readContent(speakerLink,true);
 
             Collection speakers;
             try {
-                speakers = new CollectionParser().parse(new StringReader(speakerContent));
+                speakers = new CollectionParser().parse(speakerConnection.getInputStream());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -118,11 +118,17 @@ public class EmsCommunicator {
                 }
             }
         }
+        String href = item.getHref().get().toString();
+        try {
+            itemAsJson.put("ref", Base64Util.encode(href));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
         return itemAsJson;
     }
 
 
-    private static String readContent(String questionUrl,boolean useAuthorization)  {
+    private static URLConnection readContent(String questionUrl,boolean useAuthorization)  {
         try {
             URL url = new URL(questionUrl);
             URLConnection urlConnection = url.openConnection();
@@ -133,7 +139,7 @@ public class EmsCommunicator {
                 urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
             }
 
-            return toString(urlConnection.getInputStream());
+            return urlConnection;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
