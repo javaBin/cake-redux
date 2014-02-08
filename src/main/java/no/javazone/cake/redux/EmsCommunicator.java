@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -53,42 +52,39 @@ public class EmsCommunicator {
         String url = Base64Util.decode(encodedEvent) + "/sessions";
 
         String sessionJson = readContent(url, true);
+        System.out.println(sessionJson);
         Collection events;
         try {
             events = new CollectionParser().parse(new StringReader(sessionJson));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         List<Item> items = events.getItems();
         // TODO There has to be a better way to do this
         JSONArray talkArray = new JSONArray();
         for (Item item : items) {
-            Map<String,Property> dataAsMap = item.getData().getDataAsMap();
-            JSONObject jsonTalk = new JSONObject();
+            JSONObject jsonTalk = readItemProperties(item);
 
-            for (Map.Entry<String,Property> propentry : dataAsMap.entrySet()) {
-                String key = propentry.getKey();
-                Property property = propentry.getValue();
-                if (property.hasArray()) {
-                    List<Value> array = property.getArray();
-                    JSONArray values = new JSONArray();
-                    for (Value val : array) {
-                        values.put(val.asString());
-                    }
-                    try {
-                        jsonTalk.put(key,values);
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
+            String speakerLink = item.linkByRel("speaker collection").get().getHref().toString();
 
-                } else {
-                    try {
-                        jsonTalk.put(key, property.getValue().get().asString());
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+            String speakerContent = readContent(speakerLink,true);
+
+            Collection speakers;
+            try {
+                speakers = new CollectionParser().parse(new StringReader(speakerContent));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            JSONArray jsonSpeakers = new JSONArray();
+            for (Item speaker : speakers.getItems()) {
+                JSONObject jsonSpeaker = readItemProperties(speaker);
+                jsonSpeakers.put(jsonSpeaker);
+            }
+
+            try {
+                jsonTalk.put("speakers", jsonSpeakers);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
             }
             talkArray.put(jsonTalk);
         }
@@ -96,6 +92,34 @@ public class EmsCommunicator {
         return talkArray.toString();
     }
 
+    private JSONObject readItemProperties(Item item) {
+        JSONObject itemAsJson = new JSONObject();
+        Map<String,Property> dataAsMap = item.getData().getDataAsMap();
+        for (Map.Entry<String,Property> propentry : dataAsMap.entrySet()) {
+            String key = propentry.getKey();
+            Property property = propentry.getValue();
+            if (property.hasArray()) {
+                List<Value> array = property.getArray();
+                JSONArray values = new JSONArray();
+                for (Value val : array) {
+                    values.put(val.asString());
+                }
+                try {
+                    itemAsJson.put(key, values);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+            } else {
+                try {
+                    itemAsJson.put(key, property.getValue().get().asString());
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return itemAsJson;
+    }
 
 
     private static String readContent(String questionUrl,boolean useAuthorization)  {
