@@ -5,9 +5,13 @@ import java.util.List;
 
 public class TestEmsCommunication {
     public static void main(String[] args) throws Exception {
+        long start = System.currentTimeMillis();
         Configuration.init(args[0]);
-        updateTagsOnEvent();
+        //updateTagsOnEvent();
         //readOneTalk();
+        testAllTaksLight();
+        long duration = System.currentTimeMillis() -start;
+        System.out.println("Took " + duration);
     }
 
     private static void updateTagsOnEvent() {
@@ -17,8 +21,15 @@ public class TestEmsCommunication {
     }
 
     private static void testAllTaks() {
-        String eventText = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY=";
-        System.out.println(new EmsCommunicator().talks(eventText));
+        String event2014Text = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY=";
+        String event2013Text ="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy9jZWUzN2NjMS01Mzk5LTQ3ZWYtOTQxOC0yMWY5YjY0NDRiZmE=";
+        System.out.println(new EmsCommunicator().talksFullVersion(event2013Text));
+    }
+
+    private static void testAllTaksLight() {
+        String event2014Text = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY=";
+        String event2013Text ="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy9jZWUzN2NjMS01Mzk5LTQ3ZWYtOTQxOC0yMWY5YjY0NDRiZmE=";
+        System.out.println(new EmsCommunicator().talkShortVersion(event2014Text));
     }
 
     private static void readOneTalk() {

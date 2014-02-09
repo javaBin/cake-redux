@@ -98,7 +98,58 @@ public class EmsCommunicator {
         }
     }
 
-    public String talks(String encodedEvent) {
+    public String talkShortVersion(String encodedEvent) {
+        List<Item> items = getAllTalksSummary(encodedEvent);
+        JSONArray allTalk = new JSONArray();
+        for (Item item : items) {
+            JSONObject jsonTalk = readItemProperties(item, null);
+            List<Link> links = item.getLinks();
+            JSONArray speakers = new JSONArray();
+            for (Link link : links) {
+             if (!"speaker item".equals(link.getRel())) {
+                    continue;
+                }
+                JSONObject speaker = new JSONObject();
+                try {
+                    speaker.put("name",link.getPrompt().get().toString());
+                    speakers.put(speaker);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            try {
+                jsonTalk.put("speakers",speakers);
+                allTalk.put(jsonTalk);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        return allTalk.toString();
+    }
+
+    public String talksFullVersion(String encodedEvent) {
+        List<Item> items = getAllTalksSummary(encodedEvent);
+        // TODO There has to be a better way to do this
+        JSONArray talkArray = new JSONArray();
+        int num=items.size();
+        for (Item item : items) {
+            System.out.println(num--);
+            URLConnection talkConn = openConnection(item.getHref().get().toString(), true);
+            Item talkIktem = null;
+            try (InputStream talkInpStr = talkConn.getInputStream()) {
+                talkIktem = new CollectionParser().parse(talkInpStr).getFirstItem().get();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            JSONObject jsonTalk = readTalk(talkIktem, talkConn);
+            talkArray.put(jsonTalk);
+        }
+
+        return talkArray.toString();
+    }
+
+    private List<Item> getAllTalksSummary(String encodedEvent) {
         String url = Base64Util.decode(encodedEvent) + "/sessions";
 
         URLConnection connection = openConnection(url, true);
@@ -108,22 +159,7 @@ public class EmsCommunicator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        List<Item> items = events.getItems();
-        // TODO There has to be a better way to do this
-        JSONArray talkArray = new JSONArray();
-        for (Item item : items) {
-            URLConnection talkConn = openConnection(item.getHref().get().toString(), true);
-            Item talkIktem = null;
-            try (InputStream talkInpStr = talkConn.getInputStream()) {
-                talkIktem = new CollectionParser().parse(talkInpStr).getFirstItem().get();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            JSONObject jsonTalk = readTalk(talkIktem,talkConn);
-            talkArray.put(jsonTalk);
-        }
-
-        return talkArray.toString();
+        return events.getItems();
     }
 
     private JSONObject readTalk(Item item, URLConnection connection) {
@@ -171,7 +207,7 @@ public class EmsCommunicator {
                     throw new RuntimeException(e);
                 }
 
-            } else {
+            } else if (property.hasValue()) {
                 try {
                     itemAsJson.put(key, property.getValue().get().asString());
                 } catch (JSONException e) {
@@ -185,7 +221,7 @@ public class EmsCommunicator {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        String lastModified = connection.getHeaderField("last-modified");
+        String lastModified = (connection != null) ? connection.getHeaderField("last-modified") : null;
         if (lastModified != null) {
             try {
                 itemAsJson.put("last-modified",lastModified);
