@@ -7,27 +7,62 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class EmsCommunicator {
-    public static void main(String[] args) throws Exception {
-        String eventText = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY=";
-       // String ev="http://test.java.no/ems-redux/server/events/cee37cc1-5399-47ef-9418-21f9b6444bfa/sessions/35efacf4-e9be-4980-9fb1-5baa83bb050f";
-        //String talkEvent="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWYvc2Vzc2lvbnMvOWQzMWVmZGYtN2MzMi00ZDg1LWEyYjUtYjM2YmVlZjMyYzQ0";
-        Configuration.init(args[0]);
-        //new EmsCommunicator().readContent(ev, true);
-        System.out.println(new EmsCommunicator().talks(eventText));
-        //System.out.println(new EmsCommunicator().allEvents());
-        //System.out.println(new EmsCommunicator().fetchOneTalk(talkEvent));
-    }
 
+
+    public String updateTags(String encodedTalkUrl,List<String> tags) {
+        String talkUrl = Base64Util.decode(encodedTalkUrl);
+        URLConnection connection = openConnection(talkUrl, true);
+        String lastModified = connection.getHeaderField("last-modified");
+        Data data;
+        try (InputStream inputStream = connection.getInputStream()) {
+            data = new CollectionParser().parse(inputStream).getFirstItem().get().getData();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Property newVals = Property.arrayObject("tags", new ArrayList<Object>(tags));
+        data = data.replace(newVals);
+        Template template = Template.create(data.getDataAsMap().values());
+
+        System.out.println(template.toString());
+
+        HttpURLConnection putConnection = (HttpURLConnection) openConnection(talkUrl, true);
+
+        putConnection.setDoOutput(true);
+        try {
+            putConnection.setRequestMethod("PUT");
+            putConnection.setRequestProperty("content-type","application/vnd.collection+json");
+            putConnection.setRequestProperty("if-unmodified-since",lastModified);
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        try (OutputStream outputStream = putConnection.getOutputStream()) {
+            template.writeTo(outputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (InputStream is = putConnection.getInputStream()) {
+            return toString(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public String allEvents()  {
         try {
-            URLConnection connection = readContent("http://test.2014.javazone.no/ems/server/events", false);
+            URLConnection connection = openConnection("http://test.2014.javazone.no/ems/server/events", false);
             Collection events = new CollectionParser().parse(connection.getInputStream());
             List<Item> items = events.getItems();
             JSONArray eventArray = new JSONArray();
@@ -53,7 +88,7 @@ public class EmsCommunicator {
 
     public String fetchOneTalk(String encodedUrl) {
         String url = Base64Util.decode(encodedUrl);
-        URLConnection connection = readContent(url, true);
+        URLConnection connection = openConnection(url, true);
 
         try {
             Item talkItem = new CollectionParser().parse(connection.getInputStream()).getFirstItem().get();
@@ -66,7 +101,7 @@ public class EmsCommunicator {
     public String talks(String encodedEvent) {
         String url = Base64Util.decode(encodedEvent) + "/sessions";
 
-        URLConnection connection = readContent(url, true);
+        URLConnection connection = openConnection(url, true);
         Collection events;
         try {
             events = new CollectionParser().parse(connection.getInputStream());
@@ -77,7 +112,7 @@ public class EmsCommunicator {
         // TODO There has to be a better way to do this
         JSONArray talkArray = new JSONArray();
         for (Item item : items) {
-            URLConnection talkConn = readContent(item.getHref().get().toString(),true);
+            URLConnection talkConn = openConnection(item.getHref().get().toString(), true);
             Item talkIktem = null;
             try (InputStream talkInpStr = talkConn.getInputStream()) {
                 talkIktem = new CollectionParser().parse(talkInpStr).getFirstItem().get();
@@ -96,7 +131,7 @@ public class EmsCommunicator {
 
         String speakerLink = item.linkByRel("speaker collection").get().getHref().toString();
 
-        URLConnection speakerConnection = readContent(speakerLink,true);
+        URLConnection speakerConnection = openConnection(speakerLink, true);
 
         Collection speakers;
         try (InputStream speakInpStream = speakerConnection.getInputStream()) {
@@ -162,7 +197,7 @@ public class EmsCommunicator {
     }
 
 
-    private static URLConnection readContent(String questionUrl,boolean useAuthorization)  {
+    private static URLConnection openConnection(String questionUrl, boolean useAuthorization)  {
         try {
             URL url = new URL(questionUrl);
             URLConnection urlConnection = url.openConnection();
