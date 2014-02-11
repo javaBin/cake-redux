@@ -1,5 +1,6 @@
 package no.javazone.cake.redux;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,28 +13,43 @@ import static org.mockito.Mockito.*;
 
 public class DataServletTest {
     private DataServlet servlet = new DataServlet();
+    private final HttpServletRequest req = mock(HttpServletRequest.class);
+    private final HttpServletResponse resp = mock(HttpServletResponse.class);
+    private final StringWriter jsonResult = new StringWriter();
+    private final EmsCommunicator emsCommunicator = mock(EmsCommunicator.class);
+
+    @Before
+    public void setUp() throws Exception {
+        when(req.getMethod()).thenReturn("GET");
+        when(resp.getWriter()).thenReturn(new PrintWriter(jsonResult));
+        servlet.setEmsCommunicator(emsCommunicator);
+    }
 
     @Test
     public void shouldGiveListOfAllEvents() throws Exception {
-        HttpServletRequest req = mock(HttpServletRequest.class);
-        when(req.getMethod()).thenReturn("GET");
         when(req.getPathInfo()).thenReturn("/events");
-
-        HttpServletResponse resp = mock(HttpServletResponse.class);
-        StringWriter jsonResult = new StringWriter();
-        when(resp.getWriter()).thenReturn(new PrintWriter(jsonResult));
-
-        EmsCommunicator emsCommunicator = mock(EmsCommunicator.class);
         when(emsCommunicator.allEvents()).thenReturn("This is a json");
 
-        servlet.setEmsCommunicator(emsCommunicator);
-
-        servlet.service(req,resp);
+        servlet.service(req, resp);
 
         verify(resp).setContentType("text/json");
         verify(emsCommunicator).allEvents();
 
         assertThat(jsonResult.toString()).isEqualTo("This is a json");
+    }
+
+    @Test
+    public void shouldReadSlotList() throws Exception {
+        when(req.getPathInfo()).thenReturn("/talks");
+        when(req.getParameter("eventId")).thenReturn("xxx");
+        when(emsCommunicator.talkShortVersion(anyString())).thenReturn("This is slot list json");
+
+        servlet.service(req,resp);
+
+        verify(emsCommunicator).talkShortVersion("xxx");
+        assertThat(jsonResult.toString()).isEqualTo("This is slot list json");
+
+
 
     }
 }
