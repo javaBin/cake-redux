@@ -1,6 +1,6 @@
 angular.module('cakeReduxModule')
-.controller('TalkListCtrl', ['$scope', '$http', '$routeParams',
-    function($scope, $http, $routeParams) {
-
+.controller('TalkListCtrl', ['$scope', '$http', '$routeParams', 'eventFactory',
+    function($scope, $http, $routeParams,eventFactory) {
+        eventFactory($scope);
 		
 }]);
