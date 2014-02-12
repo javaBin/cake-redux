@@ -3,7 +3,7 @@
 
     var bootstrap;
     bootstrap = function() {
-        angular.module('quizzical', ['cakeReduxModule']).
+        angular.module('cakeRedux', ['cakeReduxModule']).
         config(['$routeProvider', function($routeProvider) {
                 $routeProvider.
                     when('/', {
@@ -12,7 +12,7 @@
                     });
         }]);
         
-        angular.bootstrap(document,['quizzical']); 
+        angular.bootstrap(document,['cakeRedux']);
         
     };
 
