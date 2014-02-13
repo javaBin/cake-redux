@@ -9,7 +9,12 @@
                     when('/', {
                         templateUrl: 'templates/talkList.html',
                         controller: 'TalkListCtrl'
-                    });
+                    }).
+                    when("/talks/:eventSlug", {
+                        templateUrl: 'templates/talkList.html',
+                        controller: 'TalkListCtrl'
+                    })
+                    ;
         }]);
         
         angular.bootstrap(document,['cakeRedux']);
