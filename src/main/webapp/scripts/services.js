@@ -9,4 +9,12 @@ angular.module('cakeReduxModule')
 
         };
          return res;
-    }]);
+    }])
+    .factory('talkList',[function() {
+        var li = {
+            allTalks : [],
+            talks: []
+        };
+        return _.clone(li);
+    }])
+;
