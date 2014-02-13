@@ -69,6 +69,7 @@ public class EmsCommunicator {
             for (Item item : items) {
                 Data data = item.getData();
                 String eventname = data.propertyByName("name").get().getValue().get().asString();
+                String slug = data.propertyByName("slug").get().getValue().get().asString();
                 String href = item.getHref().get().toString();
 
                 href = Base64Util.encode(href);
@@ -77,6 +78,7 @@ public class EmsCommunicator {
 
                 event.put("name",eventname);
                 event.put("ref",href);
+                event.put("slug",slug);
 
                 eventArray.put(event);
             }
