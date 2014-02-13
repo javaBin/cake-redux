@@ -13,6 +13,10 @@
                     when("/talks/:eventSlug", {
                         templateUrl: 'templates/talkList.html',
                         controller: 'TalkListCtrl'
+                    }).
+                    when("/showTalk/:talkId", {
+                        templateUrl: 'templates/showTalk.html',
+                        controller: 'ShowTalkCtrl'
                     })
                     ;
         }]);

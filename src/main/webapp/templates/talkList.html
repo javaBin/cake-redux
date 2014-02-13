@@ -29,6 +29,6 @@
 
     <h1>Hello world</h1>
     <ul>
-        <li ng-repeat="talk in talks">{{talk.title}}</li>
+        <li ng-repeat="talk in talks"><a ng-href="#/showTalk/{{talk.ref}}">{{talk.title}}</a></li>
     </ul>
 </div>
