@@ -4,5 +4,12 @@ angular.module('cakeReduxModule')
             var talkRef = $routeParams.talkId;
             $scope.aTalk = _.findWhere(talkList.allTalks,{ref: talkRef});
 
+            $scope.newTagTyped = function() {
+                var n = $scope.newTag;
+                $scope.aTalk.tags.push(n);
+            }
+
+
+
         }]);
 

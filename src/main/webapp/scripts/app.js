@@ -1,4 +1,5 @@
 (function() {
+
     angular.module('cakeReduxModule', []);
 
     var bootstrap;
