@@ -48,8 +48,18 @@ public class DataServletTest {
 
         verify(emsCommunicator).talkShortVersion("xxx");
         assertThat(jsonResult.toString()).isEqualTo("This is slot list json");
+    }
 
+    @Test
+    public void shouldReadSingleTalk() throws Exception {
+        when(req.getPathInfo()).thenReturn("/atalk");
+        when(req.getParameter("talkId")).thenReturn("zzz");
+        when(emsCommunicator.fetchOneTalk(anyString())).thenReturn("This is single talk json");
 
+        servlet.service(req,resp);
+
+        verify(emsCommunicator).fetchOneTalk("zzz");
+        assertThat(jsonResult.toString()).isEqualTo("This is single talk json");
 
     }
 }

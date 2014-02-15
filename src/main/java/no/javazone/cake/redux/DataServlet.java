@@ -17,9 +17,13 @@ public class DataServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/json");
         PrintWriter writer = response.getWriter();
-        if ("/talks".equals(request.getPathInfo())) {
+        String pathInfo = request.getPathInfo();
+        if ("/talks".equals(pathInfo)) {
             String encEvent = request.getParameter("eventId");
             writer.append(emsCommunicator.talkShortVersion(encEvent));
+        } else if ("/atalk".equals(pathInfo)) {
+            String encTalk = request.getParameter("talkId");
+            writer.append(emsCommunicator.fetchOneTalk(encTalk));
         } else {
             writer.append(emsCommunicator.allEvents());
         }
