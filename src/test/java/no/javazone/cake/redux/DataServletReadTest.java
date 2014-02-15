@@ -11,7 +11,7 @@ import java.io.StringWriter;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-public class DataServletTest {
+public class DataServletReadTest {
     private DataServlet servlet = new DataServlet();
     private final HttpServletRequest req = mock(HttpServletRequest.class);
     private final HttpServletResponse resp = mock(HttpServletResponse.class);
