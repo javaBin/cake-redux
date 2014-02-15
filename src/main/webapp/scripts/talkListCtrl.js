@@ -20,5 +20,23 @@ angular.module('cakeReduxModule')
                 }
             });
         }
+
+        $scope.speakerList = function(speakers) {
+            var speakersName = _.pluck(speakers, "name");
+            var names =_.reduce(speakersName,function(a,b) {
+                return a + ", " + b;
+            });
+            return names;
+        }
+
+        $scope.joinArrs = function(arr) {
+            if (!arr || arr.length == 0) {
+                return null;
+            }
+            var joined = _.reduce(arr,function(a,b) {
+                return a + ", " + b;
+            });
+            return joined;
+        }
 		
 }]);
