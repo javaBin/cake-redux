@@ -62,4 +62,5 @@ public class DataServletTest {
         assertThat(jsonResult.toString()).isEqualTo("This is single talk json");
 
     }
+
 }

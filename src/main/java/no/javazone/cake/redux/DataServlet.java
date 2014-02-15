@@ -5,12 +5,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 
 public class DataServlet extends HttpServlet {
     private EmsCommunicator emsCommunicator;
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("Hit post");
+        try (InputStream inputStream = req.getInputStream()) {
+            String inputStr = EmsCommunicator.toString(inputStream);
+            System.out.println(inputStr);
+        }
 
     }
 
@@ -28,6 +34,7 @@ public class DataServlet extends HttpServlet {
             writer.append(emsCommunicator.allEvents());
         }
     }
+
 
     @Override
     public void init() throws ServletException {

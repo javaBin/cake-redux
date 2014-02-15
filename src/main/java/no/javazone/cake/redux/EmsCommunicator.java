@@ -226,7 +226,7 @@ public class EmsCommunicator {
         String lastModified = (connection != null) ? connection.getHeaderField("last-modified") : null;
         if (lastModified != null) {
             try {
-                itemAsJson.put("last-modified",lastModified);
+                itemAsJson.put("lastModified",lastModified);
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }

@@ -1,6 +1,6 @@
 <div ng-controller="ShowTalkCtrl">
-    <h1>Title {{aTalk.title}}</h1>
-    <div class="well" style="margin-left: 3%; margin-right: 10%">
+    <h1 class="cake-margin">Title {{aTalk.title}}</h1>
+    <div class="well" class="cake-margin-well">
         <p>
         <input ng-model="newTag" type="text" placeholder="New tag"/>
         <button class="btn" ng-click="newTagTyped()">Add</button>
@@ -15,4 +15,6 @@
             <span ng-repeat="tag in aTalk.tags" class="label label-info" style="margin-right: 0.2em">{{tag}} <a ng-click="removeTag(tag)">(x)</a></span>
         </h3>
     </div>
+    <p><button id="saveButton" class="btn btn-danger btn-lg cake-margin" ng-click="saveTalk()">Save</button></p>
+    <h6>Last modified: {{aTalk.lastModified}}</h6>
 </div>
