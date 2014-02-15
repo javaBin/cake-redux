@@ -9,7 +9,18 @@ angular.module('cakeReduxModule')
                 $scope.aTalk.tags.push(n);
             }
 
+            $scope.tagSelected = function() {
+                var n = $scope.selectedTag;
+                $scope.aTalk.tags.push(n);
 
+            }
+
+            $scope.removeTag = function(tag) {
+                var index = $scope.aTalk.tags.indexOf(tag);
+                if (index > -1) {
+                    $scope.aTalk.tags.splice(index,1);
+                }
+            }
 
         }]);
 
