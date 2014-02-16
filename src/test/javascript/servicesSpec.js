@@ -22,5 +22,14 @@ describe("A suite", function() {
        var talks = [];
        filterService.doFilter(talks,allTalks);
        expect(talks.length).toBe(1);
+       expect(talks[0].title).toBe("Title one");
+    });
+
+    it('should not filter when filter is empty',function() {
+        filterService.filters.push({title: null});
+        var allTalks = [{title: "Title one"},{title: "Title two"}];
+        var talks = [];
+        filterService.doFilter(talks,allTalks);
+        expect(talks.length).toBe(2);
     });
 });

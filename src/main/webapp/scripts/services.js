@@ -29,7 +29,7 @@ angular.module('cakeReduxModule')
                         if (!match) {
                             return;
                         }
-                        if (talk.title.indexOf(filter.title) == -1) {
+                        if (filter.title && filter.title.length > 0 && talk.title.indexOf(filter.title) == -1) {
                             match = false;
                         }
                     });
