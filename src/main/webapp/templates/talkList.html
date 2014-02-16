@@ -26,7 +26,7 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
-
+    <p><button class="btn btn-default" ng-click="addFilter()">Add filter</button></p>
     <table class="table table-bordered table-hoover">
         <thead>
         <tr>
@@ -40,6 +40,9 @@
         </tr>
         </thead>
         <tbody>
+            <tr ng-repeat="filter in filters">
+                <td><input class="form-control" type="text" ng-model="filter.title" ng-change="filterUpdated()"/></td>
+            </tr>
             <tr ng-repeat="talk in talks">
                 <td><a ng-href="#/showTalk/{{talk.ref}}">{{talk.title}}</a></td>
                 <td>{{speakerList(talk.speakers)}}</td>

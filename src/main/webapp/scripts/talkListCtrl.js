@@ -1,6 +1,7 @@
 angular.module('cakeReduxModule')
-.controller('TalkListCtrl', ['$scope', '$http', '$routeParams', 'eventFactory','talkList',
-    function($scope, $http, $routeParams,eventFactory,talkList) {
+.controller('TalkListCtrl', ['$scope', '$http', '$routeParams', 'eventFactory','talkList','filterService',
+    function($scope, $http, $routeParams,eventFactory,talkList,filterService) {
+        $scope.filters = filterService.filters;
         $scope.allTalks = talkList.allTalks;
         $scope.talks = talkList.talks;
         if ($scope.allTalks.length == 0) {
@@ -12,7 +13,7 @@ angular.module('cakeReduxModule')
                         $http({method: "GET", url: "data/talks?eventId=" + $scope.chosenEvent.ref})
                             .success(function(talklist) {
                                 $scope.allTalks = talklist;
-                                $scope.talks = talklist;
+                                $scope.talks = _.clone(talklist);
                                 talkList.allTalks = $scope.allTalks;
                                 talkList.talks = $scope.talks;
                             });
@@ -37,6 +38,14 @@ angular.module('cakeReduxModule')
                 return a + ", " + b;
             });
             return joined;
+        }
+
+        $scope.addFilter = function() {
+            $scope.filters.push({title: ""})
+        };
+
+        $scope.filterUpdated = function() {
+            filterService.doFilter($scope.talks,$scope.allTalks);
         }
 		
 }]);

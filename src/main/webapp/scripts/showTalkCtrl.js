@@ -1,7 +1,6 @@
 angular.module('cakeReduxModule')
     .controller('ShowTalkCtrl', ['$scope', '$http', '$routeParams', 'talkList',
         function($scope, $http, $routeParams,talkList) {
-            $scope.loading = false;
             var talkRef = $routeParams.talkId;
 
             $scope.aTalk = _.findWhere(talkList.allTalks,{ref: talkRef});
@@ -66,7 +65,9 @@ angular.module('cakeReduxModule')
                     return a + ", " + b;
                 });
                 return res;
-            }
+            };
+
+
 
 
         }]);
