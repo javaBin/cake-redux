@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=$sourceEncoding$">
+    <title>Jasmine Spec Runner</title>
+    $cssDependencies$
+    $javascriptDependencies$
+    $sources$
+  </head>
+  <body>
+    <script type="text/javascript">
+      //Don't do live updates when running through HTMLUnit
+      if (typeof Packages !== "undefined") {
+        jasmine.getEnv().updateInterval = Number.MAX_VALUE;
+      }
+
+      var executeJasmineSpecs = function() {
+        window.reporter = new jasmine.$reporter$(); 
+        jasmine.getEnv().addReporter(reporter);
+        if ('$reporter$' == 'HtmlReporter') {
+          jasmine.getEnv().specFilter = function(spec) {
+            return window.reporter.specFilter(spec);
+          };
+        }
+        jasmine.getEnv().execute();
+      };
+    </script>
+    <div id="templates" style="display:none;"></div>
+    <script type="text/javascript">
+          executeJasmineSpecs();
+    </script>
+  </body>
+</html>
