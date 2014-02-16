@@ -17,4 +17,13 @@ angular.module('cakeReduxModule')
         };
         return _.clone(li);
     }])
+    .factory('filterService',[function() {
+        var fis = {
+            filters : [],
+            doFilter : function(talks,allTalks) {
+
+            }
+        };
+        return fis;
+    }])
 ;
