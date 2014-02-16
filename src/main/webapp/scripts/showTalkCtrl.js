@@ -58,6 +58,16 @@ angular.module('cakeReduxModule')
                 });
             };
 
+            $scope.joinArr = function(arr) {
+                if (!arr || arr.length == 0) {
+                    return null;
+                }
+                var res = _.reduce(arr,function(a,b) {
+                    return a + ", " + b;
+                });
+                return res;
+            }
+
 
         }]);
 

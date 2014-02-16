@@ -1,5 +1,65 @@
-<div ng-controller="ShowTalkCtrl">
-    <h1 class="cake-margin">Title {{aTalk.title}}</h1>
+<div class="cake-margin" ng-controller="ShowTalkCtrl">
+    <h1>{{aTalk.title}}</h1>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Summary</strong></div>
+        <div class="col-md-10">{{aTalk.summary}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Abstract</strong></div>
+        <div class="col-md-10">{{aTalk.body}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Outline</strong></div>
+        <div class="col-md-10">{{aTalk.outline}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Keywords</strong></div>
+        <div class="col-md-10">{{joinArr(aTalk.keywords)}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Expected audience</strong></div>
+        <div class="col-md-10">{{aTalk.audience}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Equipment</strong></div>
+        <div class="col-md-10">{{aTalk.equipment}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>State</strong></div>
+        <div class="col-md-10">{{aTalk.state}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Format</strong></div>
+        <div class="col-md-10">{{aTalk.format}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Level</strong></div>
+        <div class="col-md-10">{{aTalk.level}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Language</strong></div>
+        <div class="col-md-10">{{aTalk.lang}}</div>
+    </div>
+    <div ng-repeat="speaker in aTalk.speakers">
+        <h3>{{speaker.name}}</h3>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Email</strong></div>
+            <div class="col-md-10">{{speaker.email}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Bio</strong></div>
+            <div class="col-md-10">{{speaker.bio}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Postcode</strong></div>
+            <div class="col-md-10">{{speaker["zip-code"]}}</div>
+        </div>
+    </div>
+
+
+
+
+    <h2>Update tags</h2>
     <div class="well" class="cake-margin-well">
         <p>
         <input ng-model="newTag" type="text" placeholder="New tag"/>
@@ -15,6 +75,7 @@
             <span ng-repeat="tag in aTalk.tags" class="label label-info" style="margin-right: 0.2em">{{tag}} <a ng-click="removeTag(tag)">(x)</a></span>
         </h3>
     </div>
+
     <p><button id="saveButton" class="btn btn-danger btn-lg cake-margin" ng-click="saveTalk()">Save</button></p>
     <h6>Last modified: {{aTalk.lastModified}}</h6>
 </div>
