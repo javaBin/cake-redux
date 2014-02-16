@@ -118,6 +118,7 @@
                     <jsTestSrcDir>${basedir}/src/test/javascript</jsTestSrcDir>
                     <sourceIncludes>
                         <include>**/jquery-2.1.0.min.js</include>
+                        <include>**/underscore-min.js</include>
                         <include>**/angular.min.js</include>
                         <include>**/angular-mocks.js</include>
                         <include>**/testSetup.js</include>

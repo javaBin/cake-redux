@@ -21,7 +21,22 @@ angular.module('cakeReduxModule')
         var fis = {
             filters : [],
             doFilter : function(talks,allTalks) {
-
+                var self = this;
+                talks.splice(0,talks.length);
+                _.each(allTalks,function(talk) {
+                   var match=true;
+                    _.each(self.filters,function(filter) {
+                        if (!match) {
+                            return;
+                        }
+                        if (talk.title.indexOf(filter.title) == -1) {
+                            match = false;
+                        }
+                    });
+                    if (match) {
+                        talks.push(talk);
+                    }
+                });
             }
         };
         return fis;
