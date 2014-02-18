@@ -18,6 +18,13 @@ angular.module('cakeReduxModule')
         return _.clone(li);
     }])
     .factory('filterService',[function() {
+        var isMatch= function(filter,obj) {
+            if (filter && filter.length > 0 && obj.toLowerCase().indexOf(filter.toLowerCase()) == -1) {
+                return false;
+            }
+            return true;
+        }
+
         var fis = {
             filters : [],
             doFilter : function(talks,allTalks) {
@@ -29,8 +36,23 @@ angular.module('cakeReduxModule')
                         if (!match) {
                             return;
                         }
-                        if (filter.title && filter.title.length > 0 && talk.title.toLowerCase().indexOf(filter.title.toLowerCase()) == -1) {
+                        if (!isMatch(filter.title,talk.title)) {
                             match = false;
+                            return;
+                        }
+                        if (filter.speaker && filter.speaker.length > 0) {
+                            var foundSpeaker = false;
+                            _.each(talk.speakers,function(speaker) {
+                                if (foundSpeaker) {
+                                    return;
+                                }
+
+                                if (isMatch(filter.speaker,speaker.name)) {
+                                    foundSpeaker = true;
+                                    return;
+                                }
+                            });
+                            match = foundSpeaker;
                         }
                     });
                     if (match) {
