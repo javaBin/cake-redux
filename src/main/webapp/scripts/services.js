@@ -24,6 +24,24 @@ angular.module('cakeReduxModule')
             }
             return true;
         }
+        var findInArray=function(filter, arr) {
+            if (!filter || filter.length == 0) {
+                return true;
+            }
+            if (!arr) {
+                return false;
+            }
+            var found = false;
+            _.each(arr, function(item) {
+                if (found) {
+                   return;
+                }
+                if (item.toLowerCase().indexOf(filter.toLowerCase()) !== -1) {
+                    found = true;
+                }
+            });
+            return found;
+        }
 
         var fis = {
             filters : [],
@@ -52,7 +70,30 @@ angular.module('cakeReduxModule')
                                     return;
                                 }
                             });
-                            match = foundSpeaker;
+                            if (!foundSpeaker) {
+                                match = false;
+                                return;
+                            }
+                        }
+                        if (!isMatch(filter.format,talk.format)) {
+                            match=false;
+                            return;
+                        }
+                        if (!isMatch(filter.language,talk.lang)) {
+                            match=false;
+                            return;
+                        }
+                        if (!findInArray(filter.tag,talk.tags)) {
+                            match = false;
+                            return;
+                        }
+                        if (!findInArray(filter.keyword,talk.keywords)) {
+                            match = false;
+                            return;
+                        }
+                        if (!isMatch(filter.state,talk.state)) {
+                            match=false;
+                            return;
                         }
                     });
                     if (match) {

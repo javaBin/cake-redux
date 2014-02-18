@@ -43,5 +43,13 @@ describe("Filter test suite", function() {
         expect(talks.length).toBe(2);
         expect(talks[0].title).toBe("Title en");
         expect(talks[1].title).toBe("Title tre");
-    })
+    });
+    it('should handle arrays',function() {
+        var allTalks=[{title: "one", tags: ["ja","bekreftet"]},{title: "two",tags: []}];
+        var talks = [];
+        filterService.filters.push({tag: "ja"});
+        filterService.doFilter(talks,allTalks);
+        expect(talks.length).toBe(1);
+        expect(talks[0].title).toBe("one");
+    });
 });

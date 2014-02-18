@@ -42,6 +42,12 @@
         <tbody>
             <tr ng-repeat="filter in filters">
                 <td><input class="form-control" type="text" ng-model="filter.title" ng-change="filterUpdated()"/></td>
+                <td><input class="form-control" type="text" ng-model="filter.speaker" ng-change="filterUpdated()"/></td>
+                <td><input class="form-control" type="text" ng-model="filter.format" ng-change="filterUpdated()"/></td>
+                <td><input class="form-control" type="text" ng-model="filter.language" ng-change="filterUpdated()"/></td>
+                <td><input class="form-control" type="text" ng-model="filter.tag" ng-change="filterUpdated()"/></td>
+                <td><input class="form-control" type="text" ng-model="filter.keyword" ng-change="filterUpdated()"/></td>
+                <td><input class="form-control" type="text" ng-model="filter.state" ng-change="filterUpdated()"/></td>
             </tr>
             <tr ng-repeat="talk in talks">
                 <td><a ng-href="#/showTalk/{{talk.ref}}">{{talk.title}}</a></td>
