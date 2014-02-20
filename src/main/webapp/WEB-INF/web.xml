@@ -11,7 +11,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>dataServlet</servlet-name>
-        <url-pattern>data/*</url-pattern>
+        <url-pattern>secured/data/*</url-pattern>
     </servlet-mapping>
 
 </web-app>
