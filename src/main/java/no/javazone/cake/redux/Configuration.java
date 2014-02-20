@@ -48,4 +48,16 @@ public class Configuration {
     public static String getEmsPassword() {
         return getProperty("emsPassword");
     }
+
+    public static String getGoogleClientId() {
+        return getProperty("googleClientId");
+    }
+
+    public static String getGoogleClientSecret() {
+        return getProperty("googleClientSecret");
+    }
+
+    public static String getGoogleRedirectUrl() {
+        return getProperty("googleRedirectUrl");
+    }
 }

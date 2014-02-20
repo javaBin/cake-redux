@@ -13,6 +13,15 @@
         <servlet-name>dataServlet</servlet-name>
         <url-pattern>secured/data/*</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>signinServlet</servlet-name>
+        <servlet-class>no.javazone.cake.redux.SigninServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>signinServlet</servlet-name>
+        <url-pattern>signin/</url-pattern>
+    </servlet-mapping>
+
 
     <filter>
         <filter-name>securityFilter</filter-name>
