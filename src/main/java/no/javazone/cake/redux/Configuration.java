@@ -60,4 +60,12 @@ public class Configuration {
     public static String getGoogleRedirectUrl() {
         return getProperty("googleRedirectUrl");
     }
+
+    public static String getAutorizedUsers() {
+        String authorizedUsers = getProperty("authorizedUsers");
+        if (authorizedUsers == null) {
+            return "";
+        }
+        return authorizedUsers;
+    }
 }

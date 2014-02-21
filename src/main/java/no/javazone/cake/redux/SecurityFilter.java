@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -31,13 +32,12 @@ public class SecurityFilter implements Filter {
         }
         String code = req.getParameter("code");
 
-        StringBuilder urlAdr = new StringBuilder();
-        urlAdr.append(para("code", code) + "&");
-        urlAdr.append(para("client_id", Configuration.getGoogleClientId()) + "&");
-        urlAdr.append(para("client_secret", Configuration.getGoogleClientSecret()) + "&");
-        urlAdr.append(para("redirect_uri", Configuration.getGoogleRedirectUrl()) + "&");
-        urlAdr.append(para("grant_type", "authorization_code"));
-        System.out.println(urlAdr);
+        StringBuilder postParameters = new StringBuilder();
+        postParameters.append(para("code", code) + "&");
+        postParameters.append(para("client_id", Configuration.getGoogleClientId()) + "&");
+        postParameters.append(para("client_secret", Configuration.getGoogleClientSecret()) + "&");
+        postParameters.append(para("redirect_uri", Configuration.getGoogleRedirectUrl()) + "&");
+        postParameters.append(para("grant_type", "authorization_code"));
         URL url = new URL("https://accounts.google.com/o/oauth2/token");
         URLConnection urlConnection = url.openConnection();
 
@@ -47,12 +47,12 @@ public class SecurityFilter implements Filter {
         urlConnection.setDoOutput(true);
         urlConnection.setUseCaches(false);
         urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        urlConnection.setRequestProperty("Content-Length", "" + urlAdr.toString().length());
+        urlConnection.setRequestProperty("Content-Length", "" + postParameters.toString().length());
 
         // Create I/O streams
         DataOutputStream outStream = new DataOutputStream(urlConnection.getOutputStream());
         // Send request
-        outStream.writeBytes(urlAdr.toString());
+        outStream.writeBytes(postParameters.toString());
         outStream.flush();
         outStream.close();
 
@@ -65,16 +65,11 @@ public class SecurityFilter implements Filter {
         String accessToken;
         try {
             jsonObject = new JSONObject(googleresp);
-
             // get the access token from json and request info from Google
-
-            // google tokens expire after an hour, but since we requested offline access we can get a new token without user involvement via the refresh token
             accessToken = (String) jsonObject.get("access_token");
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
-        // you may want to store the access token in session
 
         // get some info about the user with the access token
         String getStr = "https://www.googleapis.com/oauth2/v1/userinfo?" + para("access_token",accessToken);
@@ -84,16 +79,28 @@ public class SecurityFilter implements Filter {
             json = EmsCommunicator.toString(is);
         }
 
-        // now we could store the email address in session
 
-        //chain.doFilter(req,resp);
-        // return the json of the user's basic info
-        resp.getWriter().println(json);
+        String username = null;
+        String userEmail = null;
+        try {
+            JSONObject userInfo = new JSONObject(json);
+            username = userInfo.getString("name");
+            userEmail = userInfo.getString("email");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        String userid = username + "<" + userEmail + ">";
+        if (!Configuration.getAutorizedUsers().contains(userid)) {
+            HttpServletResponse response = (HttpServletResponse) resp;
+            ((HttpServletResponse) resp).sendError(HttpServletResponse.SC_FORBIDDEN,"User not registered " + userid);
+            return;
+        }
 
         request.getSession().setAttribute("access_token", accessToken);
-        /*HttpServletRequest request = (HttpServletRequest) req;
-        System.out.println("Hit filter " + request.getPathInfo());
-        */
+
+        chain.doFilter(req, resp);
+
 }
 
     private String para(String name,String value) throws UnsupportedEncodingException {
