@@ -20,6 +20,10 @@ public class SecurityFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
+        if (Configuration.noAuthMode()) {
+            chain.doFilter(req,resp);
+            return;
+        }
         HttpServletRequest request = (HttpServletRequest) req;
         String token = (String) request.getSession().getAttribute("access_token");
         if (token != null) {

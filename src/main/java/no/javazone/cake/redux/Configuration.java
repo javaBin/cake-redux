@@ -68,4 +68,8 @@ public class Configuration {
         }
         return authorizedUsers;
     }
+
+    public static boolean noAuthMode() {
+        return "true".equals(getProperty("noAuthMode"));
+    }
 }
