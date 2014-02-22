@@ -4,6 +4,7 @@ angular.module('cakeReduxModule')
             var talkRef = $routeParams.talkId;
             $scope.showError = false;
 
+
             $scope.aTalk = _.findWhere(talkList.allTalks,{ref: talkRef});
             if (!$scope.aTalk || !$scope.aTalk.lastModified) {
                 $http({method: "GET", url: "data/atalk?talkId=" + talkRef})

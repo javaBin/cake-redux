@@ -76,4 +76,8 @@ public class Configuration {
     public static String emsEventLocation() {
         return getProperty("emsEventLocation");
     }
+
+    public static String submititLocation() {
+        return getProperty("submititLocation");
+    }
 }

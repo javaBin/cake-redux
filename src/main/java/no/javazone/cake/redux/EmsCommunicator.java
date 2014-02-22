@@ -104,7 +104,14 @@ public class EmsCommunicator {
 
         try {
             Item talkItem = new CollectionParser().parse(connection.getInputStream()).getFirstItem().get();
-            return readTalk(talkItem,connection).toString();
+            JSONObject jsonObject = readTalk(talkItem, connection);
+            String submititLocation = Configuration.submititLocation() + encodedUrl;
+            try {
+                jsonObject.put("submititLoc",submititLocation);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            return jsonObject.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

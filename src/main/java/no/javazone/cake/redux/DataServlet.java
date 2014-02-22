@@ -47,9 +47,19 @@ public class DataServlet extends HttpServlet {
         } else if ("/atalk".equals(pathInfo)) {
             String encTalk = request.getParameter("talkId");
             writer.append(emsCommunicator.fetchOneTalk(encTalk));
-        } else {
+        } else if ("/events".equals(pathInfo)) {
             writer.append(emsCommunicator.allEvents());
         }
+    }
+
+    private String config() {
+        JSONObject conf = new JSONObject();
+        try {
+            conf.put("submititloc",Configuration.submititLocation());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return conf.toString();
     }
 
 
