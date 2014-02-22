@@ -45,7 +45,7 @@ public class DataServletWriteTest {
 
         servlet.service(req,resp);
 
-        verify(emsCommunicator).updateTags("abra", Arrays.asList("test"));
+        verify(emsCommunicator).updateTags("abra", Arrays.asList("test"),"Tue, 04 Feb 2014 23:55:06 GMT");
 
     }
 }

@@ -2,6 +2,7 @@ angular.module('cakeReduxModule')
     .controller('ShowTalkCtrl', ['$scope', '$http', '$routeParams', 'talkList',
         function($scope, $http, $routeParams,talkList) {
             var talkRef = $routeParams.talkId;
+            $scope.showError = false;
 
             $scope.aTalk = _.findWhere(talkList.allTalks,{ref: talkRef});
             if (!$scope.aTalk || !$scope.aTalk.lastModified) {
@@ -36,6 +37,7 @@ angular.module('cakeReduxModule')
             }
 
             $scope.saveTalk = function() {
+                $scope.showError = false;
                 var savebtn = $("#saveButton");
                 savebtn.button("loading");
                 var t = $scope.aTalk;
@@ -49,9 +51,15 @@ angular.module('cakeReduxModule')
                     url: "data/editTalk",
                     data: postData
                 }).success(function(data) {
+                    savebtn.button("reset");
+                    if (data.error) {
+                        $scope.errormessage = data.error;
+                        $scope.showError = true;
+                        return;
+                    }
+                    $scope.aTalk.lastModified = data.lastModified;
                     console.log("Posted");
                     console.log(data);
-                    savebtn.button("reset");
                 }).error(function(data, status, headers, config) {
                     savebtn.button("reset");
                 });

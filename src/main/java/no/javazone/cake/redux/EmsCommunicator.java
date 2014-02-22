@@ -18,10 +18,21 @@ import java.util.Map;
 public class EmsCommunicator {
 
 
-    public String updateTags(String encodedTalkUrl,List<String> tags) {
+    public String updateTags(String encodedTalkUrl,List<String> tags,String givenLastModified) {
         String talkUrl = Base64Util.decode(encodedTalkUrl);
         URLConnection connection = openConnection(talkUrl, true);
         String lastModified = connection.getHeaderField("last-modified");
+
+        if (!lastModified.equals(givenLastModified)) {
+            JSONObject errorJson = new JSONObject();
+            try {
+                errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            return errorJson.toString();
+        }
+
         Data data;
         try (InputStream inputStream = connection.getInputStream()) {
             data = new CollectionParser().parse(inputStream).getFirstItem().get().getData();
@@ -32,8 +43,6 @@ public class EmsCommunicator {
         Property newVals = Property.arrayObject("tags", new ArrayList<Object>(tags));
         data = data.replace(newVals);
         Template template = Template.create(data.getDataAsMap().values());
-
-        System.out.println(template.toString());
 
         HttpURLConnection putConnection = (HttpURLConnection) openConnection(talkUrl, true);
 
@@ -54,10 +63,11 @@ public class EmsCommunicator {
         }
 
         try (InputStream is = putConnection.getInputStream()) {
-            return toString(is);
+            toString(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return fetchOneTalk(encodedTalkUrl);
     }
 
     public String allEvents()  {

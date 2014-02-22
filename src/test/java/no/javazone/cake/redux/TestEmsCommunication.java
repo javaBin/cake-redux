@@ -17,7 +17,7 @@ public class TestEmsCommunication {
     private static void updateTagsOnEvent() {
         String talkEvent="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWYvc2Vzc2lvbnMvOWQzMWVmZGYtN2MzMi00ZDg1LWEyYjUtYjM2YmVlZjMyYzQ0";
         List<String> tags = Arrays.asList("testTag");
-        System.out.println(new EmsCommunicator().updateTags(talkEvent,tags));
+        System.out.println(new EmsCommunicator().updateTags(talkEvent,tags,""));
     }
 
     private static void testAllTaks() {
