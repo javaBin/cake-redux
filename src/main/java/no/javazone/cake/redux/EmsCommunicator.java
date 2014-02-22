@@ -72,7 +72,7 @@ public class EmsCommunicator {
 
     public String allEvents()  {
         try {
-            URLConnection connection = openConnection("http://test.2014.javazone.no/ems/server/events", false);
+            URLConnection connection = openConnection(Configuration.emsEventLocation(), false);
             Collection events = new CollectionParser().parse(connection.getInputStream());
             List<Item> items = events.getItems();
             JSONArray eventArray = new JSONArray();

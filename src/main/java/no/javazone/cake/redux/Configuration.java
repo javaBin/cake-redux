@@ -72,4 +72,8 @@ public class Configuration {
     public static boolean noAuthMode() {
         return "true".equals(getProperty("noAuthMode"));
     }
+
+    public static String emsEventLocation() {
+        return getProperty("emsEventLocation");
+    }
 }
