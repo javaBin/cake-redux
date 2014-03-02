@@ -1,6 +1,13 @@
 angular.module('cakeReduxModule')
 .controller('TalkListCtrl', ['$scope', '$http', '$routeParams', 'eventFactory','talkList','filterService',
     function($scope, $http, $routeParams,eventFactory,talkList,filterService) {
+        $scope.showFilters = true;
+        $scope.doShowFilters = function() {
+            $scope.showFilters =true ;
+        };
+        $scope.doHideFilters = function() {
+            $scope.showFilters = false;
+        }
         $scope.filters = filterService.filters;
         $scope.allTalks = talkList.allTalks;
         $scope.talks = talkList.talks;
