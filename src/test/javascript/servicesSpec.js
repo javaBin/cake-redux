@@ -52,4 +52,26 @@ describe("Filter test suite", function() {
         expect(talks.length).toBe(1);
         expect(talks[0].title).toBe("one");
     });
+    it('should define two filter entries as or',function() {
+        var allTalks=[{title: "one", tags: ["ja","bekreftet"]},{title: "two",tags: []},{title:"three"}];
+        var talks = [];
+
+        filterService.filters.push({title: "one"});
+        filterService.filters.push({title: "two"});
+
+        filterService.doFilter(talks,allTalks);
+
+        expect(talks.length).toBe(2);
+    });
+    it('should handle operator and',function() {
+        var allTalks=[{title: "one", tags: ["ja","bekreftet"]},{title: "two",tags: []},{title:"three"}];
+        var talks = [];
+
+        filterService.filters.push({filterOperator: filterService.filterOperators.OP_AND});
+        filterService.filters.push({title: "one"});
+
+        filterService.doFilter(talks,allTalks);
+
+        expect(talks.length).toBe(1);
+    })
 });
