@@ -29,6 +29,11 @@
     <div class="row">
         <div class="col-md-10" ng-show="showFilters">
             <button class="btn btn-default" ng-click="addFilter()">Add filter</button>
+            <button class="btn btn-default" ng-click="addOpAnd()">And (</button>
+            <button class="btn btn-default" ng-click="addOpOr()">Or (</button>
+            <button class="btn btn-default" ng-click="addOpNot()">Not (</button>
+            <button class="btn btn-default" ng-click="addOpEnd()">)</button>
+            <button class="btn btn-default" ng-click="clearAllFilters()">Clear filters</button>
             <button class="btn btn-default" ng-click="doHideFilters()">Hide filters</button>
         </div>
         <div class="col-md-10" ng-show="!showFilters">
@@ -50,13 +55,14 @@
         </thead>
         <tbody>
             <tr ng-repeat="filter in filters" ng-show="showFilters">
-                <td><input class="form-control" type="text" ng-model="filter.title" ng-change="filterUpdated()"/></td>
-                <td><input class="form-control" type="text" ng-model="filter.speaker" ng-change="filterUpdated()"/></td>
-                <td><input class="form-control" type="text" ng-model="filter.format" ng-change="filterUpdated()"/></td>
-                <td><input class="form-control" type="text" ng-model="filter.language" ng-change="filterUpdated()"/></td>
-                <td><input class="form-control" type="text" ng-model="filter.tag" ng-change="filterUpdated()"/></td>
-                <td><input class="form-control" type="text" ng-model="filter.keyword" ng-change="filterUpdated()"/></td>
-                <td><input class="form-control" type="text" ng-model="filter.state" ng-change="filterUpdated()"/></td>
+                <td ng-show="!isFilterLine(filter)">{{operatorText(filter)}}</td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.title" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.speaker" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.format" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.language" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.tag" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.keyword" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.state" ng-change="filterUpdated()"/></td>
             </tr>
             <tr ng-repeat="talk in talks">
                 <td><a ng-href="#/showTalk/{{talk.ref}}">{{talk.title}}</a></td>

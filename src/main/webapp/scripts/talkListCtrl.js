@@ -47,12 +47,50 @@ angular.module('cakeReduxModule')
             return joined;
         }
 
+        $scope.filterUpdated = function() {
+            filterService.doFilter($scope.talks,$scope.allTalks);
+        }
         $scope.addFilter = function() {
             $scope.filters.push({title: ""})
         };
 
-        $scope.filterUpdated = function() {
-            filterService.doFilter($scope.talks,$scope.allTalks);
+        $scope.addOpAnd = function() {
+            $scope.filters.push({filterOperator: filterService.filterOperators.OP_AND});
+            $scope.filterUpdated();
+        };
+        $scope.addOpOr = function() {
+            $scope.filters.push({filterOperator: filterService.filterOperators.OP_OR});
+            $scope.filterUpdated();
+        };
+        $scope.addOpNot = function() {
+            $scope.filters.push({filterOperator: filterService.filterOperators.OP_NOT});
+            $scope.filterUpdated();
+        };
+        $scope.addOpEnd = function() {
+            $scope.filters.push({filterOperator: filterService.filterOperators.OP_END});
+            $scope.filterUpdated();
+        };
+        $scope.clearAllFilters = function() {
+            $scope.filters.splice(0,$scope.filters.length);
+            $scope.filterUpdated();
+        };
+        $scope.isFilterLine = function(filter) {
+            return !filter.filterOperator;
+        };
+        $scope.operatorText = function(filter) {
+            switch (filter.filterOperator) {
+                case filterService.filterOperators.OP_AND:
+                    return "AND (";
+                case filterService.filterOperators.OP_OR:
+                    return "OR (";
+                case filterService.filterOperators.OP_NOT:
+                    return "NOT (";
+                case filterService.filterOperators.OP_END:
+                    return ")";
+                default:
+                    return "XXX";
+            }
         }
+
 		
 }]);

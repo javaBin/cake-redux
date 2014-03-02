@@ -133,7 +133,12 @@ angular.module('cakeReduxModule')
                 var self = this;
                 talks.splice(0,talks.length);
                 _.each(allTalks,function(talk) {
-                    var res = doMathing(talk,self.filters,0,filterOperators.OP_OR);
+                    var res;
+                    if (self.filters.length == 0) {
+                        res = {match: true};
+                    } else {
+                        res = doMathing(talk,self.filters,0,filterOperators.OP_OR);
+                    }
                     if (res.match) {
                         talks.push(talk);
                     }
