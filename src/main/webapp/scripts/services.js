@@ -94,6 +94,12 @@ angular.module('cakeReduxModule')
                 var matchesThis;
                 if (filters[num].filterOperator) {
                     var useOper = filters[num].filterOperator;
+                    if (useOper == filterOperators.OP_END) {
+                        return {
+                            num: num,
+                            match: match
+                        };
+                    }
                     if (useOper == filterOperators.OP_NOT) {
                         useOper = filterOperators.OP_OR;
                     }

@@ -52,6 +52,17 @@ describe("Filter test suite", function() {
         expect(talks.length).toBe(1);
         expect(talks[0].title).toBe("one");
     });
+    it('should not match tag if talk has no tags',function() {
+        var allTalks=[
+            {title: "one", tags: [],format: "presentation"}];
+        var talks = [];
+
+        filterService.filters.push({tag: "test"});
+
+        filterService.doFilter(talks,allTalks);
+
+        expect(talks.length).toBe(0);
+    });
     it('should define two filter entries as or',function() {
         var allTalks=[{title: "one", tags: ["ja","bekreftet"]},{title: "two",tags: []},{title:"three"}];
         var talks = [];
@@ -85,5 +96,25 @@ describe("Filter test suite", function() {
 
         expect(talks.length).toBe(2);
         expect(talks[0].title).toBe("two");
+    });
+    it('should handle multiple filter setup',function() {
+        var allTalks=[
+            {title: "one", tags: [],format: "presentation"},
+            {title: "two",tags: ["test"], format: "presentation"},
+            {title:"three", tags: [],format: "workshop"}];
+        var talks = [];
+
+        filterService.filters.push({filterOperator: filterService.filterOperators.OP_AND});
+        filterService.filters.push({filterOperator: filterService.filterOperators.OP_NOT});
+        filterService.filters.push({tag: "test"});
+        filterService.filters.push({filterOperator: filterService.filterOperators.OP_END});
+        filterService.filters.push({format: "presentation"});
+
+        filterService.doFilter(talks,allTalks);
+
+        expect(talks.length).toBe(1);
+        expect(talks[0].title).toBe("one");
+
+
     });
 });
