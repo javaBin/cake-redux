@@ -18,6 +18,10 @@
                     when("/showTalk/:talkId", {
                         templateUrl: 'templates/showTalk.html',
                         controller: 'ShowTalkCtrl'
+                    }).
+                    when("/accept", {
+                        templateUrl: 'templates/acceptTalk.html',
+                        controller: 'AcceptTalkCtrl'
                     })
                     ;
         }]);
