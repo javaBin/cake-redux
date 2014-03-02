@@ -16,8 +16,33 @@ import java.util.List;
 
 public class DataServlet extends HttpServlet {
     private EmsCommunicator emsCommunicator;
+    private AcceptorSetter acceptorSetter;
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+        if ("/editTalk".equals(pathInfo)) {
+            updateTalk(req, resp);
+        } else if ("/acceptTalks".equals(pathInfo)) {
+            acceptTalks(req,resp);
+        }
+
+    }
+
+    private void acceptTalks(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try (InputStream inputStream = req.getInputStream()) {
+            String inputStr = EmsCommunicator.toString(inputStream);
+            try {
+                JSONObject jsonObject = new JSONObject(inputStr);
+                JSONArray talks = jsonObject.getJSONArray("talks");
+                String statusJson = acceptorSetter.accept(talks);
+                resp.getWriter().append(statusJson);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void updateTalk(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
             String inputStr = EmsCommunicator.toString(inputStream);
             JSONObject update = new JSONObject(inputStr);
@@ -34,7 +59,6 @@ public class DataServlet extends HttpServlet {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -66,6 +90,7 @@ public class DataServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         emsCommunicator = new EmsCommunicator();
+        acceptorSetter = new AcceptorSetter(emsCommunicator);
     }
 
     public void setEmsCommunicator(EmsCommunicator emsCommunicator) {

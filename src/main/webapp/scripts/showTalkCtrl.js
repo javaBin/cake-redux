@@ -59,8 +59,6 @@ angular.module('cakeReduxModule')
                         return;
                     }
                     $scope.aTalk.lastModified = data.lastModified;
-                    console.log("Posted");
-                    console.log(data);
                 }).error(function(data, status, headers, config) {
                     savebtn.button("reset");
                 });

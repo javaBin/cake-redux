@@ -23,6 +23,7 @@ public class DataServletWriteTest {
     @Before
     public void setUp() throws Exception {
         when(req.getMethod()).thenReturn("POST");
+        when(req.getPathInfo()).thenReturn("/editTalk");
         when(resp.getWriter()).thenReturn(new PrintWriter(jsonResult));
         servlet.setEmsCommunicator(emsCommunicator);
     }

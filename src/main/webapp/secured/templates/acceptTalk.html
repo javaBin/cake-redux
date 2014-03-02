@@ -1,4 +1,9 @@
 <div class="cake-margin" ng-controller="AcceptTalkCtrl">
     <h1>Accept talks</h1>
-    <p>Will accept {{numTalks}} talks</p>
+    <p>Will accept {{numTalks}} talks. Mail will be sent to each speaker and talks will be tagged accepted</p>
+    <ul>
+        <li ng-repeat="talk in talks">{{talk.title}}</li>
+    </ul>
+    <button class="btn btn-primary" ng-click="acceptTalks()">Do it</button>
+
 </div>
