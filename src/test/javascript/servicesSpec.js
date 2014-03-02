@@ -74,4 +74,16 @@ describe("Filter test suite", function() {
 
         expect(talks.length).toBe(1);
     })
+    it('should handle operator not',function() {
+        var allTalks=[{title: "one", tags: ["ja","bekreftet"]},{title: "two",tags: []},{title:"three"}];
+        var talks = [];
+
+        filterService.filters.push({filterOperator: filterService.filterOperators.OP_NOT});
+        filterService.filters.push({title: "one"});
+
+        filterService.doFilter(talks,allTalks);
+
+        expect(talks.length).toBe(2);
+        expect(talks[0].title).toBe("two");
+    });
 });

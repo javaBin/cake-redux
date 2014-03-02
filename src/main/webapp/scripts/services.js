@@ -93,8 +93,15 @@ angular.module('cakeReduxModule')
             for (var num=from;num<filters.length;num++) {
                 var matchesThis;
                 if (filters[num].filterOperator) {
-                    var res = myself(talk,filters,num+1,filters[num].filterOperator);
+                    var useOper = filters[num].filterOperator;
+                    if (useOper == filterOperators.OP_NOT) {
+                        useOper = filterOperators.OP_OR;
+                    }
+                    var res = myself(talk,filters,num+1,useOper);
                     matchesThis = res.match;
+                    if (filters[num].filterOperator == filterOperators.OP_NOT) {
+                        matchesThis = !matchesThis;
+                    }
                     num=res.num;
                 } else {
                     matchesThis=matchesFilter(talk,filters[num]);
