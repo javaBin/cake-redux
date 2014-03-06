@@ -57,6 +57,12 @@
             <div class="col-md-1 cake-margin"><strong>Postcode</strong></div>
             <div class="col-md-10">{{speaker["zip-code"]}}</div>
         </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Other talks</strong></div>
+            <ul class="col-md-10">
+                <li ng-repeat="otalk in speaker.otherTalks">{{otalk.title}}</li>
+            </ul>
+        </div>
     </div>
 
 

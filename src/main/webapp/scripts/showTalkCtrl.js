@@ -16,7 +16,23 @@ angular.module('cakeReduxModule')
                         } else {
                             $scope.aTalk = data;
                         }
+                        var talkSpeakers = $scope.aTalk.speakers;
+                        _.each(talkSpeakers,function(tspeak) {
+                            tspeak.otherTalks = _.filter(talkList.allTalks,function(talk) {
+                                if (talk.ref == $scope.aTalk.ref) {
+                                    return false;
+                                }
+                                var found = false;
+                                if (_.findWhere(talk.speakers,{name:tspeak.name})) {
+                                    found = true;
+                                }
+                                return found;
+                            });
+
+                        });
+
                     });
+
             }
 
             $scope.newTagTyped = function() {
