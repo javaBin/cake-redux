@@ -15,7 +15,7 @@ public class WebServer {
 
     public static void main(String[] args) throws Exception {
         if (args == null || args.length != 1) {
-            System.out.println("Usage WebServer <Config file name>");
+            System.out.println("Usage WebServer <Config file name> [war-file-path]");
             return;
         }
         Configuration.init(args[0]);
@@ -32,8 +32,8 @@ public class WebServer {
         System.out.println(server.getURI());
     }
 
-    private static Integer getPort(int defaultPort) {
-        String envPort = System.getenv("PORT");
-        return Integer.valueOf(envPort == null ? String.valueOf(defaultPort) : envPort);
+    private static int getPort(int defaultPort) {
+        Integer serverPort = Configuration.serverPort();
+        return serverPort != null ? serverPort : defaultPort;
     }
 }

@@ -80,4 +80,12 @@ public class Configuration {
     public static String submititLocation() {
         return getProperty("submititLocation");
     }
+
+    public static Integer serverPort() {
+        String serverPortStr = getProperty("serverPort");
+        if (serverPortStr == null || serverPortStr.isEmpty()) {
+            return null;
+        }
+        return Integer.parseInt(serverPortStr);
+    }
 }
