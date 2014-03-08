@@ -6,7 +6,7 @@ import java.util.List;
 public class TestEmsCommunication {
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
-        Configuration.init(args[0]);
+        System.setProperty("cake-redux-config-file",args[0]);
         //updateTagsOnEvent();
         //readOneTalk();
         testAllTaksLight();

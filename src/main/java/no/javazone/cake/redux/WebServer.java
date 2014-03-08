@@ -8,26 +8,39 @@ import org.eclipse.jetty.webapp.WebAppContext;
 public class WebServer {
 
     private final Integer port;
+    private String warFile;
 
-    public WebServer(Integer port) {
+    public WebServer(Integer port, String warFile) {
         this.port = port;
+        this.warFile = warFile;
     }
 
     public static void main(String[] args) throws Exception {
-        if (args == null || args.length != 1) {
+        if (args == null || args.length < 1) {
             System.out.println("Usage WebServer <Config file name> [war-file-path]");
             return;
         }
-        Configuration.init(args[0]);
-        new WebServer(getPort(8081)).start();
+        String warFile = null;
+        if (args.length > 1) {
+            warFile = args[1];
+        }
+        System.setProperty("cake-redux-config-file",args[0]);
+        new WebServer(getPort(8081),warFile).start();
     }
 
     private void start() throws Exception {
         Server server = new Server(port);
-        HandlerList handlerList = new HandlerList();
-        handlerList.addHandler(new ShutdownHandler("yablayabla", false, true));
-        handlerList.addHandler(new WebAppContext("src/main/webapp", "/"));
-        server.setHandler(handlerList);
+        if (warFile != null) {
+            WebAppContext webAppContext = new WebAppContext();
+            webAppContext.setContextPath("/");
+            webAppContext.setWar(warFile);
+            server.setHandler(webAppContext);
+        } else {
+            HandlerList handlerList = new HandlerList();
+            handlerList.addHandler(new ShutdownHandler("yablayabla", false, true));
+            handlerList.addHandler(new WebAppContext("src/main/webapp", "/"));
+            server.setHandler(handlerList);
+        }
         server.start();
         System.out.println(server.getURI());
     }

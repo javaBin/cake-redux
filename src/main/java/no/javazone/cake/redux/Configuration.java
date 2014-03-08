@@ -7,22 +7,11 @@ import java.util.Map;
 
 public class Configuration {
 
-    private static Map<String,String> properties = null;
+    private Map<String,String> properties = null;
+    private static Configuration instance = new Configuration();
 
-    public static void init(String filename) {
-        Map<String,String> readProps = new HashMap<>();
-        String config = readConfigFile(filename);
-        for (String line : config.split("\n")) {
-            if (line.startsWith("#")) {
-                continue;
-            }
-            int eqpos = line.indexOf("=");
-            if (eqpos == -1) {
-                throw new IllegalArgumentException("Illegal line : " + line);
-            }
-            readProps.put(line.substring(0,eqpos),line.substring(eqpos+1));
-        }
-        properties = readProps;
+    private Configuration() {
+
     }
 
     private static String readConfigFile(String filename) {
@@ -34,11 +23,30 @@ public class Configuration {
     }
 
     private static String getProperty(String key) {
-        if (properties == null) {
-            throw new IllegalStateException("Properties not initalized");
+        if (instance.properties == null) {
+            instance.loadProps();
+            if (instance.properties == null) {
+                throw new IllegalStateException("Properties not initalized getting " +key);
+            }
         }
-        return properties.get(key);
+        return instance.properties.get(key);
 
+    }
+
+    private synchronized void loadProps() {
+        Map<String,String> readProps = new HashMap<>();
+        String config = readConfigFile(System.getProperty("cake-redux-config-file"));
+        for (String line : config.split("\n")) {
+            if (line.startsWith("#")) {
+                continue;
+            }
+            int eqpos = line.indexOf("=");
+            if (eqpos == -1) {
+                throw new IllegalArgumentException("Illegal line : " + line);
+            }
+            readProps.put(line.substring(0,eqpos),line.substring(eqpos+1));
+        }
+        properties = readProps;
     }
 
     public static String getEmsUser() {
