@@ -60,7 +60,7 @@
         <div class="row cake-row">
             <div class="col-md-1 cake-margin"><strong>Other talks</strong></div>
             <ul class="col-md-10">
-                <li ng-repeat="otalk in speaker.otherTalks">{{otalk.title}}</li>
+                <li ng-repeat="otalk in speaker.otherTalks"><a ng-href=#/showTalk/{{otalk.ref}}">"{{otalk.title}}</a></li>
             </ul>
         </div>
     </div>
