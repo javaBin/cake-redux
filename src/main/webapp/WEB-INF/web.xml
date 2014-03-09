@@ -21,6 +21,14 @@
         <servlet-name>signinServlet</servlet-name>
         <url-pattern>signin/</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>entranceServlet</servlet-name>
+        <servlet-class>no.javazone.cake.redux.EntranceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>entranceServlet</servlet-name>
+        <url-pattern>/entrance</url-pattern>
+    </servlet-mapping>
 
 
     <filter>
