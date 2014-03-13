@@ -23,10 +23,12 @@ public class AcceptorSetter {
                 String encodedTalkRef = talks.getJSONObject(i).getString("ref");
                 JSONObject jsonTalk = new JSONObject(emsCommunicator.fetchOneTalk(encodedTalkRef));
                 String title = jsonTalk.getString("title");
+                String talkType = talkTypeText(jsonTalk.getString("format"));
+
                 SimpleEmail mail = new SimpleEmail();
                 mail.setFrom("program@java.no", "Javazone program commitee");
                 mail.addCc("program@java.no");
-                mail.setSubject("Talk accepted");
+                mail.setSubject("Javazone 2014 " + talkType + " accepted");
                 mail.setHostName(Configuration.smtpServer());
                 mail.setSmtpPort(Configuration.smtpPort());
 
@@ -45,13 +47,19 @@ public class AcceptorSetter {
                     System.out.println(String.format("Sending mail to %s (%s) acception '%s'", name, email, title));
                 }
 
+                String submitLink = Configuration.submititLocation() + encodedTalkRef;
+                String confirmLocation = Configuration.cakeLocation() + "confirm.html?id=" + encodedTalkRef;
+
                 String message;
 
                 try (InputStream is = getClass().getClassLoader().getResourceAsStream("acceptanceTemplate.txt")) {
                     String template = EmsCommunicator.toString(is);
                     message = template
                             .replaceAll("#title#",title)
-                            .replaceAll("#speakername#",speakerName.toString())
+                            .replaceAll("#speakername#", speakerName.toString())
+                            .replaceAll("#talkType#",talkType)
+                            .replaceAll("#submititLink#",submitLink)
+                            .replaceAll("#confirmLink#",confirmLocation)
                             ;
 
                 } catch (IOException e) {
@@ -67,6 +75,19 @@ public class AcceptorSetter {
             }
         }
         return "{}";
+    }
+
+    private String talkTypeText(String format) {
+        if ("presentation".equals(format)) {
+            return "presentation";
+        }
+        if ("lightning-talk".equals(format)) {
+            return "lightning talk";
+        }
+        if ("workshop".equals(format)) {
+            return "workshop";
+        }
+        return "Unknown";
     }
 
 }

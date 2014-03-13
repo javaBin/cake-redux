@@ -1,10 +1,15 @@
 Dear #speakername#,
 
-We are pleased to inform you that your presentation, "#title#", has been accepted for JavaZone 2014.
+We are pleased to inform you that your #talkType#, "#title#", has been accepted for JavaZone 2014.
 
 We are currently accepting presentations for the conference. Presentations will be announced as soon as the speakers are confirmed. Updates will be published on http://www.javazone.no.
 
-Please click the link below to confirm
+Please click the link below to confirm that you will be able to come to JavaZone.
+
+#confirmLink#
+
+When you have done this, we will publish your #talkType# in the programme.
+You can still edit your abstract (se how below)
 
 We would like to remind you of the following:
 1) Please upload a high resolution portrait photo of yourself through our "SubmitIT" application if you haven't done so already.

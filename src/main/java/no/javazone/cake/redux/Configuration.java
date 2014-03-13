@@ -105,6 +105,8 @@ public class Configuration {
         return Integer.parseInt(getProperty("smtpport"));
     }
 
-
+    public static String cakeLocation() {
+        return getProperty("cakeLocation");
+    }
 
 }
