@@ -96,4 +96,15 @@ public class Configuration {
         }
         return Integer.parseInt(serverPortStr);
     }
+
+    public static String smtpServer() {
+        return getProperty("smthost");
+    }
+
+    public static int smtpPort() {
+        return Integer.parseInt(getProperty("smtpport"));
+    }
+
+
+
 }
