@@ -22,59 +22,70 @@ public class AcceptorSetter {
             try {
                 String encodedTalkRef = talks.getJSONObject(i).getString("ref");
                 JSONObject jsonTalk = new JSONObject(emsCommunicator.fetchOneTalk(encodedTalkRef));
-                String title = jsonTalk.getString("title");
+
                 String talkType = talkTypeText(jsonTalk.getString("format"));
+                SimpleEmail mail = setupMailHeader(talkType);
 
-                SimpleEmail mail = new SimpleEmail();
-                mail.setFrom("program@java.no", "Javazone program commitee");
-                mail.addCc("program@java.no");
-                mail.setSubject("Javazone 2014 " + talkType + " accepted");
-                mail.setHostName(Configuration.smtpServer());
-                mail.setSmtpPort(Configuration.smtpPort());
-
-                JSONArray jsonSpeakers = jsonTalk.getJSONArray("speakers");
-                StringBuilder speakerName=new StringBuilder();
-                for (int j=0;j<jsonSpeakers.length();j++) {
-                    JSONObject speaker = jsonSpeakers.getJSONObject(j);
-                    String email=speaker.getString("email");
-                    String name=speaker.getString("name");
-                    if (!speakerName.toString().isEmpty()) {
-                        speakerName.append(" and ");
-                    }
-
-                    speakerName.append(name);
-                    mail.addTo(email);
-                    System.out.println(String.format("Sending mail to %s (%s) acception '%s'", name, email, title));
-                }
+                String speakerName = addSpeakers(jsonTalk, mail);
 
                 String submitLink = Configuration.submititLocation() + encodedTalkRef;
                 String confirmLocation = Configuration.cakeLocation() + "confirm.html?id=" + encodedTalkRef;
+                String title = jsonTalk.getString("title");
 
-                String message;
-
-                try (InputStream is = getClass().getClassLoader().getResourceAsStream("acceptanceTemplate.txt")) {
-                    String template = EmsCommunicator.toString(is);
-                    message = template
-                            .replaceAll("#title#",title)
-                            .replaceAll("#speakername#", speakerName.toString())
-                            .replaceAll("#talkType#",talkType)
-                            .replaceAll("#submititLink#",submitLink)
-                            .replaceAll("#confirmLink#",confirmLocation)
-                            ;
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                String message = generateMessage(title, talkType, speakerName, submitLink, confirmLocation);
                 mail.setMsg(message);
                 mail.send();
 
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            } catch (EmailException e) {
+            } catch (JSONException | EmailException e) {
                 throw new RuntimeException(e);
             }
         }
         return "{}";
+    }
+
+    private SimpleEmail setupMailHeader(String talkType) throws EmailException {
+        SimpleEmail mail = new SimpleEmail();
+        mail.setHostName(Configuration.smtpServer());
+        mail.setSmtpPort(Configuration.smtpPort());
+        mail.setFrom("program@java.no", "Javazone program commitee");
+        mail.addCc("program@java.no");
+        mail.setSubject("Javazone 2014 " + talkType + " accepted");
+        return mail;
+    }
+
+    private String addSpeakers(JSONObject jsonTalk, SimpleEmail mail) throws JSONException, EmailException {
+        JSONArray jsonSpeakers = jsonTalk.getJSONArray("speakers");
+        StringBuilder speakerName=new StringBuilder();
+        for (int j=0;j<jsonSpeakers.length();j++) {
+            JSONObject speaker = jsonSpeakers.getJSONObject(j);
+            String email=speaker.getString("email");
+            String name=speaker.getString("name");
+            if (!speakerName.toString().isEmpty()) {
+                speakerName.append(" and ");
+            }
+
+            speakerName.append(name);
+            mail.addTo(email);
+        }
+        return speakerName.toString();
+    }
+
+    private String generateMessage(String title, String talkType, String speakerName, String submitLink, String confirmLocation) {
+        String message;
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("acceptanceTemplate.txt")) {
+            String template = EmsCommunicator.toString(is);
+            message = template
+                    .replaceAll("#title#", title)
+                    .replaceAll("#speakername#", speakerName)
+                    .replaceAll("#talkType#", talkType)
+                    .replaceAll("#submititLink#", submitLink)
+                    .replaceAll("#confirmLink#", confirmLocation)
+                    ;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return message;
     }
 
     private String talkTypeText(String format) {
