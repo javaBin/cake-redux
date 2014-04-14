@@ -70,6 +70,15 @@ public class EmsCommunicator {
         return fetchOneTalk(encodedTalkUrl);
     }
 
+    public String confirmTalk(String encodedTalkUrl, String dinner) {
+        try {
+            JSONObject jsonTalk = new JSONObject(fetchOneTalk(encodedTalkUrl));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
     public String allEvents()  {
         try {
             URLConnection connection = openConnection(Configuration.emsEventLocation(), false);

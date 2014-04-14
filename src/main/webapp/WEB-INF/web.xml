@@ -14,6 +14,14 @@
         <url-pattern>secured/data/*</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>openDataServlet</servlet-name>
+        <servlet-class>no.javazone.cake.redux.OpenDataServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>openDataServlet</servlet-name>
+        <url-pattern>data/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>signinServlet</servlet-name>
         <servlet-class>no.javazone.cake.redux.SigninServlet</servlet-class>
     </servlet>
