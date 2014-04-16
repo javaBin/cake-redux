@@ -5,6 +5,9 @@
     angular.module('cakeOpen',['openCakeModule'])
     .controller('ConfirmCtrl', ['$scope', '$http',
         function($scope, $http) {
+            $scope.showMain = true;
+            $scope.showSuccess = false;
+            $scope.showError = false;
             var para = function(name){
                 var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
                 return results ? results[1] || 0 : 0;

@@ -33,11 +33,11 @@ public class OpenDataServlet extends HttpServlet {
             jsonObject = new JSONObject(input);
             String encodedTalkUrl = jsonObject.getString("id");
             String dinner = jsonObject.getString("dinner");
-            emsCommunicator.confirmTalk(encodedTalkUrl,dinner);
+            String status = emsCommunicator.confirmTalk(encodedTalkUrl,dinner);
+            resp.setContentType("text/json");
+            resp.getWriter().append(status);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        resp.setContentType("text/json");
-        resp.getWriter().append("{\"status\":\"ok\"}");
     }
 }

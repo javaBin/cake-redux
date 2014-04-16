@@ -70,6 +70,17 @@ public class EmsCommunicator {
         return fetchOneTalk(encodedTalkUrl);
     }
 
+    private String confirmTalkMessage(String status, String message) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("status",status);
+            jsonObject.put("message",message);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String confirmTalk(String encodedTalkUrl, String dinner) {
         try {
             JSONObject jsonTalk = new JSONObject(fetchOneTalk(encodedTalkUrl));
@@ -79,6 +90,13 @@ public class EmsCommunicator {
                 String atag = (String) tagsarr.get(i);
                 tags.add(atag);
             }
+            if (tags.contains("confirmed")) {
+                return confirmTalkMessage("error","Talk has already been confirmed");
+            }
+            if (!tags.contains("accepted")) {
+                return confirmTalkMessage("error","Talk is not accepted");
+            }
+
             tags.add("confirmed");
             String lastModified = jsonTalk.getString("lastModified");
             updateTags(encodedTalkUrl,tags, lastModified);
@@ -86,7 +104,7 @@ public class EmsCommunicator {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return confirmTalkMessage("ok","ok");
     }
 
     public String allEvents()  {
