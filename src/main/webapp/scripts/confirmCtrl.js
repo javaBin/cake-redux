@@ -16,7 +16,22 @@
                    $scope.talk = data;
                    $scope.noe = data.title;
                 });
-            $scope.noe = para("key");
+            $scope.confirmTalk = function() {
+                var din = $scope.dinner;
+                var postData = {
+                    id      : talkId,
+                    dinner  : din
+                };
+                $http({
+                    method: "POST",
+                    url: "data/atalk",
+                    data: postData
+                }).success(function(data) {
+                    console.log("done");
+                });
+            };
+
+
         }]);
 
     angular.bootstrap(document,['cakeOpen']);

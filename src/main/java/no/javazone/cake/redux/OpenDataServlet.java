@@ -1,5 +1,8 @@
 package no.javazone.cake.redux;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,5 +23,21 @@ public class OpenDataServlet extends HttpServlet {
         resp.setContentType("text/json");
         PrintWriter writer = resp.getWriter();
         writer.append(emsCommunicator.fetchOneTalk(req.getParameter("talkId")));
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String input = EmsCommunicator.toString(req.getInputStream());
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(input);
+            String encodedTalkUrl = jsonObject.getString("id");
+            String dinner = jsonObject.getString("dinner");
+            emsCommunicator.confirmTalk(encodedTalkUrl,dinner);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        resp.setContentType("text/json");
+        resp.getWriter().append("{\"status\":\"ok\"}");
     }
 }

@@ -73,6 +73,16 @@ public class EmsCommunicator {
     public String confirmTalk(String encodedTalkUrl, String dinner) {
         try {
             JSONObject jsonTalk = new JSONObject(fetchOneTalk(encodedTalkUrl));
+            JSONArray tagsarr = jsonTalk.getJSONArray("tags");
+            List<String> tags = new ArrayList<>();
+            for (int i=0;i<tagsarr.length();i++) {
+                String atag = (String) tagsarr.get(i);
+                tags.add(atag);
+            }
+            tags.add("confirmed");
+            String lastModified = jsonTalk.getString("lastModified");
+            updateTags(encodedTalkUrl,tags, lastModified);
+
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
