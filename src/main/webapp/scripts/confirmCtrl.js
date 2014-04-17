@@ -5,7 +5,7 @@
     angular.module('cakeOpen',['openCakeModule'])
     .controller('ConfirmCtrl', ['$scope', '$http',
         function($scope, $http) {
-            $scope.showMain = true;
+            $scope.showMain = false;
             $scope.showSuccess = false;
             $scope.showError = false;
             var para = function(name){
@@ -16,8 +16,15 @@
             var talkId = para("id");
             $http({method: "GET", url: "data/atalk?talkId=" + talkId})
                 .success(function(data) {
-                   $scope.talk = data;
-                   $scope.noe = data.title;
+                    var status = data.status;
+                    if (status === "error") {
+                        $scope.message = data.message;
+                        $scope.showMain = false;
+                        $scope.showError = true;
+                        return;
+                    }
+                   $scope.showMain = true;
+                   $scope.talk = data.talk;
                 });
             $scope.confirmTalk = function() {
                 var din = $scope.dinner;
