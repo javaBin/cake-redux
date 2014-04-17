@@ -30,7 +30,14 @@
                     url: "data/atalk",
                     data: postData
                 }).success(function(data) {
-                    console.log("done");
+                    $scope.showMain = false;
+                    if (data.status === "ok") {
+                        $scope.showSuccess = true;
+                    } else {
+                        $scope.showError = true;
+                        $scope.message = data.message;
+                    }
+
                 });
             };
 

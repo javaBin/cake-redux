@@ -19,8 +19,8 @@
 
 </head>
 <body ng-controller="ConfirmCtrl">
+     <h1 class="col-xs-offset-1">Javazone talk confirmation</h1>
     <div class="col-xs-offset-1 col-md-9 row" ng-show="showMain">
-        <h1>Talk confirmation</h1>
         <p>By pressing the button below you confirm that you have received the talk acceptance. Your talk/workshop will now be visible in the program</p>
         <p>We need you to indicate if you plan to attend speakers dinner. Speakers dinner will be at 19:00 on September 11th. This is just to get an approximate headcount, so we can decide how much food and drink to order.</p>
         <p>
@@ -41,7 +41,7 @@
     </div>
     <div class="row col-xs-offset-1">
         <div class="alert alert-danger col-md-6 col-xs-offset-1" ng-show="showError">
-            Som error
+            {{message}}
         </div>
         <div class="alert alert-success col-md-6" ng-show="showSuccess">
             Your talk has been confirmed.
