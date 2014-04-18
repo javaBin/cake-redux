@@ -8,8 +8,8 @@ public class TestEmsCommunication {
         long start = System.currentTimeMillis();
         System.setProperty("cake-redux-config-file",args[0]);
         //updateTagsOnEvent();
-        //readOneTalk();
-        testAllTaksLight();
+        publishTalk();
+        //testAllTaksLight();
         long duration = System.currentTimeMillis() -start;
         System.out.println("Took " + duration);
     }
@@ -35,6 +35,12 @@ public class TestEmsCommunication {
     private static void readOneTalk() {
         String talkEvent="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWYvc2Vzc2lvbnMvOWQzMWVmZGYtN2MzMi00ZDg1LWEyYjUtYjM2YmVlZjMyYzQ0";
         System.out.println(new EmsCommunicator().fetchOneTalk(talkEvent));
+    }
+
+    private static void publishTalk() {
+        String talkEvent="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWYvc2Vzc2lvbnMvOWQzMWVmZGYtN2MzMi00ZDg1LWEyYjUtYjM2YmVlZjMyYzQ0";
+        String publishTalk = new EmsCommunicator().publishTalk(talkEvent);
+        System.out.println("result: " + publishTalk);
     }
 
     private static void readAllEvents() {

@@ -1,5 +1,6 @@
 package no.javazone.cake.redux;
 
+import net.hamnaberg.funclite.Optional;
 import net.hamnaberg.json.*;
 import net.hamnaberg.json.parser.CollectionParser;
 import org.json.JSONArray;
@@ -140,7 +141,8 @@ public class EmsCommunicator {
         URLConnection connection = openConnection(url, true);
 
         try {
-            Item talkItem = new CollectionParser().parse(connection.getInputStream()).getFirstItem().get();
+            InputStream inputStream = connection.getInputStream();
+            Item talkItem = new CollectionParser().parse(inputStream).getFirstItem().get();
             JSONObject jsonObject = readTalk(talkItem, connection);
             String submititLocation = Configuration.submititLocation() + encodedUrl;
             try {
@@ -152,6 +154,50 @@ public class EmsCommunicator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String publishTalk(String encodedTalkUrl) {
+        String talkUrl = Base64Util.decode(encodedTalkUrl);
+        HttpURLConnection connection = (HttpURLConnection) openConnection(talkUrl, true);
+
+        String lastModified = connection.getHeaderField("last-modified");
+        String publishLink;
+        try (InputStream inputStream = connection.getInputStream()) {
+            Collection parse = new CollectionParser().parse(inputStream);
+            Item talkItem = parse.getFirstItem().get();
+            Optional<Link> publish = talkItem.linkByRel("publish");
+            publishLink = publish.get().getHref().toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        HttpURLConnection postConnection = (HttpURLConnection) openConnection(publishLink, true);
+
+        postConnection.setDoOutput(true);
+        try {
+            postConnection.setRequestMethod("POST");
+            postConnection.setRequestProperty("content-type","text/uri-list");
+            postConnection.setRequestProperty("if-unmodified-since",lastModified);
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        try (OutputStream outputStream = postConnection.getOutputStream()) {
+            try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream))) {
+                writer.println(talkUrl);
+            }
+            //template.writeTo(outputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (InputStream is = postConnection.getInputStream()) {
+            System.out.println(toString(is));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
     public String talkShortVersion(String encodedEvent) {
