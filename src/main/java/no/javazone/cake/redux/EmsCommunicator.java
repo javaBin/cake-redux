@@ -156,11 +156,21 @@ public class EmsCommunicator {
         }
     }
 
-    public String publishTalk(String encodedTalkUrl) {
+    public String publishTalk(String encodedTalkUrl,String givenLastModified) {
         String talkUrl = Base64Util.decode(encodedTalkUrl);
         HttpURLConnection connection = (HttpURLConnection) openConnection(talkUrl, true);
 
         String lastModified = connection.getHeaderField("last-modified");
+        if (!lastModified.equals(givenLastModified)) {
+            JSONObject errorJson = new JSONObject();
+            try {
+                errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            return errorJson.toString();
+        }
+
         String publishLink;
         try (InputStream inputStream = connection.getInputStream()) {
             Collection parse = new CollectionParser().parse(inputStream);
@@ -187,13 +197,12 @@ public class EmsCommunicator {
             try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream))) {
                 writer.println(talkUrl);
             }
-            //template.writeTo(outputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         try (InputStream is = postConnection.getInputStream()) {
-            System.out.println(toString(is));
+           toString(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
