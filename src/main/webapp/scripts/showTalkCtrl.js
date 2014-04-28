@@ -4,35 +4,41 @@ angular.module('cakeReduxModule')
             var talkRef = $routeParams.talkId;
             $scope.showError = false;
 
+            var updateFromServer = function(data) {
+                if ($scope.aTalk) {
+                    for (var prop in data) {
+                        $scope.aTalk[prop] = data[prop];
+                    }
+                } else {
+                    $scope.aTalk = data;
+                }
+                var talkSpeakers = $scope.aTalk.speakers;
+                _.each(talkSpeakers,function(tspeak) {
+                    tspeak.otherTalks = _.filter(talkList.allTalks,function(talk) {
+                        if (talk.ref == $scope.aTalk.ref) {
+                            return false;
+                        }
+                        var found = false;
+                        if (_.findWhere(talk.speakers,{name:tspeak.name})) {
+                            found = true;
+                        }
+                        return found;
+                    });
+
+                });
+
+            };
+
 
             $scope.aTalk = _.findWhere(talkList.allTalks,{ref: talkRef});
             if (!$scope.aTalk || !$scope.aTalk.lastModified) {
                 $http({method: "GET", url: "data/atalk?talkId=" + talkRef})
-                    .success(function(data) {
-                        if ($scope.aTalk) {
-                            for (var prop in data) {
-                                $scope.aTalk[prop] = data[prop];
-                            }
-                        } else {
-                            $scope.aTalk = data;
-                        }
-                        var talkSpeakers = $scope.aTalk.speakers;
-                        _.each(talkSpeakers,function(tspeak) {
-                            tspeak.otherTalks = _.filter(talkList.allTalks,function(talk) {
-                                if (talk.ref == $scope.aTalk.ref) {
-                                    return false;
-                                }
-                                var found = false;
-                                if (_.findWhere(talk.speakers,{name:tspeak.name})) {
-                                    found = true;
-                                }
-                                return found;
-                            });
+                    .success(updateFromServer);
+            }
 
-                        });
-
-                    });
-
+            $scope.reloadTalk = function() {
+                $http({method: "GET", url: "data/atalk?talkId=" + talkRef})
+                    .success(updateFromServer);
             }
 
             $scope.newTagTyped = function() {
