@@ -67,7 +67,6 @@
 
 
 
-
     <h2>Update tags</h2>
     <div class="well" class="cake-margin-well">
         <p>
@@ -86,5 +85,8 @@
     </div>
     <div class="alert alert-danger" ng-show="showError"><strong>Error saving: {{errormessage}}</strong></div>
     <p><button id="saveButton" class="btn btn-danger btn-lg cake-margin" ng-click="saveTalk()">Save</button></p>
+    <h2>Publish talk</h2>
+    <div class="cake-margin"><button id="publishButton" class="btn btn-danger btn-lg cake-margin" ng-click="publishTalk()">Publish</button></div>
+
     <h6>Last modified: {{aTalk.lastModified}}</h6>
 </div>
