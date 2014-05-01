@@ -3,6 +3,7 @@ angular.module('cakeReduxModule')
         function($scope, $http, talkList) {
             $scope.talks = talkList.talks;
             $scope.numTalks = $scope.talks.length;
+            $scope.statusLines = [];
 
             $scope.acceptTalks = function() {
                 var talkList = [];
@@ -14,12 +15,18 @@ angular.module('cakeReduxModule')
                     url: "data/acceptTalks",
                     data: {talks: talkList}
                 }).success(function(data) {
-                    console.log("success");
-                    console.log(data);
+                    $scope.statusLines = data;
                 }).error(function(data, status, headers, config) {
                     console.log("ERROR");
                 });
             };
+
+            $scope.lineClass = function(status) {
+                if (status === "error") {
+                    return "danger";
+                }
+                return "";
+            }
         }]);
 
 

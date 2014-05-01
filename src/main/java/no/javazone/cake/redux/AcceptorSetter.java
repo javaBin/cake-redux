@@ -8,6 +8,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AcceptorSetter {
     private EmsCommunicator emsCommunicator;
@@ -18,10 +20,23 @@ public class AcceptorSetter {
     }
 
     public String accept(JSONArray talks) {
+        List<JSONObject> statusAllTalks = new ArrayList<>();
         for (int i=0;i<talks.length();i++) {
+            JSONObject accept = new JSONObject();
+            statusAllTalks.add(accept);
             try {
                 String encodedTalkRef = talks.getJSONObject(i).getString("ref");
                 JSONObject jsonTalk = new JSONObject(emsCommunicator.fetchOneTalk(encodedTalkRef));
+                accept.put("title",jsonTalk.getString("title"));
+
+                List<String> tags = toCollection(jsonTalk.getJSONArray("tags"));
+
+                if (tags.contains("accepted")) {
+                    accept.put("status","error");
+                    accept.put("message","Talk is already accepted");
+                    continue;
+                }
+
 
                 String talkType = talkTypeText(jsonTalk.getString("format"));
                 SimpleEmail mail = setupMailHeader(talkType);
@@ -36,12 +51,36 @@ public class AcceptorSetter {
                 mail.setMsg(message);
                 mail.send();
 
+                tags.add("accepted");
+                String lastModified = jsonTalk.getString("last-modified");
+                emsCommunicator.updateTags(encodedTalkRef,tags, lastModified);
+                accept.put("status","ok");
+                accept.put("message","ok");
+
             } catch (JSONException | EmailException e) {
-                throw new RuntimeException(e);
+                try {
+                    accept.put("status","error");
+                    accept.put("message","Error: " + e.getMessage());
+                } catch (JSONException je) {
+                    throw new RuntimeException(je);
+                }
             }
         }
-        return "{}";
+        return new JSONArray(statusAllTalks).toString();
     }
+
+    private List<String> toCollection(JSONArray tags) throws JSONException {
+        ArrayList<String> result = new ArrayList<>();
+        if (tags == null) {
+            return result;
+        }
+        for (int i=0;i<tags.length();i++) {
+            result.add(tags.getString(i));
+        }
+        return result;
+    }
+
+
 
     private SimpleEmail setupMailHeader(String talkType) throws EmailException {
         SimpleEmail mail = new SimpleEmail();
