@@ -29,6 +29,19 @@ angular.module('cakeReduxModule')
             });
         }
 
+        $scope.reloadTalks = function() {
+            if ($scope.chosenEvent) {
+                $http({method: "GET", url: "data/talks?eventId=" + $scope.chosenEvent.ref})
+                    .success(function(talklist) {
+                        $scope.allTalks = talklist;
+                        $scope.talks = _.clone(talklist);
+                        talkList.allTalks = $scope.allTalks;
+                        talkList.talks = $scope.talks;
+                        filterService.doFilter($scope.talks,$scope.allTalks);
+                    });
+            }
+        };
+
         $scope.speakerList = function(speakers) {
             var speakersName = _.pluck(speakers, "name");
             var names =_.reduce(speakersName,function(a,b) {
