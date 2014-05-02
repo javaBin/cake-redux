@@ -70,7 +70,7 @@
 
 
 
-    <h2>Update tags</h2>
+    <h2>Update</h2>
     <div class="well" class="cake-margin-well">
         <p>
         <input ng-model="newTag" type="text" placeholder="New tag"/>
@@ -86,6 +86,18 @@
             <span ng-repeat="tag in aTalk.tags" class="label label-info" style="margin-right: 0.2em">{{tag}} <a ng-click="removeTag(tag)">(x)</a></span>
         </h3>
     </div>
+    <div class="row">
+        <div class="cake-margin col-md-3">
+
+            <label for="selstate">State</label>
+            <select id="selstate" class="form-control" ng-model="aTalk.state">
+                <option>approved</option>
+                <option>pending</option>
+                <option>rejected</option>
+            </select>
+        </div>
+    </div>
+    <p></p>
     <div class="alert alert-danger" ng-show="showError"><strong>Error saving: {{errormessage}}</strong></div>
     <p><button id="saveButton" class="btn btn-danger btn-lg cake-margin" ng-click="saveTalk()">Save</button></p>
     <h2>Publish talk</h2>
