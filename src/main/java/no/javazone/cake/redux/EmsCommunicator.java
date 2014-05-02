@@ -13,6 +13,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,12 @@ public class EmsCommunicator {
 
 
     public String updateTags(String encodedTalkUrl,List<String> tags,String givenLastModified) {
+        Property newVals = Property.arrayObject("tags", new ArrayList<Object>(tags));
+
+        return update(encodedTalkUrl, givenLastModified, Arrays.asList(newVals));
+    }
+
+    private String update(String encodedTalkUrl, String givenLastModified, List<Property> newVals) {
         String talkUrl = Base64Util.decode(encodedTalkUrl);
         URLConnection connection = openConnection(talkUrl, true);
         String lastModified = connection.getHeaderField("last-modified");
@@ -41,8 +48,9 @@ public class EmsCommunicator {
             throw new RuntimeException(e);
         }
 
-        Property newVals = Property.arrayObject("tags", new ArrayList<Object>(tags));
-        data = data.replace(newVals);
+        for (Property prop : newVals) {
+            data = data.replace(prop);
+        }
         Template template = Template.create(data.getDataAsMap().values());
 
         HttpURLConnection putConnection = (HttpURLConnection) openConnection(talkUrl, true);
