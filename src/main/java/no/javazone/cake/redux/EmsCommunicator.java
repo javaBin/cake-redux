@@ -379,4 +379,10 @@ public class EmsCommunicator {
             return result.toString();
         }
     }
+
+    public String update(String ref, List<String> taglist, String state, String lastModified) {
+        Property newTag = Property.arrayObject("tags", new ArrayList<Object>(taglist));
+        Property newState = Property.value("state",state);
+        return update(ref, lastModified, Arrays.asList(newTag,newState));
+    }
 }

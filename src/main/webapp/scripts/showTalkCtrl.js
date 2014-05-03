@@ -67,7 +67,8 @@ angular.module('cakeReduxModule')
                 var postData = {
                   ref: t.ref,
                   lastModified: t.lastModified,
-                  tags : t.tags
+                  tags : t.tags,
+                  state: t.state
                 };
                 $http({
                     method: "POST",

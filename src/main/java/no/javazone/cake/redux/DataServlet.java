@@ -48,13 +48,14 @@ public class DataServlet extends HttpServlet {
             JSONObject update = new JSONObject(inputStr);
             String ref = update.getString("ref");
             JSONArray tags = update.getJSONArray("tags");
+            String state = update.getString("state");
             String lastModified = update.getString("lastModified");
             List<String> taglist = new ArrayList<>();
             for (int i=0;i<tags.length();i++) {
                 taglist.add(tags.getString(i));
             }
 
-            String newTalk = emsCommunicator.updateTags(ref, taglist, lastModified);
+            String newTalk = emsCommunicator.update(ref, taglist, state,lastModified);
             resp.getWriter().append(newTalk);
         } catch (JSONException e) {
             throw new RuntimeException(e);
