@@ -30,7 +30,7 @@ public class DataServletWriteTest {
 
     @Test
     public void shouldSaveTags() throws Exception {
-        String inputjson = "{\"ref\":\"abra\",\"lastModified\":\"Tue, 04 Feb 2014 23:55:06 GMT\",\"tags\":[\"test\"]}";
+        String inputjson = "{\"ref\":\"abra\",\"lastModified\":\"Tue, 04 Feb 2014 23:55:06 GMT\",\"tags\":[\"test\"],\"state\":\"pending\"}";
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(inputjson.getBytes("UTF-8"));
         when(req.getInputStream()).thenReturn(new ServletInputStream() {
             @Override
@@ -46,7 +46,7 @@ public class DataServletWriteTest {
 
         servlet.service(req,resp);
 
-        verify(emsCommunicator).updateTags("abra", Arrays.asList("test"),"Tue, 04 Feb 2014 23:55:06 GMT");
+        verify(emsCommunicator).update("abra", Arrays.asList("test"),"pending","Tue, 04 Feb 2014 23:55:06 GMT");
 
     }
 }
