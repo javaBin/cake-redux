@@ -1,6 +1,7 @@
 angular.module('cakeReduxModule')
 .controller('TalkListCtrl', ['$scope', '$http', '$routeParams', 'eventFactory','talkList','filterService',
     function($scope, $http, $routeParams,eventFactory,talkList,filterService) {
+        $scope.selectedTalk = filterService.selectedTalk;
         $scope.showFilters = true;
         $scope.doShowFilters = function() {
             $scope.showFilters =true ;
@@ -103,6 +104,17 @@ angular.module('cakeReduxModule')
                 default:
                     return "XXX";
             }
+        }
+
+        $scope.talkSelected = function(talk) {
+            filterService.selectedTalk = talk;
+        }
+
+        $scope.talkRowClass = function(talk) {
+            if ($scope.selectedTalk && $scope.selectedTalk.title == talk.title) {
+                return "success";
+            }
+            return "";
         }
 
 		
