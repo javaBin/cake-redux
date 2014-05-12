@@ -26,11 +26,17 @@ angular.module('cakeReduxModule')
                     });
 
                 });
+                if ($scope.aTalk) {
+                    document.title = $scope.aTalk.title;
+                }
 
             };
 
 
             $scope.aTalk = _.findWhere(talkList.allTalks,{ref: talkRef});
+            if ($scope.aTalk) {
+                document.title = $scope.aTalk.title;
+            }
             if (!$scope.aTalk || !$scope.aTalk.lastModified) {
                 $http({method: "GET", url: "data/atalk?talkId=" + talkRef})
                     .success(updateFromServer);
