@@ -8,3 +8,4 @@
 .cake-row {
     margin-bottom: 1%;
 }
+.preserve-newlines { white-space: pre-wrap; }
