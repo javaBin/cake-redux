@@ -2,10 +2,20 @@
 describe("Filter test suite", function() {
     var filterService;
     beforeEach(function() {
-        module('cakeReduxModule');
+        module('cakeReduxModule',function($provide) {
+            $provide.value("cookieService", {
+                setCookie : function(cname,cvalue,exdays) {
+
+                },
+                getCookie : function(cname) {
+                    return "[]";
+                }
+            });
+        });
     });
 
     beforeEach(inject(function($injector) {
+
         filterService = $injector.get("filterService");
     }));
 
