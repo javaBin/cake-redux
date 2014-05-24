@@ -149,8 +149,8 @@ public class EmsCommunicator {
         URLConnection connection = openConnection(url, true);
 
         try {
-            InputStream inputStream = connection.getInputStream();
-            Item talkItem = new CollectionParser().parse(inputStream).getFirstItem().get();
+            InputStream is = openStream(connection);
+            Item talkItem = new CollectionParser().parse(is).getFirstItem().get();
             JSONObject jsonObject = readTalk(talkItem, connection);
             String submititLocation = Configuration.submititLocation() + encodedUrl;
             try {
@@ -162,6 +162,17 @@ public class EmsCommunicator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private InputStream openStream(URLConnection connection) throws IOException {
+        InputStream inputStream = connection.getInputStream();
+        if (true) { // flip for debug :)
+            return inputStream;
+        }
+        String stream = toString(inputStream);
+        System.out.println("***STRAN***");
+        System.out.println(stream);
+        return new ByteArrayInputStream(stream.getBytes());
     }
 
     public String publishTalk(String encodedTalkUrl,String givenLastModified) {
