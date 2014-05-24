@@ -25,6 +25,7 @@ angular.module('cakeReduxModule')
                                 $scope.talks = _.clone(talklist);
                                 talkList.allTalks = $scope.allTalks;
                                 talkList.talks = $scope.talks;
+                                $scope.filterUpdated();
                             });
                     }
                 }
