@@ -20,6 +20,14 @@ public class AcceptorSetter {
     }
 
     public String accept(JSONArray talks) {
+        String template = loadTemplate();
+        String tagToAdd = "accepted";
+        String tagExistsErrormessage = "Talk is already accepted";
+
+        return massUpdate(talks, template, tagToAdd, tagExistsErrormessage);
+    }
+
+    private String massUpdate(JSONArray talks, String template, String tagToAdd, String tagExistsErrormessage) {
         List<JSONObject> statusAllTalks = new ArrayList<>();
         for (int i=0;i<talks.length();i++) {
             JSONObject accept = new JSONObject();
@@ -31,29 +39,19 @@ public class AcceptorSetter {
 
                 List<String> tags = toCollection(jsonTalk.getJSONArray("tags"));
 
-                if (tags.contains("accepted")) {
+                if (tagToAdd != null && tags.contains(tagToAdd)) {
                     accept.put("status","error");
-                    accept.put("message","Talk is already accepted");
+                    accept.put("message", tagExistsErrormessage);
                     continue;
                 }
 
+                generateAndSendMail(template, encodedTalkRef, jsonTalk);
 
-                String talkType = talkTypeText(jsonTalk.getString("format"));
-                SimpleEmail mail = setupMailHeader(talkType);
-
-                String speakerName = addSpeakers(jsonTalk, mail);
-
-                String submitLink = Configuration.submititLocation() + encodedTalkRef;
-                String confirmLocation = Configuration.cakeLocation() + "confirm.html?id=" + encodedTalkRef;
-                String title = jsonTalk.getString("title");
-
-                String message = generateMessage(title, talkType, speakerName, submitLink, confirmLocation);
-                mail.setMsg(message);
-                mail.send();
-
-                tags.add("accepted");
-                String lastModified = jsonTalk.getString("last-modified");
-                emsCommunicator.updateTags(encodedTalkRef,tags, lastModified);
+                if (tagToAdd != null) {
+                    tags.add(tagToAdd);
+                    String lastModified = jsonTalk.getString("last-modified");
+                    emsCommunicator.updateTags(encodedTalkRef, tags, lastModified);
+                }
                 accept.put("status","ok");
                 accept.put("message","ok");
 
@@ -67,6 +65,21 @@ public class AcceptorSetter {
             }
         }
         return new JSONArray(statusAllTalks).toString();
+    }
+
+    private void generateAndSendMail(String template, String encodedTalkRef, JSONObject jsonTalk) throws JSONException, EmailException {
+        String talkType = talkTypeText(jsonTalk.getString("format"));
+        SimpleEmail mail = setupMailHeader(talkType);
+
+        String speakerName = addSpeakers(jsonTalk, mail);
+
+        String submitLink = Configuration.submititLocation() + encodedTalkRef;
+        String confirmLocation = Configuration.cakeLocation() + "confirm.html?id=" + encodedTalkRef;
+        String title = jsonTalk.getString("title");
+
+        String message = generateMessage(template,title, talkType, speakerName, submitLink, confirmLocation);
+        mail.setMsg(message);
+        mail.send();
     }
 
     private List<String> toCollection(JSONArray tags) throws JSONException {
@@ -109,22 +122,26 @@ public class AcceptorSetter {
         return speakerName.toString();
     }
 
-    private String generateMessage(String title, String talkType, String speakerName, String submitLink, String confirmLocation) {
-        String message;
+    private String generateMessage(String template, String title, String talkType, String speakerName, String submitLink, String confirmLocation) {
+        String message = template
+                .replaceAll("#title#", title)
+                .replaceAll("#speakername#", speakerName)
+                .replaceAll("#talkType#", talkType)
+                .replaceAll("#submititLink#", submitLink)
+                .replaceAll("#confirmLink#", confirmLocation)
+                ;
+        return message;
+    }
+
+    private String loadTemplate() {
+        String template;
         try (InputStream is = getClass().getClassLoader().getResourceAsStream("acceptanceTemplate.txt")) {
-            String template = EmsCommunicator.toString(is);
-            message = template
-                    .replaceAll("#title#", title)
-                    .replaceAll("#speakername#", speakerName)
-                    .replaceAll("#talkType#", talkType)
-                    .replaceAll("#submititLink#", submitLink)
-                    .replaceAll("#confirmLink#", confirmLocation)
-                    ;
+            template = EmsCommunicator.toString(is);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return message;
+        return template;
     }
 
     private String talkTypeText(String format) {
