@@ -23,14 +23,23 @@ public class DataServletWriteTest {
     @Before
     public void setUp() throws Exception {
         when(req.getMethod()).thenReturn("POST");
-        when(req.getPathInfo()).thenReturn("/editTalk");
         when(resp.getWriter()).thenReturn(new PrintWriter(jsonResult));
         servlet.setEmsCommunicator(emsCommunicator);
     }
 
     @Test
     public void shouldSaveTags() throws Exception {
+        when(req.getPathInfo()).thenReturn("/editTalk");
         String inputjson = "{\"ref\":\"abra\",\"lastModified\":\"Tue, 04 Feb 2014 23:55:06 GMT\",\"tags\":[\"test\"],\"state\":\"pending\"}";
+        mockInputStream(inputjson);
+
+        servlet.service(req,resp);
+
+        verify(emsCommunicator).update("abra", Arrays.asList("test"),"pending","Tue, 04 Feb 2014 23:55:06 GMT");
+
+    }
+
+    private void mockInputStream(String inputjson) throws IOException {
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(inputjson.getBytes("UTF-8"));
         when(req.getInputStream()).thenReturn(new ServletInputStream() {
             @Override
@@ -43,10 +52,18 @@ public class DataServletWriteTest {
                 inputStream.close();
             }
         });
+    }
+
+    @Test
+    public void shouldPublishTalk() throws Exception {
+        when(req.getPathInfo()).thenReturn("/publishTalk");
+        String inputjson = "{\"ref\":\"abra\",\"lastModified\":\"Tue, 04 Feb 2014 23:55:06 GMT\"}";
+        mockInputStream(inputjson);
 
         servlet.service(req,resp);
 
-        verify(emsCommunicator).update("abra", Arrays.asList("test"),"pending","Tue, 04 Feb 2014 23:55:06 GMT");
+        verify(emsCommunicator).publishTalk("abra","Tue, 04 Feb 2014 23:55:06 GMT");
+
 
     }
 }

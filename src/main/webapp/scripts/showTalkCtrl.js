@@ -93,6 +93,34 @@ angular.module('cakeReduxModule')
                 });
             };
 
+            $scope.publishTalk = function() {
+                $scope.showError = false;
+              ;
+                var t = $scope.aTalk;
+                var postData = {
+                    ref: t.ref,
+                    lastModified: t.lastModified,
+
+                };
+                $http({
+                    method: "POST",
+                    url: "data/publishTalk",
+                    data: postData
+                }).success(function(data) {
+
+                    if (data.error) {
+                        $scope.errormessage = data.error;
+                        $scope.showError = true;
+                        return;
+                    }
+                    $scope.aTalk.lastModified = data.lastModified;
+                    $scope.aTalk.published = data.published;
+                }).error(function(data, status, headers, config) {
+                    $scope.errormessage = data.error;
+                    $scope.showError = true;
+                });
+            };
+
             $scope.joinArr = function(arr) {
                 if (!arr || arr.length == 0) {
                     return null;

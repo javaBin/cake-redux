@@ -225,7 +225,7 @@ public class EmsCommunicator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return fetchOneTalk(encodedTalkUrl);
     }
 
     public String talkShortVersion(String encodedEvent) {

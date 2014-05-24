@@ -22,10 +22,27 @@ public class DataServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         if ("/editTalk".equals(pathInfo)) {
             updateTalk(req, resp);
+        } else if ("/publishTalk".equals(pathInfo)) {
+            publishTalk(req, resp);
         } else if ("/acceptTalks".equals(pathInfo)) {
             acceptTalks(req,resp);
         }
 
+    }
+
+    private void publishTalk(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try (InputStream inputStream = req.getInputStream()) {
+            String inputStr = EmsCommunicator.toString(inputStream);
+            JSONObject update = new JSONObject(inputStr);
+            String ref = update.getString("ref");
+
+            String lastModified = update.getString("lastModified");
+
+            String newTalk = emsCommunicator.publishTalk(ref,lastModified);
+            resp.getWriter().append(newTalk);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void acceptTalks(HttpServletRequest req, HttpServletResponse resp) throws IOException {
