@@ -54,13 +54,20 @@ describe("Filter test suite", function() {
         expect(talks[0].title).toBe("Title en");
         expect(talks[1].title).toBe("Title tre");
     });
-    it('should handle arrays',function() {
+    it('should handle tag arrays',function() {
         var allTalks=[{title: "one", tags: ["ja","bekreftet"]},{title: "two",tags: []}];
         var talks = [];
         filterService.filters.push({tag: "ja"});
         filterService.doFilter(talks,allTalks);
         expect(talks.length).toBe(1);
         expect(talks[0].title).toBe("one");
+    });
+    it('should only match on whole tags',function() {
+        var allTalks=[{title: "one", tags: ["ja_xx","bekreftet"]},{title: "two",tags: []}];
+        var talks = [];
+        filterService.filters.push({tag: "ja"});
+        filterService.doFilter(talks,allTalks);
+        expect(talks.length).toBe(0);
     });
     it('should not match tag if talk has no tags',function() {
         var allTalks=[

@@ -47,7 +47,7 @@ angular.module('cakeReduxModule')
             }
             return true;
         }
-        var findInArray=function(filter, arr) {
+        var findInArray=function(filter, arr,excactMatch) {
             if (!filter || filter.length == 0) {
                 return true;
             }
@@ -59,8 +59,14 @@ angular.module('cakeReduxModule')
                 if (found) {
                    return;
                 }
-                if (item.toLowerCase().indexOf(filter.toLowerCase()) !== -1) {
-                    found = true;
+                if (excactMatch) {
+                    if (item.toLowerCase() === filter.toLowerCase()) {
+                        found = true;
+                    }
+                } else {
+                    if (item.toLowerCase().indexOf(filter.toLowerCase()) !== -1) {
+                        found = true;
+                    }
                 }
             });
             return found;
@@ -92,7 +98,7 @@ angular.module('cakeReduxModule')
             if (!isMatch(filter.language,talk.lang)) {
                 return false;
             }
-            if (!findInArray(filter.tag,talk.tags)) {
+            if (!findInArray(filter.tag,talk.tags,true)) {
                 return false;
             }
             if (!findInArray(filter.keyword,talk.keywords)) {
