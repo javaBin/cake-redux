@@ -15,10 +15,27 @@ angular.module('cakeReduxModule')
                 _.each($scope.talks,function(talk) {
                     talkList.push({ref: talk.ref});
                 });
+                var inputData;
+                var inputUrl;
+                if ($scope.accept) {
+                    inputData = {talks: talkList};
+                    inputUrl = "data/acceptTalks";
+                } else {
+                    inputData = {
+                      talks: talkList,
+                      doSendMail: $scope.doSendMail,
+                      subject: $scope.subject,
+                      message: $scope.message,
+                      doTag: $scope.doTag,
+                      newtag: $scope.newtag
+                    };
+                    inputUrl = "data/massUpdate";
+                }
+
                 $http({
                     method: "POST",
-                    url: "data/acceptTalks",
-                    data: {talks: talkList}
+                    url: inputUrl,
+                    data: inputData
                 }).success(function(data) {
                     $scope.statusLines = data;
                 }).error(function(data, status, headers, config) {
