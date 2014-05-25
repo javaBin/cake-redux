@@ -23,11 +23,31 @@ public class AcceptorSetter {
         String template = loadTemplate();
         String tagToAdd = "accepted";
         String tagExistsErrormessage = "Talk is already accepted";
+        String subjectTemplate = "Javazone 2014 #talkType# accepted";
 
-        return massUpdate(talks, template, tagToAdd, tagExistsErrormessage);
+        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage);
     }
 
-    private String massUpdate(JSONArray talks, String template, String tagToAdd, String tagExistsErrormessage) {
+    public String massUpdate(JSONObject jsonObject) throws JSONException {
+        JSONArray talks = jsonObject.getJSONArray("talks");
+
+        String template = null;
+        String subjectTemplate = null;
+        if ("true".equals(jsonObject.getString("doSendMsil"))) {
+            template = jsonObject.getString("message");
+            subjectTemplate = jsonObject.getString("subject");
+        };
+
+        String tagToAdd = null;
+        if ("true".equals(jsonObject.getString("doTag"))) {
+            tagToAdd = jsonObject.getString("newtag");
+        }
+        String tagExistsErrormessage = "Tag already exsists";
+
+        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage);
+    }
+
+    private String doUpdates(JSONArray talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage) {
         List<JSONObject> statusAllTalks = new ArrayList<>();
         for (int i=0;i<talks.length();i++) {
             JSONObject accept = new JSONObject();
@@ -45,7 +65,9 @@ public class AcceptorSetter {
                     continue;
                 }
 
-                generateAndSendMail(template, encodedTalkRef, jsonTalk);
+                if (template != null) {
+                    generateAndSendMail(template, subjectTemplate, encodedTalkRef, jsonTalk);
+                }
 
                 if (tagToAdd != null) {
                     tags.add(tagToAdd);
@@ -67,15 +89,21 @@ public class AcceptorSetter {
         return new JSONArray(statusAllTalks).toString();
     }
 
-    private void generateAndSendMail(String template, String encodedTalkRef, JSONObject jsonTalk) throws JSONException, EmailException {
+    private void generateAndSendMail(
+            String template,
+            String subjectTemplate,
+            String encodedTalkRef,
+            JSONObject jsonTalk) throws JSONException, EmailException {
         String talkType = talkTypeText(jsonTalk.getString("format"));
-        SimpleEmail mail = setupMailHeader(talkType);
-
-        String speakerName = addSpeakers(jsonTalk, mail);
-
         String submitLink = Configuration.submititLocation() + encodedTalkRef;
         String confirmLocation = Configuration.cakeLocation() + "confirm.html?id=" + encodedTalkRef;
         String title = jsonTalk.getString("title");
+
+        SimpleEmail mail = new SimpleEmail();
+        String speakerName = addSpeakers(jsonTalk, mail);
+
+        String subject = generateMessage(template, title, talkType, speakerName, submitLink, confirmLocation);
+        setupMailHeader(mail,subject);
 
         String message = generateMessage(template,title, talkType, speakerName, submitLink, confirmLocation);
         mail.setMsg(message);
@@ -95,13 +123,12 @@ public class AcceptorSetter {
 
 
 
-    private SimpleEmail setupMailHeader(String talkType) throws EmailException {
-        SimpleEmail mail = new SimpleEmail();
+    private SimpleEmail setupMailHeader(SimpleEmail mail,String subject) throws EmailException {
         mail.setHostName(Configuration.smtpServer());
         mail.setSmtpPort(Configuration.smtpPort());
         mail.setFrom("program@java.no", "Javazone program commitee");
         mail.addCc("program@java.no");
-        mail.setSubject("Javazone 2014 " + talkType + " accepted");
+        mail.setSubject(subject);
         return mail;
     }
 

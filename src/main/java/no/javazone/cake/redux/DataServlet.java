@@ -67,9 +67,9 @@ public class DataServlet extends HttpServlet {
             String inputStr = EmsCommunicator.toString(inputStream);
             try {
                 JSONObject jsonObject = new JSONObject(inputStr);
-                JSONArray talks = jsonObject.getJSONArray("talks");
-                //String statusJson = acceptorSetter.accept(talks);
-                //resp.getWriter().append(statusJson);
+
+                String statusJson = acceptorSetter.massUpdate(jsonObject);
+                resp.getWriter().append(statusJson);
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
