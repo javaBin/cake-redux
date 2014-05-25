@@ -1,6 +1,11 @@
 angular.module('cakeReduxModule')
-    .controller('AcceptTalkCtrl', ['$scope', '$http', 'talkList',
-        function($scope, $http, talkList) {
+    .controller('AcceptTalkCtrl', ['$scope', '$http', 'talkList','$location',
+        function($scope, $http, talkList,$location) {
+
+            $scope.accept = ($location.path() === "/accept");
+            $scope.title = ($scope.accept) ? "Accept talks" : "Mass update";
+
+
             $scope.talks = talkList.talks;
             $scope.numTalks = $scope.talks.length;
             $scope.statusLines = [];

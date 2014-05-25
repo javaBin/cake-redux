@@ -1,6 +1,34 @@
 <div class="cake-margin" ng-controller="AcceptTalkCtrl">
-    <h1>Accept talks</h1>
-    <p>Will accept {{numTalks}} talks. Mail will be sent to each speaker and talks will be tagged accepted</p>
+    <h1>{{title}}</h1>
+    <p ng-show="accept">Will accept {{numTalks}} talks. Mail will be sent to each speaker and talks will be tagged accepted</p>
+    <p ng-show="!accept">Prossessing {{numTalks}} talks.</p>
+    <form ng-show="!accept" role="form">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="doSendMail"> Send mail
+            </label>
+        </div>
+        <div class="form-group" ng-show="doSendMail">
+            <input class="form-control" type="text" placeholder="subject" ng-model="subject"/>
+        </div>
+        <div class="form-group"ng-show="doSendMail">
+            <textarea class="form-control" ng-model="message" placeholder="message"/>
+            <span class="help-block">Write as a template. The following variables are availible<ul>
+                <li>#title# The title of the talk</li>
+                <li>#speakername# The name of the speaker. If more than one speaker, the names are chained with and</li>
+                <li>#talkType# Workshop, presentation or lightning talk</li>
+            </ul></span>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="doTag"> Tag it
+            </label>
+        </div>
+        <div class="form-group" ng-show="doTag">
+            <input class="form-control" type="text" placeholder="Tag to add" ng-model="newtag"/>
+        </div>
+    </form>
+    <h3>Will update:</h3>
     <ul>
         <li ng-repeat="talk in talks">{{talk.title}}</li>
     </ul>

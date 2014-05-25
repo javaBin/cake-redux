@@ -22,6 +22,10 @@
                     when("/accept", {
                         templateUrl: 'templates/acceptTalk.html',
                         controller: 'AcceptTalkCtrl'
+                    }).
+                    when("/massUpdate", {
+                        templateUrl: 'templates/acceptTalk.html',
+                        controller: 'AcceptTalkCtrl'
                     })
                     ;
         }]);
