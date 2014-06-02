@@ -33,7 +33,7 @@ public class AcceptorSetter {
 
         String template = null;
         String subjectTemplate = null;
-        if ("true".equals(jsonObject.getString("doSendMsil"))) {
+        if ("true".equals(jsonObject.getString("doSendMail"))) {
             template = jsonObject.getString("message");
             subjectTemplate = jsonObject.getString("subject");
         };
@@ -71,7 +71,7 @@ public class AcceptorSetter {
 
                 if (tagToAdd != null) {
                     tags.add(tagToAdd);
-                    String lastModified = jsonTalk.getString("last-modified");
+                    String lastModified = jsonTalk.getString("lastModified");
                     emsCommunicator.updateTags(encodedTalkRef, tags, lastModified);
                 }
                 accept.put("status","ok");
@@ -102,7 +102,7 @@ public class AcceptorSetter {
         SimpleEmail mail = new SimpleEmail();
         String speakerName = addSpeakers(jsonTalk, mail);
 
-        String subject = generateMessage(template, title, talkType, speakerName, submitLink, confirmLocation);
+        String subject = generateMessage(subjectTemplate, title, talkType, speakerName, submitLink, confirmLocation);
         setupMailHeader(mail,subject);
 
         String message = generateMessage(template,title, talkType, speakerName, submitLink, confirmLocation);

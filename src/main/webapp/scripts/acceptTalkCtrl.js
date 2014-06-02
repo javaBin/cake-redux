@@ -4,6 +4,8 @@ angular.module('cakeReduxModule')
 
             $scope.accept = ($location.path() === "/accept");
             $scope.title = ($scope.accept) ? "Accept talks" : "Mass update";
+            $scope.doSendMail = false;
+            $scope.doTag = false;
 
 
             $scope.talks = talkList.talks;
