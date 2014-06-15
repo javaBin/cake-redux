@@ -9,14 +9,22 @@ angular.module('cakeReduxModule')
 
 
             $scope.talks = talkList.talks;
+            _.each($scope.talks,function(talk) {
+                talk.wasSelected = true;
+            });
             $scope.numTalks = $scope.talks.length;
             $scope.statusLines = [];
 
             $scope.acceptTalks = function() {
                 var talkList = [];
                 _.each($scope.talks,function(talk) {
-                    talkList.push({ref: talk.ref});
+                    if (talk.wasSelected) {
+                        talkList.push({ref: talk.ref});
+                    }
                 });
+                if (talkList.length == 0) {
+                    return;
+                }
                 var inputData;
                 var inputUrl;
                 if ($scope.accept) {

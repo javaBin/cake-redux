@@ -105,7 +105,9 @@ public class EmsCommunicator {
             if (!tags.contains("accepted")) {
                 return confirmTalkMessage("error","Talk is not accepted");
             }
-
+            if ("yes".equals(dinner)) {
+                tags.add("dinner");
+            }
             tags.add("confirmed");
             String lastModified = jsonTalk.getString("lastModified");
             updateTags(encodedTalkUrl,tags, lastModified);

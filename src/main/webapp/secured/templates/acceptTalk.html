@@ -30,7 +30,11 @@
     </form>
     <h3>Will update:</h3>
     <ul>
-        <li ng-repeat="talk in talks">{{talk.title}}</li>
+        <li ng-repeat="talk in talks"><div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="talk.wasSelected"> {{talk.title}}
+            </label>
+        </div></li>
     </ul>
     <button class="btn btn-primary" ng-click="acceptTalks()">Do it</button>
     <table class="table table-bordered">
