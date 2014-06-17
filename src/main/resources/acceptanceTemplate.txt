@@ -10,20 +10,20 @@ Please click the link below to confirm that you will be able to come to JavaZone
 
 Please do respond as soon as possible, preferably before July 1st.
 
-Note that this #talkType# is accepted based on both content and presenter. Hence we do not accept substitute speakers.
+Note that this #talkType# is accepted based on both content and presenter. Hence, we do not accept substitute speakers.
 
-When you have done this, we will publish your #talkType# in the agenda. You can still edit your abstract (see how below)
+When you have done this, we will publish your #talkType# in the agenda. You can still edit your abstract (see how below).
 
 We would like to remind you of the following:
-1) Please upload a high resolution portrait photo of yourself through our "SubmitIT" application if you haven't done so already. You will find the link below.
-2) Please tag your abstract with the tags suggested by our online "SubmitIT" application if you haven't done so already.
+1) Please upload a high resolution portrait photo of yourself through our SubmitIT application if you haven't done so already. You will find the link below.
+2) Please tag your abstract with the tags suggested by our SubmitIT application if you haven't done so already.
 3) Please note that your abstract, title, bio and photo will be published when you confirm this email, and that any changes you make will be available right away.
 4) There is a very limited budget for reimbursing travelling costs. This e-mail does not automatically make you eligible for reimbursements. Please see http://2014.javazone.no/monetarypolicy.html for information about how you can apply for reimbursements.
 5) As stated at http://2014.javazone.no/speakers.html speakers of lightning talks will have to provide for their own admission to Javazone.
 6) JourneyZone 2014: Join us for an adventure at sea! We would like to invite all speakers on a 3 day sailing trip the weekend after JavaZone. Read more and sign up for JourneyZone here: http://2014.javazone.no/journeyzone.html
 
 
-If you want to update your abstract, you can do that at #submititLink# (this is the same link you received when you posted your abstract)
+If you want to update your abstract, you can do that at #submititLink# (this is the same link you received when you posted your abstract).
 
 Please note that the response time on emails during the summer holidays (in July) will be longer than normal.
 
