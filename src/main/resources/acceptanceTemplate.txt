@@ -11,11 +11,12 @@ Please click the link below to confirm that you will be able to come to JavaZone
 When you have done this, we will publish your #talkType# in the agenda. You can still edit your abstract (see how below)
 
 We would like to remind you of the following:
-1) Please upload a high resolution portrait photo of yourself through our "SubmitIT" application if you haven't done so already.
+1) Please upload a high resolution portrait photo of yourself through our "SubmitIT" application if you haven't done so already. You will find the link below.
 2) Please tag your abstract with the tags suggested by our online "SubmitIT" application if you haven't done so already.
 3) Please note that your abstract, title, bio and photo will be published when you confirm this email, and that any changes you make will be available right away.
 4) There is a very limited budget for reimbursing travelling costs. This e-mail does not automatically make you eligible for reimbursements. Please see http://2014.javazone.no/monetarypolicy.html for information about how you can apply for reimbursements.
 5) JourneyZone. We would like to invite speakers to explore the wild nature, enjoy the very best of Norwegian food and have a great time together in the weekend following the conference. Read more about JourneyZone here; http://2014.javazone.no/journeyzone.html. Please send a mail to program@java.no if you are interested in attending.
+
 
 If you want to update your abstract, you can do that at #submititLink# (this is the same link you received when you posted your abstract)
 
