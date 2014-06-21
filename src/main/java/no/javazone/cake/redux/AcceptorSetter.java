@@ -149,14 +149,21 @@ public class AcceptorSetter {
         return speakerName.toString();
     }
 
-    private String generateMessage(String template, String title, String talkType, String speakerName, String submitLink, String confirmLocation) {
-        String message = template
-                .replaceAll("#title#", title)
-                .replaceAll("#speakername#", speakerName)
-                .replaceAll("#talkType#", talkType)
-                .replaceAll("#submititLink#", submitLink)
-                .replaceAll("#confirmLink#", confirmLocation)
-                ;
+    private String replaceAll(String s, String code,String replacement) {
+        StringBuilder builder = new StringBuilder(s);
+        for (int ind = builder.indexOf(code);ind!=-1;ind = builder.indexOf(code)) {
+            builder.replace(ind,ind+code.length(),replacement);
+        }
+        return builder.toString();
+    }
+
+    protected String generateMessage(String template, String title, String talkType, String speakerName, String submitLink, String confirmLocation) {
+        String message = template;
+        message = replaceAll(message,"#title#", title);
+        message = replaceAll(message,"#speakername#", speakerName);
+        message = replaceAll(message,"#talkType#", talkType);
+        message = replaceAll(message,"#submititLink#", submitLink);
+        message = replaceAll(message,"#confirmLink#", confirmLocation);
         return message;
     }
 
