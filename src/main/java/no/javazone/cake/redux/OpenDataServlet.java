@@ -57,6 +57,7 @@ public class OpenDataServlet extends HttpServlet {
             }
             if ("accepted".equals(tag.asText())) {
                 foundAccepted=true;
+                break;
             }
         }
         if (foundAccepted) {

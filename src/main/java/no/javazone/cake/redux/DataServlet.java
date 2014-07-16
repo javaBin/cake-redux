@@ -20,14 +20,19 @@ public class DataServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
-        if ("/editTalk".equals(pathInfo)) {
-            updateTalk(req, resp);
-        } else if ("/publishTalk".equals(pathInfo)) {
-            publishTalk(req, resp);
-        } else if ("/acceptTalks".equals(pathInfo)) {
-            acceptTalks(req,resp);
-        } else if ("/massUpdate".equals(pathInfo)) {
-            massUpdate(req, resp);
+        switch (pathInfo) {
+            case "/editTalk":
+                updateTalk(req, resp);
+                break;
+            case "/publishTalk":
+                publishTalk(req, resp);
+                break;
+            case "/acceptTalks":
+                acceptTalks(req, resp);
+                break;
+            case "/massUpdate":
+                massUpdate(req, resp);
+                break;
         }
 
     }
