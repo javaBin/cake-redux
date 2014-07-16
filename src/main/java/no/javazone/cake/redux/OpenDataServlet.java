@@ -22,7 +22,7 @@ public class OpenDataServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/json");
+        resp.setContentType("application/json");
         PrintWriter writer = resp.getWriter();
         ObjectNode talkJson = emsCommunicator.fetchOneTalkAsObjectNode(req.getParameter("talkId"));
         ObjectNode talkInfo = shortTalkVersion(talkJson);
@@ -72,7 +72,7 @@ public class OpenDataServlet extends HttpServlet {
             String encodedTalkUrl = input.get("id").asText();
             String dinner = input.get("dinner").asText();
             String status = emsCommunicator.confirmTalk(encodedTalkUrl,dinner);
-            resp.setContentType("text/json");
+            resp.setContentType("application/json");
             resp.getWriter().append(status);
         }
     }

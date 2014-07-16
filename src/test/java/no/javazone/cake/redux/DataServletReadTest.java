@@ -32,7 +32,7 @@ public class DataServletReadTest {
 
         servlet.service(req, resp);
 
-        verify(resp).setContentType("text/json");
+        verify(resp).setContentType("application/json");
         verify(emsCommunicator).allEvents();
 
         assertThat(jsonResult.toString()).isEqualTo("This is a json");
