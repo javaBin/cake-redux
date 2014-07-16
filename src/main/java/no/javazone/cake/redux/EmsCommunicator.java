@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.hamnaberg.funclite.Optional;
+import net.hamnaberg.funclite.Predicate;
 import net.hamnaberg.json.*;
 import net.hamnaberg.json.data.JsonObjectFromData;
 import net.hamnaberg.json.parser.CollectionParser;
+import net.hamnaberg.json.util.PropertyFunctions;
 
 import java.io.*;
 import java.net.*;
@@ -21,7 +23,7 @@ public class EmsCommunicator {
 
 
     public String updateTags(String encodedTalkUrl,List<String> tags,String givenLastModified) {
-        Property newVals = Property.arrayObject("tags", new ArrayList<>(tags));
+        Property newVals = Property.arrayObject("tags", new ArrayList<Object>(tags));
 
         return update(encodedTalkUrl, givenLastModified, Arrays.asList(newVals));
     }
@@ -109,9 +111,9 @@ public class EmsCommunicator {
             for (Item item : items) {
                 Data data = item.getData();
 
-                String eventname = data.propertyByName("name").flatMap(Property::getValue).get().asString();
+                String eventname = data.propertyByName("name").flatMap(PropertyFunctions.propertyToValueStringF).get();
 
-                String slug = data.propertyByName("slug").flatMap(Property::getValue).get().asString();
+                String slug = data.propertyByName("slug").flatMap(PropertyFunctions.propertyToValueStringF).get();
                 String href = item.getHref().get().toString();
 
                 href = Base64Util.encode(href);
@@ -210,7 +212,12 @@ public class EmsCommunicator {
         ArrayNode allTalk = JsonNodeFactory.instance.arrayNode();
         for (Item item : items) {
             ObjectNode jsonTalk = readItemProperties(item, null);
-            List<Link> links = item.findLinks(link -> link.getRel().equals("speaker item"));
+            List<Link> links = item.findLinks(new Predicate<Link>() {
+                @Override
+                public boolean apply(Link input) {
+                    return "speaker item".equals(input.getRel());
+                }
+            });
             ArrayNode speakers = JsonNodeFactory.instance.arrayNode();
             for (Link link : links) {
                 ObjectNode speaker = JsonNodeFactory.instance.objectNode();
@@ -298,7 +305,7 @@ public class EmsCommunicator {
 
     private static URLConnection openConnection(String questionUrl, boolean useAuthorization)  {
         try {
-            URL url = new URL(questionUrl);
+            final URL url = new URL(questionUrl);
             URLConnection urlConnection = url.openConnection();
 
             if (useAuthorization) {
@@ -348,7 +355,7 @@ public class EmsCommunicator {
     }
 
     public String update(String ref, List<String> taglist, String state, String lastModified) {
-        Property newTag = Property.arrayObject("tags", new ArrayList<>(taglist));
+        Property newTag = Property.arrayObject("tags", new ArrayList<Object>(taglist));
         Property newState = Property.value("state",state);
         return update(ref, lastModified, Arrays.asList(newTag,newState));
     }
