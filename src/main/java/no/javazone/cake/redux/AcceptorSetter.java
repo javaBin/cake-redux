@@ -1,10 +1,11 @@
 package no.javazone.cake.redux;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +20,7 @@ public class AcceptorSetter {
         this.emsCommunicator = emsCommunicator;
     }
 
-    public String accept(JSONArray talks) {
+    public String accept(ArrayNode talks) {
         String template = loadTemplate();
         String tagToAdd = "accepted";
         String tagExistsErrormessage = "Talk is already accepted";
@@ -28,36 +29,36 @@ public class AcceptorSetter {
         return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage);
     }
 
-    public String massUpdate(JSONObject jsonObject) throws JSONException {
-        JSONArray talks = jsonObject.getJSONArray("talks");
+    public String massUpdate(ObjectNode jsonObject) {
+        JsonNode talks = jsonObject.get("talks");
 
         String template = null;
         String subjectTemplate = null;
-        if ("true".equals(jsonObject.getString("doSendMail"))) {
-            template = jsonObject.getString("message");
-            subjectTemplate = jsonObject.getString("subject");
-        };
+        if (jsonObject.get("doSendMail").asBoolean(false)) {
+            template = jsonObject.get("message").asText();
+            subjectTemplate = jsonObject.get("subject").asText();
+        }
 
         String tagToAdd = null;
-        if ("true".equals(jsonObject.getString("doTag"))) {
-            tagToAdd = jsonObject.getString("newtag");
+        if (jsonObject.get("doTag").asBoolean(false)) {
+            tagToAdd = jsonObject.get("newtag").asText();
         }
-        String tagExistsErrormessage = "Tag already exsists";
+        String tagExistsErrormessage = "Tag already exists";
 
         return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage);
     }
 
-    private String doUpdates(JSONArray talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage) {
-        List<JSONObject> statusAllTalks = new ArrayList<>();
-        for (int i=0;i<talks.length();i++) {
-            JSONObject accept = new JSONObject();
+    private String doUpdates(JsonNode talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage) {
+        ArrayNode statusAllTalks = JsonNodeFactory.instance.arrayNode();
+        for (JsonNode talk : talks) {
+            ObjectNode accept = JsonNodeFactory.instance.objectNode();
             statusAllTalks.add(accept);
             try {
-                String encodedTalkRef = talks.getJSONObject(i).getString("ref");
-                JSONObject jsonTalk = new JSONObject(emsCommunicator.fetchOneTalk(encodedTalkRef));
-                accept.put("title",jsonTalk.getString("title"));
+                String encodedTalkRef = talk.get("ref").asText();
+                ObjectNode jsonTalk = emsCommunicator.fetchOneTalkAsObjectNode(encodedTalkRef);
+                accept.put("title", jsonTalk.get("title").asText());
 
-                List<String> tags = toCollection(jsonTalk.getJSONArray("tags"));
+                List<String> tags = toCollection(jsonTalk.get("tags"));
 
                 if (tagToAdd != null && tags.contains(tagToAdd)) {
                     accept.put("status","error");
@@ -71,33 +72,29 @@ public class AcceptorSetter {
 
                 if (tagToAdd != null) {
                     tags.add(tagToAdd);
-                    String lastModified = jsonTalk.getString("lastModified");
+                    String lastModified = jsonTalk.get("lastModified").asText();
                     emsCommunicator.updateTags(encodedTalkRef, tags, lastModified);
                 }
                 accept.put("status","ok");
                 accept.put("message","ok");
 
-            } catch (JSONException | EmailException e) {
-                try {
-                    accept.put("status","error");
-                    accept.put("message","Error: " + e.getMessage());
-                } catch (JSONException je) {
-                    throw new RuntimeException(je);
-                }
+            } catch (EmailException e) {
+                accept.put("status","error");
+                accept.put("message","Error: " + e.getMessage());
             }
         }
-        return new JSONArray(statusAllTalks).toString();
+        return statusAllTalks.toString();
     }
 
     private void generateAndSendMail(
             String template,
             String subjectTemplate,
             String encodedTalkRef,
-            JSONObject jsonTalk) throws JSONException, EmailException {
-        String talkType = talkTypeText(jsonTalk.getString("format"));
+            ObjectNode jsonTalk) throws EmailException {
+        String talkType = talkTypeText(jsonTalk.get("format").asText());
         String submitLink = Configuration.submititLocation() + encodedTalkRef;
         String confirmLocation = Configuration.cakeLocation() + "confirm.html?id=" + encodedTalkRef;
-        String title = jsonTalk.getString("title");
+        String title = jsonTalk.get("title").asText();
 
         SimpleEmail mail = new SimpleEmail();
         String speakerName = addSpeakers(jsonTalk, mail);
@@ -110,13 +107,13 @@ public class AcceptorSetter {
         mail.send();
     }
 
-    private List<String> toCollection(JSONArray tags) throws JSONException {
+    private List<String> toCollection(JsonNode tags) {
         ArrayList<String> result = new ArrayList<>();
         if (tags == null) {
             return result;
         }
-        for (int i=0;i<tags.length();i++) {
-            result.add(tags.getString(i));
+        for (JsonNode tag : tags) {
+            result.add(tag.asText());
         }
         return result;
     }
@@ -132,13 +129,12 @@ public class AcceptorSetter {
         return mail;
     }
 
-    private String addSpeakers(JSONObject jsonTalk, SimpleEmail mail) throws JSONException, EmailException {
-        JSONArray jsonSpeakers = jsonTalk.getJSONArray("speakers");
+    private String addSpeakers(ObjectNode jsonTalk, SimpleEmail mail) throws EmailException {
+        JsonNode jsonSpeakers = jsonTalk.get("speakers");
         StringBuilder speakerName=new StringBuilder();
-        for (int j=0;j<jsonSpeakers.length();j++) {
-            JSONObject speaker = jsonSpeakers.getJSONObject(j);
-            String email=speaker.getString("email");
-            String name=speaker.getString("name");
+        for (JsonNode speaker : jsonSpeakers) {
+            String email=speaker.get("email").asText();
+            String name=speaker.get("name").asText();
             if (!speakerName.toString().isEmpty()) {
                 speakerName.append(" and ");
             }

@@ -1,16 +1,8 @@
 package no.javazone.cake.redux;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import java.io.IOException;
 
 public class SecurityFilter implements Filter {
     @Override

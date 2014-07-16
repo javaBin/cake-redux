@@ -1,7 +1,6 @@
 package no.javazone.cake.redux;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,10 +24,10 @@ public class EntranceServlet extends HttpServlet {
         String code = req.getParameter("code");
 
         StringBuilder postParameters = new StringBuilder();
-        postParameters.append(para("code", code) + "&");
-        postParameters.append(para("client_id", Configuration.getGoogleClientId()) + "&");
-        postParameters.append(para("client_secret", Configuration.getGoogleClientSecret()) + "&");
-        postParameters.append(para("redirect_uri", Configuration.getGoogleRedirectUrl()) + "&");
+        postParameters.append(para("code", code)).append("&");
+        postParameters.append(para("client_id", Configuration.getGoogleClientId())).append("&");
+        postParameters.append(para("client_secret", Configuration.getGoogleClientSecret())).append("&");
+        postParameters.append(para("redirect_uri", Configuration.getGoogleRedirectUrl())).append("&");
         postParameters.append(para("grant_type", "authorization_code"));
         URL url = new URL("https://accounts.google.com/o/oauth2/token");
         URLConnection urlConnection = url.openConnection();
@@ -48,44 +47,29 @@ public class EntranceServlet extends HttpServlet {
         outStream.flush();
         outStream.close();
 
-        String googleresp;
+        ObjectNode googleresp;
         try (InputStream inputStream = urlConnection.getInputStream()) {
-            googleresp = EmsCommunicator.toString(inputStream);
+            googleresp = EmsCommunicator.parse(inputStream);
         }
 
-        JSONObject jsonObject = null;
-        String accessToken;
-        try {
-            jsonObject = new JSONObject(googleresp);
-            // get the access token from json and request info from Google
-            accessToken = (String) jsonObject.get("access_token");
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        // get the access token from json and request info from Google
+        String accessToken = googleresp.get("access_token").asText();
 
         // get some info about the user with the access token
         String getStr = "https://www.googleapis.com/oauth2/v1/userinfo?" + para("access_token",accessToken);
         URLConnection inconn = new URL(getStr).openConnection();
-        String json;
+        ObjectNode json;
         try (InputStream is = inconn.getInputStream()) {
-            json = EmsCommunicator.toString(is);
+            json = EmsCommunicator.parse(is);
         }
 
 
-        String username = null;
-        String userEmail = null;
-        try {
-            JSONObject userInfo = new JSONObject(json);
-            username = userInfo.getString("name");
-            userEmail = userInfo.getString("email");
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        String username = json.get("name").asText();
+        String userEmail = json.get("email").asText();
 
         String userid = username + "<" + userEmail + ">";
         if (!Configuration.getAutorizedUsers().contains(userid)) {
-            HttpServletResponse response = (HttpServletResponse) resp;
-            ((HttpServletResponse) resp).sendError(HttpServletResponse.SC_FORBIDDEN,"User not registered " + userid);
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "User not registered " + userid);
             return;
         }
 
@@ -93,7 +77,7 @@ public class EntranceServlet extends HttpServlet {
 
         resp.setContentType("text/html");
         writer.append("<html><body>");
-        writer.append("<p>You are now logged in as " + userid + "</p>");
+        writer.append("<p>You are now logged in as ").append(userid).append("</p>");
         writer.append("<p><a href='secured/#/'>To cake</a></p>");
         writer.append("</body></html>");
     }
