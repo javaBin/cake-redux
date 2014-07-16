@@ -1,48 +1,63 @@
 package no.javazone.cake.redux;
 
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ShutdownHandler;
-import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.server.handler.*;
+import org.eclipse.jetty.servlet.*;
+import org.eclipse.jetty.util.resource.Resource;
+
+import java.io.File;
 
 public class WebServer {
 
     private final Integer port;
-    private String warFile;
 
-    public WebServer(Integer port, String warFile) {
+    public WebServer(Integer port) {
         this.port = port;
-        this.warFile = warFile;
     }
 
     public static void main(String[] args) throws Exception {
         if (args == null || args.length < 1) {
-            System.out.println("Usage WebServer <Config file name> [war-file-path]");
+            System.out.println("Usage WebServer <Config file name>");
             return;
         }
-        String warFile = null;
-        if (args.length > 1) {
-            warFile = args[1];
-        }
         System.setProperty("cake-redux-config-file",args[0]);
-        new WebServer(getPort(8081),warFile).start();
+        new WebServer(getPort(8081)).start();
     }
 
     private void start() throws Exception {
-        Server server = new Server(port);
-        if (warFile != null) {
-            WebAppContext webAppContext = new WebAppContext();
-            webAppContext.setContextPath("/");
-            webAppContext.setWar(warFile);
-            server.setHandler(webAppContext);
-        } else {
-            HandlerList handlerList = new HandlerList();
-            handlerList.addHandler(new ShutdownHandler("yablayabla", false, true));
-            handlerList.addHandler(new WebAppContext("src/main/webapp", "/"));
-            server.setHandler(handlerList);
+        HandlerList handlerList = new HandlerList();
+        ResourceHandler rh = new ResourceHandler();
+        if (isDevelopment()) {
+            rh.setBaseResource(Resource.newResource(new File("src/main/resources/webapp")));
         }
+        else {
+            rh.setBaseResource(Resource.newClassPathResource("webapp", true, false));
+        }
+        rh.setDirectoriesListed(false);
+        rh.setWelcomeFiles(new String[]{"/index.html"});
+        registerServletsAndFilters(handlerList);
+        handlerList.addHandler(rh);
+        Server server = new Server(port);
+        server.setHandler(handlerList);
         server.start();
         System.out.println(server.getURI());
+    }
+
+    private boolean isDevelopment() {
+        return new File("pom.xml").exists();
+    }
+
+
+    private ServletContextHandler registerServletsAndFilters(HandlerList parent) {
+        ServletContextHandler contextHandler = new ServletContextHandler(parent, "/", true, false);
+        ServletHandler handler = contextHandler.getServletHandler();
+
+        handler.addFilterWithMapping(new FilterHolder(SecurityFilter.class), "/secured/*", FilterMapping.DEFAULT);
+        handler.addServletWithMapping(new ServletHolder(EntranceServlet.class), "/entrance");
+        handler.addServletWithMapping(new ServletHolder(SigninServlet.class), "/signin");
+        handler.addServletWithMapping(new ServletHolder(OpenDataServlet.class), "/data/*");
+        handler.addServletWithMapping(new ServletHolder(DataServlet.class), "/secured/data/*");
+        return contextHandler;
     }
 
     private static int getPort(int defaultPort) {
