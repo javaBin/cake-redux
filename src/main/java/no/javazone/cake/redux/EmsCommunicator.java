@@ -8,10 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -146,6 +143,37 @@ public class EmsCommunicator {
         }
     }
 
+    public String allRooms(String encodedEventid) {
+        String eventid = Base64Util.decode(encodedEventid);
+        String loc = eventid + "/rooms";
+        URLConnection connection = openConnection(loc, false);
+        try {
+            Collection events = new CollectionParser().parse(connection.getInputStream());
+            List<Item> items = events.getItems();
+            JSONArray roomArray = new JSONArray();
+            for (Item item : items) {
+                Data data = item.getData();
+                String roomname = data.propertyByName("name").get().getValue().get().asString();
+                String href = item.getHref().get().toString();
+
+                href = Base64Util.encode(href);
+
+                JSONObject event = new JSONObject();
+
+                event.put("name",roomname);
+                event.put("ref",href);
+
+                roomArray.put(event);
+            }
+            return roomArray.toString();
+        } catch (IOException | JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
     public String fetchOneTalk(String encodedUrl) {
         String url = Base64Util.decode(encodedUrl);
         URLConnection connection = openConnection(url, true);
@@ -168,13 +196,58 @@ public class EmsCommunicator {
 
     private InputStream openStream(URLConnection connection) throws IOException {
         InputStream inputStream = connection.getInputStream();
-        if (true) { // flip for debug :)
+        if (false) { // flip for debug :)
             return inputStream;
         }
         String stream = toString(inputStream);
         System.out.println("***STRAN***");
         System.out.println(stream);
         return new ByteArrayInputStream(stream.getBytes());
+    }
+
+    public String assignRoom(String encodedTalk,String roomRef) {
+        String talkUrl = Base64Util.decode(encodedTalk);
+        StringBuilder formData = new StringBuilder();
+        try {
+            formData.append(URLEncoder.encode("room","UTF-8"));
+            formData.append("=");
+            formData.append(URLEncoder.encode(roomRef,"UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        HttpURLConnection connection = (HttpURLConnection) openConnection(talkUrl, true);
+
+        String lastModified = connection.getHeaderField("last-modified");
+
+
+        HttpURLConnection postConnection = (HttpURLConnection) openConnection(talkUrl, true);
+
+        postConnection.setDoOutput(true);
+        try {
+            postConnection.setRequestMethod("POST");
+            postConnection.setRequestProperty("content-type","application/x-www-form-urlencoded");
+            postConnection.setRequestProperty("if-unmodified-since",lastModified);
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+        try {
+            DataOutputStream wr = new DataOutputStream(postConnection.getOutputStream());
+            wr.writeBytes(formData.toString());
+            wr.flush();
+            wr.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (InputStream is = postConnection.getInputStream()) {
+            toString(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return fetchOneTalk(encodedTalk);
     }
 
     public String publishTalk(String encodedTalkUrl,String givenLastModified) {
