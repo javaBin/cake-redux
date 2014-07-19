@@ -28,8 +28,26 @@ public class DataServlet extends HttpServlet {
             acceptTalks(req,resp);
         } else if ("/massUpdate".equals(pathInfo)) {
             massUpdate(req, resp);
+        } else if ("/assignRoom".equals(pathInfo)) {
+            assignRoom(req,resp);
         }
 
+    }
+
+    private void assignRoom(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try (InputStream inputStream = req.getInputStream()) {
+            String inputStr = EmsCommunicator.toString(inputStream);
+            JSONObject update = new JSONObject(inputStr);
+            String ref = update.getString("talkRef");
+            String roomRef = update.getString("roomRef");
+
+            //String lastModified = update.getString("lastModified");
+
+            String newTalk = emsCommunicator.assignRoom(ref,roomRef);
+            resp.getWriter().append(newTalk);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

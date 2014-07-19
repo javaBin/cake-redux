@@ -30,6 +30,16 @@ angular.module('cakeReduxModule')
                 });
                 if ($scope.aTalk) {
                     document.title = $scope.aTalk.title;
+                    if ($scope.roomsSlots.rooms.length == 0) {
+                        $http({method: "GET", url: "data/roomsSlots?eventId=" + $scope.aTalk.eventId})
+                            .success(function(data) {
+                                $scope.roomsSlots = data;
+                                $scope.selectedTalk = $scope.aTalk.room.ref;
+                            });
+                    } else {
+                        $scope.selectedTalk = $scope.aTalk.room.ref;
+                    }
+
                 }
 
             };
@@ -101,8 +111,7 @@ angular.module('cakeReduxModule')
                 var t = $scope.aTalk;
                 var postData = {
                     ref: t.ref,
-                    lastModified: t.lastModified,
-
+                    lastModified: t.lastModified
                 };
                 $http({
                     method: "POST",
@@ -133,6 +142,29 @@ angular.module('cakeReduxModule')
                 return res;
             };
 
+            $scope.updateRoom = function() {
+                var postData = {
+                    talkRef: $scope.aTalk.ref,
+                    roomRef: $scope.selectedRoom,
+                    lastModified: $scope.aTalk.lastModified
+                }
+                $http({
+                    method: "POST",
+                    url: "data/assignRoom",
+                    data: postData
+                }).success(function(data) {
+                    if (data.error) {
+                        $scope.errormessage = data.error;
+                        $scope.showError = true;
+                        return;
+                    }
+                    $scope.aTalk.lastModified = data.lastModified;
+                    $scope.aTalk.room = data.room;
+                }).error(function(data, status, headers, config) {
+                    $scope.errormessage = data.error;
+                    $scope.showError = true;
+                });
+            }
 
 
 

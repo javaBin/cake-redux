@@ -253,8 +253,9 @@ public class EmsCommunicator {
         return new ByteArrayInputStream(stream.getBytes());
     }
 
-    public String assignRoom(String encodedTalk,String roomRef) {
+    public String assignRoom(String encodedTalk,String encodedRoomRef) {
         String talkUrl = Base64Util.decode(encodedTalk);
+        String roomRef = Base64Util.decode(encodedRoomRef);
         StringBuilder formData = new StringBuilder();
         try {
             formData.append(URLEncoder.encode("room","UTF-8"));
