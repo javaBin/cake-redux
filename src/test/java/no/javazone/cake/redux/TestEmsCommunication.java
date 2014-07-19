@@ -10,8 +10,9 @@ public class TestEmsCommunication {
         //updateTagsOnEvent();
         //publishTalk();
         //testAllTaksLight();
-        testAllRooms();
+        //testAllRooms();
         //testPublishRoom();
+        readOneTalk();
         long duration = System.currentTimeMillis() -start;
         System.out.println("Took " + duration);
     }
@@ -43,11 +44,11 @@ public class TestEmsCommunication {
     private static void testAllTaksLight() {
         String event2014Text = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY=";
         String event2013Text ="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy9jZWUzN2NjMS01Mzk5LTQ3ZWYtOTQxOC0yMWY5YjY0NDRiZmE=";
-        System.out.println(new EmsCommunicator().talkShortVersion(event2014Text));
+        System.out.println(new EmsCommunicator().talkShortVersion(event2013Text));
     }
 
     private static void readOneTalk() {
-        String talkEvent="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWYvc2Vzc2lvbnMvOWQzMWVmZGYtN2MzMi00ZDg1LWEyYjUtYjM2YmVlZjMyYzQ0";
+        String talkEvent="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy9jZWUzN2NjMS01Mzk5LTQ3ZWYtOTQxOC0yMWY5YjY0NDRiZmEvc2Vzc2lvbnMvNzFlOTYzNTQtNmE0OS00ZDEzLThhNjctNjFkN2QzMTk4ODlm";
         System.out.println(new EmsCommunicator().fetchOneTalk(talkEvent));
     }
 

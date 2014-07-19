@@ -181,5 +181,5 @@ angular.module('cakeReduxModule')
         };
         return fis;
     }])
-    
+
 ;

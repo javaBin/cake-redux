@@ -409,7 +409,7 @@ public class EmsCommunicator {
         URLConnection connection = openConnection(url, true);
         Collection events;
         try {
-            events = new CollectionParser().parse(connection.getInputStream());
+            events = new CollectionParser().parse(openStream(connection));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -419,6 +419,20 @@ public class EmsCommunicator {
     private JSONObject readTalk(Item item, URLConnection connection) {
         JSONObject jsonTalk = readItemProperties(item, connection);
 
+        Optional<Link> roomLinkOpt = item.linkByRel("room item");
+        if (roomLinkOpt.isSome()) {
+            Link roomLink = roomLinkOpt.get();
+            String roomName = roomLink.getPrompt().get();
+            String ref = roomLink.getHref().toString();
+            JSONObject room = new JSONObject();
+            try {
+                room.put("name",roomName);
+                room.put("ref",Base64Util.encode(ref));
+                jsonTalk.put("room",room);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
         String speakerLink = item.linkByRel("speaker collection").get().getHref().toString();
 
         URLConnection speakerConnection = openConnection(speakerLink, true);
