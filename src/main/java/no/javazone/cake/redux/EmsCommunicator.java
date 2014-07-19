@@ -112,13 +112,13 @@ public class EmsCommunicator {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        return confirmTalkMessage("ok","ok");
+        return confirmTalkMessage("ok", "ok");
     }
 
     public String allEvents()  {
         try {
             URLConnection connection = openConnection(Configuration.emsEventLocation(), false);
-            Collection events = new CollectionParser().parse(connection.getInputStream());
+            Collection events = new CollectionParser().parse(openStream(connection));
             List<Item> items = events.getItems();
             JSONArray eventArray = new JSONArray();
             for (Item item : items) {
@@ -331,6 +331,20 @@ public class EmsCommunicator {
 
         }
         return allTalk.toString();
+    }
+
+    public List<Item> roomsAndSlots(String encodedEvent) {
+        String url = Base64Util.decode(encodedEvent) + "/rooms";
+
+        URLConnection connection = openConnection(url, true);
+        Collection events;
+        try {
+            events = new CollectionParser().parse(connection.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return events.getItems();
+
     }
 
     public String talksFullVersion(String encodedEvent) {
