@@ -143,14 +143,27 @@ public class EmsCommunicator {
         }
     }
 
-    public String allRooms(String encodedEventid) {
+    public String allRoomsAndSlots(String encodedEventid) {
         String eventid = Base64Util.decode(encodedEventid);
+        JSONArray roomArray = allRooms(eventid);
+        JSONArray slotArray = allSlots(eventid);
+        JSONObject all = new JSONObject();
+        try {
+            all.put("rooms",roomArray);
+            all.put("slots",slotArray);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return all.toString();
+    }
+
+    private JSONArray allRooms(String eventid) {
         String loc = eventid + "/rooms";
         URLConnection connection = openConnection(loc, false);
         try {
+            JSONArray roomArray = new JSONArray();
             Collection events = new CollectionParser().parse(connection.getInputStream());
             List<Item> items = events.getItems();
-            JSONArray roomArray = new JSONArray();
             for (Item item : items) {
                 Data data = item.getData();
                 String roomname = data.propertyByName("name").get().getValue().get().asString();
@@ -165,13 +178,41 @@ public class EmsCommunicator {
 
                 roomArray.put(event);
             }
-            return roomArray.toString();
+            return roomArray;
         } catch (IOException | JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private JSONArray allSlots(String eventid) {
+        String loc = eventid + "/slots";
+        URLConnection connection = openConnection(loc, false);
+        try {
+            JSONArray slotArray = new JSONArray();
+            Collection events = new CollectionParser().parse(openStream(connection));
+            List<Item> items = events.getItems();
+            for (Item item : items) {
+                Data data = item.getData();
+                String start = data.propertyByName("start").get().getValue().get().asString();
+                String end = data.propertyByName("end").get().getValue().get().asString();
+                String href = item.getHref().get().toString();
 
+                href = Base64Util.encode(href);
+
+                JSONObject event = new JSONObject();
+
+                event.put("start",start);
+                event.put("end",end);
+                event.put("ref",href);
+
+
+                slotArray.put(event);
+            }
+            return slotArray;
+        } catch (IOException | JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     public String fetchOneTalk(String encodedUrl) {
@@ -196,7 +237,7 @@ public class EmsCommunicator {
 
     private InputStream openStream(URLConnection connection) throws IOException {
         InputStream inputStream = connection.getInputStream();
-        if (false) { // flip for debug :)
+        if (true) { // flip for debug :)
             return inputStream;
         }
         String stream = toString(inputStream);
@@ -382,7 +423,7 @@ public class EmsCommunicator {
     }
 
     private JSONObject readTalk(Item item, URLConnection connection) {
-        JSONObject jsonTalk = readItemProperties(item,connection);
+        JSONObject jsonTalk = readItemProperties(item, connection);
 
         String speakerLink = item.linkByRel("speaker collection").get().getHref().toString();
 

@@ -10,8 +10,8 @@ public class TestEmsCommunication {
         //updateTagsOnEvent();
         //publishTalk();
         //testAllTaksLight();
-        //testAllRooms();
-        testPublishRoom();
+        testAllRooms();
+        //testPublishRoom();
         long duration = System.currentTimeMillis() -start;
         System.out.println("Took " + duration);
     }
@@ -24,7 +24,7 @@ public class TestEmsCommunication {
     }
 
     private static void testAllRooms() {
-        String res=new EmsCommunicator().allRooms("aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy9jZWUzN2NjMS01Mzk5LTQ3ZWYtOTQxOC0yMWY5YjY0NDRiZmE=");
+        String res=new EmsCommunicator().allRoomsAndSlots("aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWY");
         System.out.println(res);
     }
 
