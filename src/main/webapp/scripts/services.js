@@ -13,7 +13,9 @@ angular.module('cakeReduxModule')
     .factory('talkList',[function() {
         var li = {
             allTalks : [],
-            talks: []
+            talks: [],
+            chosenEvent: null,
+            roomsAndSlots: {rooms: [],slots:[]}
         };
         return _.clone(li);
     }])
@@ -179,4 +181,5 @@ angular.module('cakeReduxModule')
         };
         return fis;
     }])
+    
 ;

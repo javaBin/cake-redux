@@ -18,6 +18,7 @@ angular.module('cakeReduxModule')
                 $scope.events = data;
                 if ($routeParams.eventSlug) {
                     $scope.chosenEvent = _.findWhere($scope.events,{slug: $routeParams.eventSlug});
+                    talkList.chosenEvent = $scope.chosenEvent;
                     if ($scope.chosenEvent) {
                         $http({method: "GET", url: "data/talks?eventId=" + $scope.chosenEvent.ref})
                             .success(function(talklist) {
@@ -26,6 +27,10 @@ angular.module('cakeReduxModule')
                                 talkList.allTalks = $scope.allTalks;
                                 talkList.talks = $scope.talks;
                                 $scope.filterUpdated();
+                            });
+                        $http({method: "GET", url: "data/roomsSlots?eventId=" + $scope.chosenEvent.ref})
+                            .success(function(data) {
+                                talkList.roomsAndSlots = data;
                             });
                     }
                 }
@@ -42,6 +47,11 @@ angular.module('cakeReduxModule')
                         talkList.talks = $scope.talks;
                         filterService.doFilter($scope.talks,$scope.allTalks);
                     });
+                $http({method: "GET", url: "data/roomsSlots?eventId=" + $scope.chosenEvent})
+                    .success(function(data) {
+                        talkList.roomsAndSlots = data;
+                    });
+
             }
         };
 

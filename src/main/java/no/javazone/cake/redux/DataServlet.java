@@ -107,6 +107,9 @@ public class DataServlet extends HttpServlet {
             writer.append(emsCommunicator.fetchOneTalk(encTalk));
         } else if ("/events".equals(pathInfo)) {
             writer.append(emsCommunicator.allEvents());
+        } else if ("/roomsSlots".equals(pathInfo)) {
+            String encEvent = request.getParameter("eventId");
+            writer.append(emsCommunicator.allRoomsAndSlots(encEvent));
         }
     }
 

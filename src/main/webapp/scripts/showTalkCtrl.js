@@ -1,6 +1,8 @@
 angular.module('cakeReduxModule')
     .controller('ShowTalkCtrl', ['$scope', '$http', '$routeParams', 'talkList',
         function($scope, $http, $routeParams,talkList) {
+            $scope.roomsSlots = talkList.roomsAndSlots;
+
             var talkRef = $routeParams.talkId;
             $scope.showError = false;
 

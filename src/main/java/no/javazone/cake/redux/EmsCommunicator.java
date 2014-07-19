@@ -226,6 +226,7 @@ public class EmsCommunicator {
             String submititLocation = Configuration.submititLocation() + encodedUrl;
             try {
                 jsonObject.put("submititLoc",submititLocation);
+                jsonObject.put("eventId",eventFromTalk(url));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
@@ -235,9 +236,15 @@ public class EmsCommunicator {
         }
     }
 
+    private String eventFromTalk(String url) {
+        int pos = url.indexOf("/sessions");
+        String eventUrl = url.substring(0,pos);
+        return Base64Util.encode(eventUrl);
+    }
+
     private InputStream openStream(URLConnection connection) throws IOException {
         InputStream inputStream = connection.getInputStream();
-        if (true) { // flip for debug :)
+        if (false) { // flip for debug :)
             return inputStream;
         }
         String stream = toString(inputStream);
@@ -374,19 +381,6 @@ public class EmsCommunicator {
         return allTalk.toString();
     }
 
-    public List<Item> roomsAndSlots(String encodedEvent) {
-        String url = Base64Util.decode(encodedEvent) + "/rooms";
-
-        URLConnection connection = openConnection(url, true);
-        Collection events;
-        try {
-            events = new CollectionParser().parse(connection.getInputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return events.getItems();
-
-    }
 
     public String talksFullVersion(String encodedEvent) {
         List<Item> items = getAllTalksSummary(encodedEvent);

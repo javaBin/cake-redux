@@ -101,6 +101,15 @@
             </select>
         </div>
     </div>
+    <div class="row">
+        <div class="cake-margin col-md-3">
+            <h2>Rooms</h2>
+            <ul>
+                <li ng-repeat="room in roomsSlots.rooms">{{room.name}}</li>
+            </ul>
+        </div>
+
+    </div>
     <p></p>
     <div class="alert alert-danger" ng-show="showError"><strong>Error saving: {{errormessage}}</strong></div>
     <p><button id="saveButton" class="btn btn-danger btn-lg cake-margin" ng-click="saveTalk()">Save</button></p>
