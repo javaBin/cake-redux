@@ -420,20 +420,9 @@ public class EmsCommunicator {
     private JSONObject readTalk(Item item, URLConnection connection) {
         JSONObject jsonTalk = readItemProperties(item, connection);
 
-        Optional<Link> roomLinkOpt = item.linkByRel("room item");
-        if (roomLinkOpt.isSome()) {
-            Link roomLink = roomLinkOpt.get();
-            String roomName = roomLink.getPrompt().get();
-            String ref = roomLink.getHref().toString();
-            JSONObject room = new JSONObject();
-            try {
-                room.put("name",roomName);
-                room.put("ref",Base64Util.encode(ref));
-                jsonTalk.put("room",room);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        readRoom(item, jsonTalk);
+        readSlot(item, jsonTalk);
+
         String speakerLink = item.linkByRel("speaker collection").get().getHref().toString();
 
         URLConnection speakerConnection = openConnection(speakerLink, true);
@@ -456,6 +445,42 @@ public class EmsCommunicator {
             throw new RuntimeException(e);
         }
         return jsonTalk;
+    }
+
+    private void readRoom(Item item, JSONObject jsonTalk) {
+        Optional<Link> roomLinkOpt = item.linkByRel("room item");
+        if (roomLinkOpt.isSome()) {
+            Link roomLink = roomLinkOpt.get();
+            String roomName = roomLink.getPrompt().get();
+            String ref = roomLink.getHref().toString();
+            JSONObject room = new JSONObject();
+            try {
+                room.put("name",roomName);
+                room.put("ref", Base64Util.encode(ref));
+                jsonTalk.put("room",room);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void readSlot(Item item, JSONObject jsonTalk) {
+        Optional<Link> slotLinkOpt = item.linkByRel("slot item");
+        if (slotLinkOpt.isSome()) {
+            Link slotLink = slotLinkOpt.get();
+            String ref = slotLink.getHref().toString();
+            String slotcode = slotLink.getPrompt().get();
+            SlotTimeFormatter slotTimeFormatter = new SlotTimeFormatter(slotcode);
+            JSONObject slot = new JSONObject();
+            try {
+                slot.put("ref", Base64Util.encode(ref));
+                slot.put("start",slotTimeFormatter.getStart());
+                slot.put("end",slotTimeFormatter.getEnd());
+                jsonTalk.put("slot",slot);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private JSONObject readItemProperties(Item item, URLConnection connection) {
