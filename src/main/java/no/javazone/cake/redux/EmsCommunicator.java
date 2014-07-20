@@ -424,29 +424,35 @@ public class EmsCommunicator {
         JSONArray allTalk = new JSONArray();
         for (Item item : items) {
             JSONObject jsonTalk = readItemProperties(item, null);
-            List<Link> links = item.getLinks();
-            JSONArray speakers = new JSONArray();
-            for (Link link : links) {
-             if (!"speaker item".equals(link.getRel())) {
-                    continue;
-                }
-                JSONObject speaker = new JSONObject();
-                try {
-                    speaker.put("name",link.getPrompt().get().toString());
-                    speakers.put(speaker);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+            addSpeakersToTalkFromLink(allTalk, item, jsonTalk);
+
+            readRoom(item,jsonTalk);
+            readSlot(item,jsonTalk);
+        }
+        return allTalk.toString();
+    }
+
+    private void addSpeakersToTalkFromLink(JSONArray allTalk, Item item, JSONObject jsonTalk) {
+        List<Link> links = item.getLinks();
+        JSONArray speakers = new JSONArray();
+        for (Link link : links) {
+            if (!"speaker item".equals(link.getRel())) {
+                continue;
             }
+            JSONObject speaker = new JSONObject();
             try {
-                jsonTalk.put("speakers",speakers);
-                allTalk.put(jsonTalk);
+                speaker.put("name",link.getPrompt().get().toString());
+                speakers.put(speaker);
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-
         }
-        return allTalk.toString();
+        try {
+            jsonTalk.put("speakers",speakers);
+            allTalk.put(jsonTalk);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

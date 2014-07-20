@@ -61,6 +61,8 @@
             <th>Tags</th>
             <th>Keywords</th>
             <th>State</th>
+            <th>Room</th>
+            <th>Slot</th>
         </tr>
         </thead>
         <tbody>
@@ -82,7 +84,8 @@
                 <td>{{joinArrs(talk.tags)}}</td>
                 <td>{{joinArrs(talk.keywords)}}</td>
                 <td>{{talk.state}}</td>
-
+                <td>{{talk.room.name}}</td>
+                <td>{{talk.slot.start}}-{{talk.slot.end}}</td>
             </tr>
         </tbody>
     </table>
