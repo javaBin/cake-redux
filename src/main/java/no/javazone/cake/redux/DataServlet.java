@@ -41,9 +41,9 @@ public class DataServlet extends HttpServlet {
             String ref = update.getString("talkRef");
             String roomRef = update.getString("roomRef");
 
-            //String lastModified = update.getString("lastModified");
+            String lastModified = update.getString("lastModified");
 
-            String newTalk = emsCommunicator.assignRoom(ref,roomRef);
+            String newTalk = emsCommunicator.assignRoom(ref,roomRef,lastModified);
             resp.getWriter().append(newTalk);
         } catch (JSONException e) {
             throw new RuntimeException(e);

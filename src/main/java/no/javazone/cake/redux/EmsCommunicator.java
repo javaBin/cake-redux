@@ -255,7 +255,7 @@ public class EmsCommunicator {
         return new ByteArrayInputStream(stream.getBytes());
     }
 
-    public String assignRoom(String encodedTalk,String encodedRoomRef) {
+    public String assignRoom(String encodedTalk,String encodedRoomRef,String givenLastModified) {
         String talkUrl = Base64Util.decode(encodedTalk);
         String roomRef = Base64Util.decode(encodedRoomRef);
         StringBuilder formData = new StringBuilder();
@@ -270,6 +270,15 @@ public class EmsCommunicator {
 
         String lastModified = connection.getHeaderField("last-modified");
 
+        if (!lastModified.equals(givenLastModified)) {
+            JSONObject errorJson = new JSONObject();
+            try {
+                errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            return errorJson.toString();
+        }
 
         HttpURLConnection postConnection = (HttpURLConnection) openConnection(talkUrl, true);
 

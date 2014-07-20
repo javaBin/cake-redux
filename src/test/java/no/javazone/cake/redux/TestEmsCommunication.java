@@ -21,7 +21,7 @@ public class TestEmsCommunication {
         String encodedTalk = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy9jZWUzN2NjMS01Mzk5LTQ3ZWYtOTQxOC0yMWY5YjY0NDRiZmEvc2Vzc2lvbnMvZWQ2Y2RiNzctZTVlMy00MGQ2LWE0NjktODRkYzhkMTA5ZGM1";
         String room = "http://test.2014.javazone.no/ems/server/events/cee37cc1-5399-47ef-9418-21f9b6444bfa/rooms/893b1b52-d158-4125-9725-34039abaf6a4";
         //String room = "http://test.2014.javazone.no/ems/server/events/cee37cc1-5399-47ef-9418-21f9b6444bfa/slots/c92511fc-5063-4054-b55d-6d5cd78b5e18";
-        new EmsCommunicator().assignRoom(encodedTalk,room);
+        new EmsCommunicator().assignRoom(encodedTalk,room,"xxx");
     }
 
     private static void testAllRooms() {
