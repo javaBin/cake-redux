@@ -1,6 +1,7 @@
 angular.module('cakeReduxModule')
-    .controller('ShowTalkCtrl', ['$scope', '$http', '$routeParams', 'talkList','roomSlotFactory',
-        function($scope, $http, $routeParams,talkList,roomSlotFactory) {
+    .controller('ShowTalkCtrl', ['$scope', '$http', '$routeParams', 'talkList','roomSlotFactory','slotFilterService',
+        function($scope, $http, $routeParams,talkList,roomSlotFactory,slotFilterService) {
+            $scope.filterSlot = slotFilterService.filterValue;
             $scope.roomsSlots = {};
 
             var talkRef = $routeParams.talkId;
