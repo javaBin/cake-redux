@@ -47,4 +47,33 @@ describe("Slot filter spec suite", function() {
     });
 
 
+    it('should return only 10 minutes', function() {
+        slotFilterService.filterValue.sixty = false;
+        slotFilterService.filterValue.ten = true;
+        slotFilterService.filterValue.others = false;
+        var result = slotFilterService.doFilter(allSlots);
+        expect(result.length).toBe(2);
+        expect(result[0].ref).toBe("c");
+        expect(result[1].ref).toBe("d");
+    });
+
+    it('should return only others', function() {
+        slotFilterService.filterValue.sixty = false;
+        slotFilterService.filterValue.ten = false;
+        slotFilterService.filterValue.others = true;
+        var result = slotFilterService.doFilter(allSlots);
+        expect(result.length).toBe(1);
+        expect(result[0].ref).toBe("e");
+    });
+
+    it('should return combination', function() {
+        slotFilterService.filterValue.sixty = false;
+        slotFilterService.filterValue.ten = true;
+        slotFilterService.filterValue.others = true;
+        var result = slotFilterService.doFilter(allSlots);
+        expect(result.length).toBe(3);
+        expect(result[0].ref).toBe("c");
+        expect(result[1].ref).toBe("d");
+        expect(result[2].ref).toBe("e");
+    });
 });
