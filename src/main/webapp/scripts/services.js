@@ -28,7 +28,17 @@ angular.module('cakeReduxModule')
                     others: true
                 },
                 doFilter: function(allSlots) {
-                    return allSlots;
+                    var self = this;
+                    return _.filter(allSlots,function(slot) {
+                        switch (slot.length) {
+                            case 10:
+                                return self.filterValue.ten;
+                            case 60:
+                                return self.filterValue.sixty;
+                            default:
+                                return self.filterValue.others;
+                        };
+                    });
                 }
             };
             return filter;
