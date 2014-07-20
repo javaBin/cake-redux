@@ -4,6 +4,7 @@ angular.module('cakeReduxModule')
             $scope.filterSlot = slotFilterService.filterValue;
             $scope.roomsSlots = {};
 
+
             var talkRef = $routeParams.talkId;
             $scope.showError = false;
 
@@ -37,6 +38,11 @@ angular.module('cakeReduxModule')
 
                 }
 
+            };
+
+
+            $scope.slotFilterUpdated = function() {
+                $scope.roomsSlots.slots = slotFilterService.doFilter($scope.roomsSlots.allSlots);
             };
 
 

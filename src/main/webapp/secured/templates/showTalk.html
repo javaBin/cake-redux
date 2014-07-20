@@ -115,21 +115,23 @@
     </div>
     <p><button class="btn btn-danger btn-lg cake-margin" ng-click="updateRoom()">Update room</button></p>
     <h2>Update slot</h2>
-    <div class="checkbox">
+    <form>
+    <div class="checkbox-inline">
         <label>
-            <input type="checkbox" ng-model="filterSlot.ten"> 10 mins
+            <input type="checkbox" ng-model="filterSlot.ten" ng-change="slotFilterUpdated()"> 10 mins
         </label>
     </div>
-    <div class="checkbox">
+    <div class="checkbox-inline">
         <label>
-            <input type="checkbox" ng-model="filterSlot.sixty"> 60 mins
+            <input type="checkbox" ng-model="filterSlot.sixty" ng-change="slotFilterUpdated()"> 60 mins
         </label>
     </div>
-    <div class="checkbox">
+    <div class="checkbox-inline">
         <label>
-            <input type="checkbox" ng-model="filterSlot.others"> Others
+            <input type="checkbox" ng-model="filterSlot.others" ng-change="slotFilterUpdated()"> Others
         </label>
     </div>
+    </form>
     <div class="cake-margin col-md-4 row">
         <select class="form-control" ng-model="selectedSlot">
             <option ng-repeat="slot in roomsSlots.slots" value="{{slot.ref}}">{{slot.start}}-{{slot.end}}</option>
