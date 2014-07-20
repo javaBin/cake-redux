@@ -310,6 +310,61 @@ public class EmsCommunicator {
         return fetchOneTalk(encodedTalk);
     }
 
+    public String assignSlot(String encodedTalk,String encodedSlotRef,String givenLastModified) {
+        String talkUrl = Base64Util.decode(encodedTalk);
+        String slotRef = Base64Util.decode(encodedSlotRef);
+        StringBuilder formData = new StringBuilder();
+        try {
+            formData.append(URLEncoder.encode("slot","UTF-8"));
+            formData.append("=");
+            formData.append(URLEncoder.encode(slotRef,"UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        HttpURLConnection connection = (HttpURLConnection) openConnection(talkUrl, true);
+
+        String lastModified = connection.getHeaderField("last-modified");
+
+        if (!lastModified.equals(givenLastModified)) {
+            JSONObject errorJson = new JSONObject();
+            try {
+                errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            return errorJson.toString();
+        }
+
+        HttpURLConnection postConnection = (HttpURLConnection) openConnection(talkUrl, true);
+
+        postConnection.setDoOutput(true);
+        try {
+            postConnection.setRequestMethod("POST");
+            postConnection.setRequestProperty("content-type","application/x-www-form-urlencoded");
+            postConnection.setRequestProperty("if-unmodified-since",lastModified);
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+        try {
+            DataOutputStream wr = new DataOutputStream(postConnection.getOutputStream());
+            wr.writeBytes(formData.toString());
+            wr.flush();
+            wr.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (InputStream is = postConnection.getInputStream()) {
+            toString(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return fetchOneTalk(encodedTalk);
+    }
+
     public String publishTalk(String encodedTalkUrl,String givenLastModified) {
         String talkUrl = Base64Util.decode(encodedTalkUrl);
         HttpURLConnection connection = (HttpURLConnection) openConnection(talkUrl, true);

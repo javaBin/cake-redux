@@ -139,6 +139,7 @@ angular.module('cakeReduxModule')
             };
 
             $scope.updateRoom = function() {
+                $scope.showError = false;
                 var postData = {
                     talkRef: $scope.aTalk.ref,
                     roomRef: $scope.selectedRoom,
@@ -160,7 +161,32 @@ angular.module('cakeReduxModule')
                     $scope.errormessage = data.error;
                     $scope.showError = true;
                 });
-            }
+            };
+
+            $scope.updateSlot = function() {
+                $scope.showError = false;
+                var postData = {
+                    talkRef: $scope.aTalk.ref,
+                    slotRef: $scope.selectedSlot,
+                    lastModified: $scope.aTalk.lastModified
+                }
+                $http({
+                    method: "POST",
+                    url: "data/assignSlot",
+                    data: postData
+                }).success(function(data) {
+                    if (data.error) {
+                        $scope.errormessage = data.error;
+                        $scope.showError = true;
+                        return;
+                    }
+                    $scope.aTalk.lastModified = data.lastModified;
+                    $scope.aTalk.slot = data.slot;
+                }).error(function(data, status, headers, config) {
+                    $scope.errormessage = data.error;
+                    $scope.showError = true;
+                });
+            };
 
 
 

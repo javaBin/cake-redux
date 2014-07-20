@@ -30,6 +30,8 @@ public class DataServlet extends HttpServlet {
             massUpdate(req, resp);
         } else if ("/assignRoom".equals(pathInfo)) {
             assignRoom(req,resp);
+        } else if ("/assignSlot".equals(pathInfo)) {
+            assignSlot(req,resp);
         }
 
     }
@@ -44,6 +46,22 @@ public class DataServlet extends HttpServlet {
             String lastModified = update.getString("lastModified");
 
             String newTalk = emsCommunicator.assignRoom(ref,roomRef,lastModified);
+            resp.getWriter().append(newTalk);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void assignSlot(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try (InputStream inputStream = req.getInputStream()) {
+            String inputStr = EmsCommunicator.toString(inputStream);
+            JSONObject update = new JSONObject(inputStr);
+            String ref = update.getString("talkRef");
+            String slotRef = update.getString("slotRef");
+
+            String lastModified = update.getString("lastModified");
+
+            String newTalk = emsCommunicator.assignSlot(ref,slotRef,lastModified);
             resp.getWriter().append(newTalk);
         } catch (JSONException e) {
             throw new RuntimeException(e);
