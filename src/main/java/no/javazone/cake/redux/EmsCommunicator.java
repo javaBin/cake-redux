@@ -201,14 +201,15 @@ public class EmsCommunicator {
 
                 href = Base64Util.encode(href);
 
-                JSONObject event = new JSONObject();
+                JSONObject slot = new JSONObject();
 
-                event.put("start",slotTimeFormatter.getStart());
-                event.put("end",slotTimeFormatter.getEnd());
-                event.put("ref",href);
+                slot.put("start", slotTimeFormatter.getStart());
+                slot.put("end", slotTimeFormatter.getEnd());
+                slot.put("length", slotTimeFormatter.getLength());
+                slot.put("ref", href);
 
 
-                slotArray.put(event);
+                slotArray.put(slot);
             }
             return slotArray;
         } catch (IOException | JSONException e) {

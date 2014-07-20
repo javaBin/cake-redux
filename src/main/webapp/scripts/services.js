@@ -14,11 +14,51 @@ angular.module('cakeReduxModule')
         var li = {
             allTalks : [],
             talks: [],
-            chosenEvent: null,
-            roomsAndSlots: {rooms: [],slots:[]}
+            chosenEvent: null
+
         };
         return _.clone(li);
     }])
+    .factory('slotFilterService',[
+        function() {
+            var filter = {
+                filterValue: {
+                    ten: true,
+                    sixty: true,
+                    others: true
+                },
+                doFilter: function(allSlots) {
+                    return allSlots;
+                }
+            };
+            return filter;
+        }
+    ])
+    .factory('roomSlotFactory',[
+        "$http","$q","slotFilterService",function($http,$q,slotFilterService) {
+            var fact = {
+                eventsWithSlotsRoom: [],
+                roomsSlotsForEvent: function(eventid) {
+                    if (this.eventsWithSlotsRoom[eventid]) {
+                        return this.eventsWithSlotsRoom[eventid];
+                    }
+                    var deffered = $q.defer();
+                    $http({method: "GET", url: "data/roomsSlots?eventId=" + eventid})
+                        .success(function(data) {
+                            var roomSl = {
+                                rooms: data.rooms,
+                                allSlots: data.slots,
+                                slots: slotFilterService.doFilter(data.slots)
+                            };
+                            deffered.resolve(roomSl);
+                        });
+                    this.eventsWithSlotsRoom[eventid] = deffered.promise;
+                    return this.eventsWithSlotsRoom[eventid];
+                }
+            };
+            return fact;
+        }
+    ])
     .factory('cookieService',[function() {
         return {
             setCookie : function(cname,cvalue,exdays) {
@@ -181,5 +221,4 @@ angular.module('cakeReduxModule')
         };
         return fis;
     }])
-
 ;

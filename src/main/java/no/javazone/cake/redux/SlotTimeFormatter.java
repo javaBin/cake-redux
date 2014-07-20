@@ -1,12 +1,14 @@
 package no.javazone.cake.redux;
 
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public class SlotTimeFormatter {
     private String start;
     private String end;
+    private int length;
 
     public SlotTimeFormatter(String formattedSlot) {
         String[] split = formattedSlot.split("\\+");
@@ -20,6 +22,9 @@ public class SlotTimeFormatter {
         start = outputFormat.print(startTime);
         DateTime endTime = inputFormat.parseDateTime(endPart);
         end = outputFormat.print(endTime);
+
+        Period period = new Period(startTime, endTime);
+        length = period.toStandardMinutes().getMinutes();
     }
 
     public String getStart() {
@@ -28,5 +33,9 @@ public class SlotTimeFormatter {
 
     public String getEnd() {
         return end;
+    }
+
+    public int getLength() {
+        return length;
     }
 }

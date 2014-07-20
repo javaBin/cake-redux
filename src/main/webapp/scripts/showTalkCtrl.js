@@ -1,7 +1,7 @@
 angular.module('cakeReduxModule')
-    .controller('ShowTalkCtrl', ['$scope', '$http', '$routeParams', 'talkList',
-        function($scope, $http, $routeParams,talkList) {
-            $scope.roomsSlots = talkList.roomsAndSlots;
+    .controller('ShowTalkCtrl', ['$scope', '$http', '$routeParams', 'talkList','roomSlotFactory',
+        function($scope, $http, $routeParams,talkList,roomSlotFactory) {
+            $scope.roomsSlots = {};
 
             var talkRef = $routeParams.talkId;
             $scope.showError = false;
@@ -30,15 +30,9 @@ angular.module('cakeReduxModule')
                 });
                 if ($scope.aTalk) {
                     document.title = $scope.aTalk.title;
-                    if ($scope.roomsSlots.rooms.length == 0) {
-                        $http({method: "GET", url: "data/roomsSlots?eventId=" + $scope.aTalk.eventId})
-                            .success(function(data) {
-                                $scope.roomsSlots = data;
-                                $scope.selectedTalk = $scope.aTalk.room.ref;
-                            });
-                    } else {
-                        $scope.selectedTalk = $scope.aTalk.room.ref;
-                    }
+                    roomSlotFactory.roomsSlotsForEvent($scope.aTalk.eventId).then(function(rs) {
+                        $scope.roomsSlots = rs;
+                    })
 
                 }
 
