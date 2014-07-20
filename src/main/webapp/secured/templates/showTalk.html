@@ -56,7 +56,7 @@
     </div>
     <div class="row cake-row">
         <div class="col-md-1 cake-margin"><strong>Slot</strong></div>
-        <div class="col-md-10">{{aTalk.slot.start}} - {{aTalk.slot.end}}</div>
+        <div class="col-md-10">{{aTalk.slot.start}} - {{aTalk.slot.end}} <small>(yymmdd hhmm-yymmdd hhmm)</small></div>
     </div>
     <div ng-repeat="speaker in aTalk.speakers">
         <h3>{{speaker.name}}</h3>
@@ -113,6 +113,13 @@
             <option ng-repeat="room in roomsSlots.rooms" value="{{room.ref}}">{{room.name}}</option>
         </select>
     </div>
-    <p><button id="saveButton" class="btn btn-danger btn-lg cake-margin" ng-click="updateRoom()">Update room</button></p>
+    <p><button class="btn btn-danger btn-lg cake-margin" ng-click="updateRoom()">Update room</button></p>
+    <h2>Update slot</h2>
+    <div class="cake-margin col-md-4 row">
+        <select class="form-control" ng-model="selectedSlot">
+            <option ng-repeat="slot in roomsSlots.slots" value="{{slot.ref}}">{{slot.start}}-{{slot.end}}</option>
+        </select>
+    </div>
+    <p><button class="btn btn-danger btn-lg cake-margin" ng-click="updateSlot()">Update slot</button></p>
     <h6>Last modified: {{aTalk.lastModified}}</h6>
 </div>

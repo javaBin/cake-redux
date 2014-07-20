@@ -197,12 +197,14 @@ public class EmsCommunicator {
                 String end = data.propertyByName("end").get().getValue().get().asString();
                 String href = item.getHref().get().toString();
 
+                SlotTimeFormatter slotTimeFormatter = new SlotTimeFormatter(start + "+" + end);
+
                 href = Base64Util.encode(href);
 
                 JSONObject event = new JSONObject();
 
-                event.put("start",start);
-                event.put("end",end);
+                event.put("start",slotTimeFormatter.getStart());
+                event.put("end",slotTimeFormatter.getEnd());
                 event.put("ref",href);
 
 
