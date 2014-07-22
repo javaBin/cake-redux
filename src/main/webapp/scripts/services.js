@@ -91,6 +91,39 @@ angular.module('cakeReduxModule')
 
         };
     }])
+    .factory('showScheduleService',function() {
+       var func = function(talks) {
+           var result = {
+                rooms : [],
+                slots: []
+           };
+           result.rooms.push("No room");
+           _.each(talks,function(talk) {
+               var slotName = "No slot";
+               var roomName = "No room";
+               var slot = _.find(result.slots,function(aslot) {
+                    return aslot.name === slotName;
+               });
+               if (!slot) {
+                   slot = {
+                       name: slotName,
+                       rooms: []
+                   };
+                   _.each(result.rooms,function(rname) {
+                        slot.rooms.push({name: rname, talks: []});
+                   });
+                   result.slots.push(slot);
+               }
+
+               var roomSlot = _.find(slot.rooms,function(aroom) {
+                   return aroom.name === roomName;
+               });
+               roomSlot.talks.push(talk);
+           });
+           return result;
+       };
+       return func;
+    })
     .factory('filterService',["cookieService",function(cookieService) {
         var b = cookieService.a;
         var isMatch= function(filter,obj) {
