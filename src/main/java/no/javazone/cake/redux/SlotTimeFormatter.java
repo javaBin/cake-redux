@@ -1,9 +1,12 @@
 package no.javazone.cake.redux;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import java.util.TimeZone;
 
 public class SlotTimeFormatter {
     private String start;
@@ -15,16 +18,22 @@ public class SlotTimeFormatter {
         String startPart = split[0];
         String endPart = split[1];
 
-        DateTimeFormatter inputFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
         DateTimeFormatter outputFormat = DateTimeFormat.forPattern("yyMMdd HH:mm");
 
-        DateTime startTime = inputFormat.parseDateTime(startPart);
+        DateTime startTime = toTime(startPart);
         start = outputFormat.print(startTime);
-        DateTime endTime = inputFormat.parseDateTime(endPart);
+        DateTime endTime = toTime(endPart);
         end = outputFormat.print(endTime);
 
         Period period = new Period(startTime, endTime);
         length = period.toStandardMinutes().getMinutes();
+    }
+
+    private DateTime toTime(String startPart) {
+        DateTimeFormatter inputFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ").withZoneUTC();
+        DateTimeZone oslo = DateTimeZone.forID("Europe/Oslo");
+        DateTime dateTime = inputFormat.parseDateTime(startPart);
+        return dateTime.withZone(oslo);
     }
 
     public String getStart() {
