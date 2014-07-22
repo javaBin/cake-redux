@@ -159,6 +159,12 @@ angular.module('cakeReduxModule')
             if (!isMatch(filter.state,talk.state)) {
                 return false;
             }
+            if (filter.room && filter.room.length > 0 && (!talk.room || !isMatch(filter.room,talk.room.name))) {
+                return false;
+            }
+            if (filter.slot && filter.slot.length > 0 && (!talk.slot || !isMatch(filter.slot,talk.slot.start+"-"+talk.slot.end))) {
+                return false;
+            }
             return true;
         }
 

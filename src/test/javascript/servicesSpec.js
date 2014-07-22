@@ -54,6 +54,30 @@ describe("Filter test suite", function() {
         expect(talks[0].title).toBe("Title en");
         expect(talks[1].title).toBe("Title tre");
     });
+    it('should filter room',function() {
+        filterService.filters.push({room: "Room 7"});
+        var allTalks = [
+            {title: "Title en",room:{name: "Room 7",ref:"z"}},
+            {title: "Title to"},
+            {title: "Title tre",room:{name: "Room 6",ref:"x"}}
+        ];
+        var talks = [];
+        filterService.doFilter(talks,allTalks);
+        expect(talks.length).toBe(1);
+        expect(talks[0].title).toBe("Title en");
+    });
+    it('should filter slot',function() {
+        filterService.filters.push({slot: "140910"});
+        var allTalks = [
+            {title: "Title en",slot:{start:"140910 10:20",end:"140910 11:20",ref:"z"}},
+            {title: "Title to"},
+            {title: "Title tre",slot:{start:"140911 10:20",end:"140911 10:20",ref:"x"}}
+        ];
+        var talks = [];
+        filterService.doFilter(talks,allTalks);
+        expect(talks.length).toBe(1);
+        expect(talks[0].title).toBe("Title en");
+    });
     it('should handle tag arrays',function() {
         var allTalks=[{title: "one", tags: ["ja","bekreftet"]},{title: "two",tags: []}];
         var talks = [];

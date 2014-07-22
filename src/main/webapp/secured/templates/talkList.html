@@ -75,6 +75,8 @@
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.tag" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.keyword" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.state" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.room" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.slot" ng-change="filterUpdated()"/></td>
             </tr>
             <tr ng-repeat="talk in talks" ng-class="talkRowClass(talk)">
                 <td><a ng-href="#/showTalk/{{talk.ref}}" ng-click="talkSelected(talk)">{{talk.title}}</a></td>
