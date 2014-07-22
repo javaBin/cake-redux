@@ -26,6 +26,10 @@
                     when("/massUpdate", {
                         templateUrl: 'templates/acceptTalk.html',
                         controller: 'AcceptTalkCtrl'
+                    }).
+                    when("/showSchedule", {
+                        templateUrl: 'templates/showSchedule.html',
+                        controller: 'ShowScheduleCtrl'
                     })
                     ;
         }]);
