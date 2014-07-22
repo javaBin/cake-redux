@@ -1,6 +1,23 @@
 <div class="cake-margin" ng-controller="ShowScheduleCtrl">
     <h1>Schedule</h1>
-    <ul>
-        <li ng-repeat="talk in talks">{{talk.title}}</li>
-    </ul>
+    <table class="table table-bordered table-hoover">
+        <thead>
+        <tr>
+            <th>slot\room</th>
+            <th ng-repeat="roomname in rooms">{{roomname}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="slot in slots">
+            <td>{{slot.name}}</td>
+            <td ng-repeat="room in slot.rooms">
+                <ul>
+                    <li ng-repeat="talk in room.talks">{{talk.title}}</li>
+                </ul>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
 </div>

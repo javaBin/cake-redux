@@ -97,10 +97,16 @@ angular.module('cakeReduxModule')
                 rooms : [],
                 slots: []
            };
-           result.rooms.push("No room");
+           _.each(talks, function(talk) {
+               var roomName = talk.room ? talk.room.name : "No room";
+               if (_.indexOf(result.rooms,roomName) == -1) {
+                   result.rooms.push(roomName);
+               }
+
+           });
            _.each(talks,function(talk) {
-               var slotName = "No slot";
-               var roomName = "No room";
+               var slotName =  talk.slot ? talk.slot.start + "-" + talk.slot.end : "No slot";
+               var roomName = talk.room ? talk.room.name : "No room";
                var slot = _.find(result.slots,function(aslot) {
                     return aslot.name === slotName;
                });
