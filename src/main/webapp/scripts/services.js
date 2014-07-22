@@ -104,6 +104,7 @@ angular.module('cakeReduxModule')
                }
 
            });
+           result.rooms.sort();
            _.each(talks,function(talk) {
                var slotName =  talk.slot ? talk.slot.start + "-" + talk.slot.end : "No slot";
                var roomName = talk.room ? talk.room.name : "No room";
@@ -125,6 +126,9 @@ angular.module('cakeReduxModule')
                    return aroom.name === roomName;
                });
                roomSlot.talks.push(talk);
+           });
+           result.slots = _.sortBy(result.slots,function(slot) {
+               return slot.name;
            });
            return result;
        };
