@@ -12,7 +12,9 @@
             <td>{{slot.name}}</td>
             <td ng-repeat="room in slot.rooms">
                 <ul>
-                    <li ng-repeat="talk in room.talks">{{talk.title}}</li>
+                    <li ng-repeat="talk in room.talks">
+                        <a ng-href="#/showTalk/{{talk.ref}}" ng-click="talkSelected(talk)">{{talk.title}}</a>
+                    </li>
                 </ul>
             </td>
         </tr>
