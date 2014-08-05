@@ -57,15 +57,15 @@ WAR=$(_readWithDefault $DEFAULT_WAR)
 ask "Hvilken versjon? [$DEFAULT_VERSION]"
 VERSION=$(_readWithDefault $DEFAULT_VERSION)
 
-ask "Til test eller prod? [test]"
-ENV=$(_readWithDefault "test")
+ask "Til dev, test eller prod? [dev]"
+ENV=$(_readWithDefault "dev")
 
 if [ ! -f $JAR ]; then
 	fail "Fant ikke $JAR :("
 fi
 
-if [ $ENV != "test" -a $ENV != "prod" ]; then
-	fail "Miljø må være enten 'test' eller 'prod'"
+if [ $ENV != "dev" -a $ENV != "test" -a $ENV != "prod" ]; then
+	fail "Miljø må være enten 'dev', 'test' eller 'prod'"
 fi
 
 if [ $ENV == "prod" ]; then
@@ -73,6 +73,9 @@ if [ $ENV == "prod" ]; then
 	BASE="/home/javabin/web/cakeredux"
 elif [ $ENV == "test" ]; then
 	HOST="test.2014.javazone.no"
+	BASE="/home/javabin/web/cakeredux"
+elif [ $ENV == "dev" ]; then
+	HOST="192.168.111.222"
 	BASE="/home/javabin/web/cakeredux"
 else
 	fail "Det du sa gav null mening!"
