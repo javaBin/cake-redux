@@ -7,7 +7,7 @@
     <artifactId>cake-redux</artifactId>
     <name>cake-redux</name>
     <version>0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -93,8 +93,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <target>1.7</target>
-                    <source>1.7</source>
+                    <target>1.8</target>
+                    <source>1.8</source>
                 </configuration>
                 <version>2.3.2</version>
             </plugin>

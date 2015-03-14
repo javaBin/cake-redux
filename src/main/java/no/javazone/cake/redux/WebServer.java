@@ -1,9 +1,15 @@
 package no.javazone.cake.redux;
 
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ShutdownHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
+
+import java.io.File;
+import java.util.EnumSet;
+
+import static javax.servlet.DispatcherType.REQUEST;
 
 public class WebServer {
 
@@ -28,19 +34,41 @@ public class WebServer {
         new WebServer(getPort(8081),warFile).start();
     }
 
+
+    private WebAppContext createHandler() {
+        WebAppContext webAppContext = new WebAppContext();
+        webAppContext.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
+        webAppContext.getSessionHandler().getSessionManager().setMaxInactiveInterval(30);
+        webAppContext.setContextPath("/");
+
+        if (isDevEnviroment()) {
+            // Development ie running in ide
+            webAppContext.setResourceBase("src/main/resources/webapp");
+        } else {
+            // Prod ie running from jar
+            webAppContext.setBaseResource(Resource.newClassPathResource("webapp", true, false));
+        }
+
+        webAppContext.addServlet(new ServletHolder(new DataServlet()),"/secured/data/*");
+        webAppContext.addServlet(new ServletHolder(new OpenDataServlet()),"/data/*");
+        webAppContext.addServlet(new ServletHolder(new SigninServlet()), "/signin/");
+        webAppContext.addServlet(new ServletHolder(new EntranceServlet()), "/entrance");
+
+        webAppContext.addFilter(new FilterHolder(new SecurityFilter()), "/secured/*", EnumSet.of(REQUEST));
+
+
+        return webAppContext;
+    }
+
+    private static boolean isDevEnviroment() {
+        return new File("pom.xml").exists();
+    }
+
+
     private void start() throws Exception {
         Server server = new Server(port);
-        if (warFile != null) {
-            WebAppContext webAppContext = new WebAppContext();
-            webAppContext.setContextPath("/");
-            webAppContext.setWar(warFile);
-            server.setHandler(webAppContext);
-        } else {
-            HandlerList handlerList = new HandlerList();
-            handlerList.addHandler(new ShutdownHandler("yablayabla", false, true));
-            handlerList.addHandler(new WebAppContext("src/main/webapp", "/"));
-            server.setHandler(handlerList);
-        }
+        server.setHandler(createHandler());
+
         server.start();
         System.out.println(server.getURI());
     }
