@@ -276,6 +276,11 @@ angular.module('cakeReduxModule')
                         talks.push(talk);
                     }
                 });
+            },
+            injectFilter: function(filterstr) {
+                if (_.isString(filterstr)) {
+                    this.filters = JSON.parse(filterstr);
+                }
             }
         };
         return fis;

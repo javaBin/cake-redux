@@ -1,6 +1,7 @@
 angular.module('cakeReduxModule')
 .controller('TalkListCtrl', ['$scope', '$http', '$routeParams', 'eventFactory','talkList','filterService','roomSlotFactory',
     function($scope, $http, $routeParams,eventFactory,talkList,filterService,roomSlotFactory) {
+        filterService.injectFilter($routeParams.filter);
         document.title = "Cake redux - it's the truth";
         $scope.selectedTalk = filterService.selectedTalk;
         $scope.showFilters = true;

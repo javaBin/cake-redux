@@ -156,6 +156,15 @@ describe("Filter test suite", function() {
         expect(talks.length).toBe(1);
         expect(talks[0].title).toBe("one");
 
+    });
 
+    it('should handle injected filter',function() {
+        var filters = [{title : "one"}];
+        filterService.injectFilter(JSON.stringify(filters));
+        var allTalks = [{title: "Title one", speakers: []},{title: "Title two", speakers:[]}];
+        var talks = [];
+        filterService.doFilter(talks,allTalks);
+        expect(talks.length).toBe(1);
+        expect(talks[0].title).toBe("Title one");
     });
 });
