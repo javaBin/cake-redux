@@ -51,9 +51,6 @@ DEFAULT_VERSION=`date +%Y%m%d%H%M%S`-SNAPSHOT
 ask "Hvor ligger jar-filen? [$DEFAULT_JAR]"
 JAR=$(_readWithDefault $DEFAULT_JAR)
 
-ask "Hvor ligger war-filen? [$DEFAULT_WAR]"
-WAR=$(_readWithDefault $DEFAULT_WAR)
-
 ask "Hvilken versjon? [$DEFAULT_VERSION]"
 VERSION=$(_readWithDefault $DEFAULT_VERSION)
 
@@ -69,10 +66,10 @@ if [ $ENV != "dev" -a $ENV != "test" -a $ENV != "prod" ]; then
 fi
 
 if [ $ENV == "prod" ]; then
-	HOST="2014.javazone.no"
+	HOST="javazone.no"
 	BASE="/home/javabin/web/cakeredux"
 elif [ $ENV == "test" ]; then
-	HOST="test.2014.javazone.no"
+	HOST="test.javazone.no"
 	BASE="/home/javabin/web/cakeredux"
 elif [ $ENV == "dev" ]; then
 	HOST="192.168.111.222"
@@ -86,8 +83,7 @@ info "Deployer til $EVN på $HOST:$BASE med versjon $VERSION med jar $JAR og war
 ssh javabin@$HOST "mkdir -p $BASE/$VERSION"
 info "Laster opp jar"
 scp $JAR javabin@$HOST:$BASE/$VERSION/cakeredux.jar
-info "Laster opp war"
-scp $WAR javabin@$HOST:$BASE/$VERSION/cakeredux.war
+
 ssh javabin@$HOST "ln -s -f $VERSION -T $BASE/current"
 ssh javabin@$HOST "$BASE/cakeredux.sh stop"
 ssh javabin@$HOST "$BASE/cakeredux.sh start"
