@@ -47,8 +47,11 @@
         <div class="col-md-8" ng-show="!showFilters">
             <button class="btn btn-info btn-sm" ng-click="doShowFilters()">Show filters</button>
         </div>
-        <div class="col-md-1">
+        <div class="col-sm-1">
             <button class="btn btn-info btn-sm" ng-click="reloadTalks()">Refresh</button>
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-info btn-sm" ng-click="saveFilter()">Save filter</button>
         </div>
         <div class="col-md-2 small">Showing {{talks.length}} of {{allTalks.length}}</div>
     </div>

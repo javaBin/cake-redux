@@ -1,6 +1,6 @@
 angular.module('cakeReduxModule')
-.controller('TalkListCtrl', ['$scope', '$http', '$routeParams', 'eventFactory','talkList','filterService','roomSlotFactory',
-    function($scope, $http, $routeParams,eventFactory,talkList,filterService,roomSlotFactory) {
+.controller('TalkListCtrl', ['$scope', '$http', '$routeParams', 'eventFactory','talkList','filterService','$location',
+    function($scope, $http, $routeParams,eventFactory,talkList,filterService,$location) {
         filterService.injectFilter($routeParams.filter);
         document.title = "Cake redux - it's the truth";
         $scope.selectedTalk = filterService.selectedTalk;
@@ -122,5 +122,8 @@ angular.module('cakeReduxModule')
             return "";
         }
 
-		
+		$scope.saveFilter = function() {
+            var filtValue = JSON.stringify($scope.filters);
+            $location.search("filter",filtValue);
+        }
 }]);
