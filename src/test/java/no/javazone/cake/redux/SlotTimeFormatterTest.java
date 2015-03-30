@@ -2,7 +2,7 @@ package no.javazone.cake.redux;
 
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SlotTimeFormatterTest {
     @Test
@@ -12,4 +12,6 @@ public class SlotTimeFormatterTest {
         assertThat(slotTimeFormatter.getEnd()).isEqualTo("140909 13:00");
         assertThat(slotTimeFormatter.getLength()).isEqualTo(240);
     }
+
+
 }
