@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Configuration {
 
@@ -108,5 +109,27 @@ public class Configuration {
     public static String cakeLocation() {
         return getProperty("cakeLocation");
     }
+
+    private static String readConf(String prop,String defaultValue) {
+        return Optional.ofNullable(getProperty(prop)).orElse(defaultValue);
+    }
+
+    public static boolean whydaSupported() {
+        return "true".equals(readConf("supportWhyda","false"));
+    }
+
+    public static String logonRedirectUrl() {
+        return readConf("logonRedirectUrl", "http://localhost:9997/sso/login?redirectURI=http://localhost:8088/admin/");
+    }
+
+    public static String tokenServiceUrl() {
+        return readConf("tokenServiceUrl", "http://localhost:9998/tokenservice");
+    }
+
+    public static String applicationId() {
+        return readConf("applicationId", "99");
+    }
+
+    public static String applicationSecret() { return readConf("applicationSecret", "33879936R6Jr47D4Hj5R6p9qT");}
 
 }

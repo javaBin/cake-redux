@@ -89,8 +89,12 @@ public class EntranceServlet extends HttpServlet {
             return;
         }
 
-        req.getSession().setAttribute("access_token", accessToken);
+        req.getSession().setAttribute("access_token", userid);
 
+        writeLoginMessage(resp, writer, userid);
+    }
+
+    public static void writeLoginMessage(HttpServletResponse resp, PrintWriter writer, String userid) {
         resp.setContentType("text/html");
         writer.append("<html><body>");
         writer.append("<p>You are now logged in as " + userid + "</p>");
