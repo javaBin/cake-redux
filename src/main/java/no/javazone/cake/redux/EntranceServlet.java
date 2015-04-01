@@ -1,7 +1,8 @@
 package no.javazone.cake.redux;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -53,15 +54,11 @@ public class EntranceServlet extends HttpServlet {
             googleresp = EmsCommunicator.toString(inputStream);
         }
 
-        JSONObject jsonObject = null;
         String accessToken;
-        try {
-            jsonObject = new JSONObject(googleresp);
-            // get the access token from json and request info from Google
-            accessToken = (String) jsonObject.get("access_token");
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode jsonObject = (ObjectNode) objectMapper.readTree(googleresp);
+        // get the access token from json and request info from Google
+        accessToken = jsonObject.get("access_token").asText();
 
         // get some info about the user with the access token
         String getStr = "https://www.googleapis.com/oauth2/v1/userinfo?" + para("access_token",accessToken);
@@ -74,18 +71,14 @@ public class EntranceServlet extends HttpServlet {
 
         String username = null;
         String userEmail = null;
-        try {
-            JSONObject userInfo = new JSONObject(json);
-            username = userInfo.getString("name");
-            userEmail = userInfo.getString("email");
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        JsonNode userInfo = objectMapper.readTree(json);
+        username = userInfo.get("name").asText();
+        userEmail = userInfo.get("email").asText();
 
         String userid = username + "<" + userEmail + ">";
         if (!Configuration.getAutorizedUsers().contains(userid)) {
-            HttpServletResponse response = (HttpServletResponse) resp;
-            ((HttpServletResponse) resp).sendError(HttpServletResponse.SC_FORBIDDEN,"User not registered " + userid);
+            resp
+                    .sendError(HttpServletResponse.SC_FORBIDDEN, "User not registered " + userid);
             return;
         }
 

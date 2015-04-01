@@ -1,8 +1,10 @@
 package no.javazone.cake.redux;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,96 +41,94 @@ public class DataServlet extends HttpServlet {
     private void assignRoom(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
             String inputStr = EmsCommunicator.toString(inputStream);
-            JSONObject update = new JSONObject(inputStr);
-            String ref = update.getString("talkRef");
-            String roomRef = update.getString("roomRef");
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode update = objectMapper.readTree(inputStr);
+            String ref = update.get("talkRef").asText();
+            String roomRef = update.get("roomRef").asText();
 
-            String lastModified = update.getString("lastModified");
+            String lastModified = update.get("lastModified").asText();
 
             String newTalk = emsCommunicator.assignRoom(ref,roomRef,lastModified);
             resp.getWriter().append(newTalk);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
         }
+
     }
 
     private void assignSlot(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
             String inputStr = EmsCommunicator.toString(inputStream);
-            JSONObject update = new JSONObject(inputStr);
-            String ref = update.getString("talkRef");
-            String slotRef = update.getString("slotRef");
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode update = objectMapper.readTree(inputStr);
 
-            String lastModified = update.getString("lastModified");
+            String ref = update.get("talkRef").asText();
+            String slotRef = update.get("slotRef").asText();
 
-            String newTalk = emsCommunicator.assignSlot(ref,slotRef,lastModified);
+            String lastModified = update.get("lastModified").asText();
+
+            String newTalk = emsCommunicator.assignSlot(ref, slotRef, lastModified);
             resp.getWriter().append(newTalk);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
         }
+
     }
 
 
     private void publishTalk(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
             String inputStr = EmsCommunicator.toString(inputStream);
-            JSONObject update = new JSONObject(inputStr);
-            String ref = update.getString("ref");
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode update = objectMapper.readTree(inputStr);
 
-            String lastModified = update.getString("lastModified");
+            String ref = update.get("ref").asText();
 
-            String newTalk = emsCommunicator.publishTalk(ref,lastModified);
+            String lastModified = update.get("lastModified").asText();
+
+            String newTalk = emsCommunicator.publishTalk(ref, lastModified);
             resp.getWriter().append(newTalk);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
         }
+
     }
 
     private void acceptTalks(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
             String inputStr = EmsCommunicator.toString(inputStream);
-            try {
-                JSONObject jsonObject = new JSONObject(inputStr);
-                JSONArray talks = jsonObject.getJSONArray("talks");
-                String statusJson = acceptorSetter.accept(talks);
-                resp.getWriter().append(statusJson);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonObject = objectMapper.readTree(inputStr);
+
+            ArrayNode talks = (ArrayNode) jsonObject.get("talks");
+            String statusJson = acceptorSetter.accept(talks);
+            resp.getWriter().append(statusJson);
         }
     }
 
     private void massUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
             String inputStr = EmsCommunicator.toString(inputStream);
-            try {
-                JSONObject jsonObject = new JSONObject(inputStr);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonObject = objectMapper.readTree(inputStr);
+            String statusJson = acceptorSetter.massUpdate((ObjectNode) jsonObject);
+            resp.getWriter().append(statusJson);
 
-                String statusJson = acceptorSetter.massUpdate(jsonObject);
-                resp.getWriter().append(statusJson);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
     private void updateTalk(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
             String inputStr = EmsCommunicator.toString(inputStream);
-            JSONObject update = new JSONObject(inputStr);
-            String ref = update.getString("ref");
-            JSONArray tags = update.getJSONArray("tags");
-            String state = update.getString("state");
-            String lastModified = update.getString("lastModified");
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode update = objectMapper.readTree(inputStr);
+
+            String ref = update.get("ref").asText();
+            ArrayNode tags = (ArrayNode) update.get("tags");
+            String state = update.get("state").asText();
+            String lastModified = update.get("lastModified").asText();
             List<String> taglist = new ArrayList<>();
-            for (int i=0;i<tags.length();i++) {
-                taglist.add(tags.getString(i));
+            for (int i=0;i<tags.size();i++) {
+                taglist.add(tags.get(i).asText());
             }
 
-            String newTalk = emsCommunicator.update(ref, taglist, state,lastModified);
+            String newTalk = emsCommunicator.update(ref, taglist, state, lastModified);
             resp.getWriter().append(newTalk);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
         }
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -150,12 +150,8 @@ public class DataServlet extends HttpServlet {
     }
 
     private String config() {
-        JSONObject conf = new JSONObject();
-        try {
-            conf.put("submititloc",Configuration.submititLocation());
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        ObjectNode conf = JsonNodeFactory.instance.objectNode();
+        conf.put("submititloc",Configuration.submititLocation());
         return conf.toString();
     }
 

@@ -1,11 +1,14 @@
 package no.javazone.cake.redux;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.hamnaberg.funclite.Optional;
 import net.hamnaberg.json.*;
 import net.hamnaberg.json.parser.CollectionParser;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.*;
 import java.net.*;
@@ -29,12 +32,8 @@ public class EmsCommunicator {
         String lastModified = connection.getHeaderField("last-modified");
 
         if (!lastModified.equals(givenLastModified)) {
-            JSONObject errorJson = new JSONObject();
-            try {
-                errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            ObjectNode errorJson = JsonNodeFactory.instance.objectNode();
+            errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
             return errorJson.toString();
         }
 
@@ -77,23 +76,22 @@ public class EmsCommunicator {
     }
 
     private String confirmTalkMessage(String status, String message) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("status",status);
-            jsonObject.put("message",message);
-            return jsonObject.toString();
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        ObjectNode jsonObject = JsonNodeFactory.instance.objectNode();
+
+        jsonObject.put("status",status);
+        jsonObject.put("message",message);
+        return jsonObject.toString();
     }
 
     public String confirmTalk(String encodedTalkUrl, String dinner) {
         try {
-            JSONObject jsonTalk = new JSONObject(fetchOneTalk(encodedTalkUrl));
-            JSONArray tagsarr = jsonTalk.getJSONArray("tags");
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonTalk = objectMapper.readTree(fetchOneTalk(encodedTalkUrl));
+
+            ArrayNode tagsarr = (ArrayNode) jsonTalk.get("tags");
             List<String> tags = new ArrayList<>();
-            for (int i=0;i<tagsarr.length();i++) {
-                String atag = (String) tagsarr.get(i);
+            for (int i=0;i<tagsarr.size();i++) {
+                String atag = tagsarr.get(i).asText();
                 tags.add(atag);
             }
             if (tags.contains("confirmed")) {
@@ -106,10 +104,10 @@ public class EmsCommunicator {
                 tags.add("dinner");
             }
             tags.add("confirmed");
-            String lastModified = jsonTalk.getString("lastModified");
+            String lastModified = jsonTalk.get("lastModified").asText();
             updateTags(encodedTalkUrl,tags, lastModified);
 
-        } catch (JSONException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return confirmTalkMessage("ok", "ok");
@@ -120,7 +118,8 @@ public class EmsCommunicator {
             URLConnection connection = openConnection(Configuration.emsEventLocation(), false);
             Collection events = new CollectionParser().parse(openStream(connection));
             List<Item> items = events.getItems();
-            JSONArray eventArray = new JSONArray();
+
+            ArrayNode eventArray = JsonNodeFactory.instance.arrayNode();
             for (Item item : items) {
                 Data data = item.getData();
                 String eventname = data.propertyByName("name").get().getValue().get().asString();
@@ -129,39 +128,35 @@ public class EmsCommunicator {
 
                 href = Base64Util.encode(href);
 
-                JSONObject event = new JSONObject();
+                ObjectNode event = JsonNodeFactory.instance.objectNode();
 
                 event.put("name",eventname);
                 event.put("ref",href);
                 event.put("slug",slug);
 
-                eventArray.put(event);
+                eventArray.add(event);
             }
             return eventArray.toString();
-        } catch (IOException | JSONException e) {
+        } catch (IOException  e) {
             throw new RuntimeException(e);
         }
     }
 
     public String allRoomsAndSlots(String encodedEventid) {
         String eventid = Base64Util.decode(encodedEventid);
-        JSONArray roomArray = allRooms(eventid);
-        JSONArray slotArray = allSlots(eventid);
-        JSONObject all = new JSONObject();
-        try {
-            all.put("rooms",roomArray);
-            all.put("slots",slotArray);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        ArrayNode roomArray = allRooms(eventid);
+        ArrayNode slotArray = allSlots(eventid);
+        ObjectNode all = JsonNodeFactory.instance.objectNode();
+        all.put("rooms",roomArray);
+        all.put("slots",slotArray);
         return all.toString();
     }
 
-    private JSONArray allRooms(String eventid) {
+    private ArrayNode allRooms(String eventid) {
         String loc = eventid + "/rooms";
         URLConnection connection = openConnection(loc, false);
         try {
-            JSONArray roomArray = new JSONArray();
+            ArrayNode roomArray = JsonNodeFactory.instance.arrayNode();
             Collection events = new CollectionParser().parse(connection.getInputStream());
             List<Item> items = events.getItems();
             for (Item item : items) {
@@ -171,24 +166,24 @@ public class EmsCommunicator {
 
                 href = Base64Util.encode(href);
 
-                JSONObject event = new JSONObject();
+                ObjectNode event = JsonNodeFactory.instance.objectNode();
 
                 event.put("name",roomname);
                 event.put("ref",href);
 
-                roomArray.put(event);
+                roomArray.add(event);
             }
             return roomArray;
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private JSONArray allSlots(String eventid) {
+    private ArrayNode allSlots(String eventid) {
         String loc = eventid + "/slots";
         URLConnection connection = openConnection(loc, false);
         try {
-            JSONArray slotArray = new JSONArray();
+            ArrayNode slotArray = JsonNodeFactory.instance.arrayNode();
             Collection events = new CollectionParser().parse(openStream(connection));
             List<Item> items = events.getItems();
             for (Item item : items) {
@@ -201,7 +196,7 @@ public class EmsCommunicator {
 
                 href = Base64Util.encode(href);
 
-                JSONObject slot = new JSONObject();
+                ObjectNode slot = JsonNodeFactory.instance.objectNode();
 
                 slot.put("start", slotTimeFormatter.getStart());
                 slot.put("end", slotTimeFormatter.getEnd());
@@ -209,10 +204,10 @@ public class EmsCommunicator {
                 slot.put("ref", href);
 
 
-                slotArray.put(slot);
+                slotArray.add(slot);
             }
             return slotArray;
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -225,14 +220,10 @@ public class EmsCommunicator {
         try {
             InputStream is = openStream(connection);
             Item talkItem = new CollectionParser().parse(is).getFirstItem().get();
-            JSONObject jsonObject = readTalk(talkItem, connection);
+            ObjectNode jsonObject = readTalk(talkItem, connection);
             String submititLocation = Configuration.submititLocation() + encodedUrl;
-            try {
-                jsonObject.put("submititLoc",submititLocation);
-                jsonObject.put("eventId",eventFromTalk(url));
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            jsonObject.put("submititLoc",submititLocation);
+            jsonObject.put("eventId",eventFromTalk(url));
             return jsonObject.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -272,12 +263,8 @@ public class EmsCommunicator {
         String lastModified = connection.getHeaderField("last-modified");
 
         if (!lastModified.equals(givenLastModified)) {
-            JSONObject errorJson = new JSONObject();
-            try {
-                errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            ObjectNode errorJson = JsonNodeFactory.instance.objectNode();
+            errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
             return errorJson.toString();
         }
 
@@ -327,12 +314,8 @@ public class EmsCommunicator {
         String lastModified = connection.getHeaderField("last-modified");
 
         if (!lastModified.equals(givenLastModified)) {
-            JSONObject errorJson = new JSONObject();
-            try {
-                errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            ObjectNode errorJson = JsonNodeFactory.instance.objectNode();
+            errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
             return errorJson.toString();
         }
 
@@ -372,12 +355,8 @@ public class EmsCommunicator {
 
         String lastModified = connection.getHeaderField("last-modified");
         if (!lastModified.equals(givenLastModified)) {
-            JSONObject errorJson = new JSONObject();
-            try {
-                errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            ObjectNode errorJson = JsonNodeFactory.instance.objectNode();
+            errorJson.put("error","Talk has been updated at " + lastModified + " not " + givenLastModified);
             return errorJson.toString();
         }
 
@@ -421,45 +400,37 @@ public class EmsCommunicator {
 
     public String talkShortVersion(String encodedEvent) {
         List<Item> items = getAllTalksSummary(encodedEvent);
-        JSONArray allTalk = new JSONArray();
+        ArrayNode allTalk = JsonNodeFactory.instance.arrayNode();
         for (Item item : items) {
-            JSONObject jsonTalk = readItemProperties(item, null);
+            ObjectNode jsonTalk = readItemProperties(item, null);
             addSpeakersToTalkFromLink(allTalk, item, jsonTalk);
 
-            readRoom(item,jsonTalk);
-            readSlot(item,jsonTalk);
+            readRoom(item, jsonTalk);
+            readSlot(item, jsonTalk);
         }
         return allTalk.toString();
     }
 
-    private void addSpeakersToTalkFromLink(JSONArray allTalk, Item item, JSONObject jsonTalk) {
+    private void addSpeakersToTalkFromLink(ArrayNode allTalk, Item item, ObjectNode jsonTalk) {
         List<Link> links = item.getLinks();
-        JSONArray speakers = new JSONArray();
+        ArrayNode speakers = JsonNodeFactory.instance.arrayNode();
         for (Link link : links) {
             if (!"speaker item".equals(link.getRel())) {
                 continue;
             }
-            JSONObject speaker = new JSONObject();
-            try {
-                speaker.put("name",link.getPrompt().get().toString());
-                speakers.put(speaker);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            ObjectNode speaker = JsonNodeFactory.instance.objectNode();
+            speaker.put("name",link.getPrompt().get().toString());
+            speakers.add(speaker);
         }
-        try {
-            jsonTalk.put("speakers",speakers);
-            allTalk.put(jsonTalk);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        jsonTalk.put("speakers",speakers);
+        allTalk.add(jsonTalk);
     }
 
 
     public String talksFullVersion(String encodedEvent) {
         List<Item> items = getAllTalksSummary(encodedEvent);
         // TODO There has to be a better way to do this
-        JSONArray talkArray = new JSONArray();
+        ArrayNode talkArray = JsonNodeFactory.instance.arrayNode();
         int num=items.size();
         for (Item item : items) {
             System.out.println(num--);
@@ -470,8 +441,8 @@ public class EmsCommunicator {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            JSONObject jsonTalk = readTalk(talkIktem, talkConn);
-            talkArray.put(jsonTalk);
+            ObjectNode jsonTalk = readTalk(talkIktem, talkConn);
+            talkArray.add(jsonTalk);
         }
 
         return talkArray.toString();
@@ -490,8 +461,8 @@ public class EmsCommunicator {
         return events.getItems();
     }
 
-    private JSONObject readTalk(Item item, URLConnection connection) {
-        JSONObject jsonTalk = readItemProperties(item, connection);
+    private ObjectNode readTalk(Item item, URLConnection connection) {
+        ObjectNode jsonTalk = readItemProperties(item, connection);
 
         readRoom(item, jsonTalk);
         readSlot(item, jsonTalk);
@@ -506,95 +477,67 @@ public class EmsCommunicator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        JSONArray jsonSpeakers = new JSONArray();
+        ArrayNode jsonSpeakers = JsonNodeFactory.instance.arrayNode();
         for (Item speaker : speakers.getItems()) {
-            JSONObject jsonSpeaker = readItemProperties(speaker,speakerConnection);
-            jsonSpeakers.put(jsonSpeaker);
+            ObjectNode jsonSpeaker = readItemProperties(speaker,speakerConnection);
+            jsonSpeakers.add(jsonSpeaker);
         }
 
-        try {
-            jsonTalk.put("speakers", jsonSpeakers);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        jsonTalk.put("speakers", jsonSpeakers);
         return jsonTalk;
     }
 
-    private void readRoom(Item item, JSONObject jsonTalk) {
+    private void readRoom(Item item, ObjectNode jsonTalk) {
         Optional<Link> roomLinkOpt = item.linkByRel("room item");
         if (roomLinkOpt.isSome()) {
             Link roomLink = roomLinkOpt.get();
             String roomName = roomLink.getPrompt().get();
             String ref = roomLink.getHref().toString();
-            JSONObject room = new JSONObject();
-            try {
-                room.put("name",roomName);
-                room.put("ref", Base64Util.encode(ref));
-                jsonTalk.put("room",room);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            ObjectNode room = JsonNodeFactory.instance.objectNode();
+            room.put("name",roomName);
+            room.put("ref", Base64Util.encode(ref));
+            jsonTalk.put("room",room);
         }
     }
 
-    private void readSlot(Item item, JSONObject jsonTalk) {
+    private void readSlot(Item item, ObjectNode jsonTalk) {
         Optional<Link> slotLinkOpt = item.linkByRel("slot item");
         if (slotLinkOpt.isSome()) {
             Link slotLink = slotLinkOpt.get();
             String ref = slotLink.getHref().toString();
             String slotcode = slotLink.getPrompt().get();
             SlotTimeFormatter slotTimeFormatter = new SlotTimeFormatter(slotcode);
-            JSONObject slot = new JSONObject();
-            try {
-                slot.put("ref", Base64Util.encode(ref));
-                slot.put("start",slotTimeFormatter.getStart());
-                slot.put("end",slotTimeFormatter.getEnd());
-                jsonTalk.put("slot",slot);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            ObjectNode slot = JsonNodeFactory.instance.objectNode();
+            slot.put("ref", Base64Util.encode(ref));
+            slot.put("start",slotTimeFormatter.getStart());
+            slot.put("end",slotTimeFormatter.getEnd());
+            jsonTalk.put("slot",slot);
         }
     }
 
-    private JSONObject readItemProperties(Item item, URLConnection connection) {
-        JSONObject itemAsJson = new JSONObject();
+    private ObjectNode readItemProperties(Item item, URLConnection connection) {
+        ObjectNode itemAsJson = JsonNodeFactory.instance.objectNode();
         Map<String,Property> dataAsMap = item.getData().getDataAsMap();
         for (Map.Entry<String,Property> propentry : dataAsMap.entrySet()) {
             String key = propentry.getKey();
             Property property = propentry.getValue();
             if (property.hasArray()) {
                 List<Value> array = property.getArray();
-                JSONArray values = new JSONArray();
+                ArrayNode values = JsonNodeFactory.instance.arrayNode();
                 for (Value val : array) {
-                    values.put(val.asString());
+                    values.add(val.asString());
                 }
-                try {
-                    itemAsJson.put(key, values);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                itemAsJson.put(key, values);
 
             } else if (property.hasValue()) {
-                try {
-                    itemAsJson.put(key, property.getValue().get().asString());
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                itemAsJson.put(key, property.getValue().get().asString());
             }
         }
         String href = item.getHref().get().toString();
-        try {
-            itemAsJson.put("ref", Base64Util.encode(href));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        itemAsJson.put("ref", Base64Util.encode(href));
         String lastModified = (connection != null) ? connection.getHeaderField("last-modified") : null;
         if (lastModified != null) {
-            try {
-                itemAsJson.put("lastModified",lastModified);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            itemAsJson.put("lastModified",lastModified);
         }
         return itemAsJson;
     }

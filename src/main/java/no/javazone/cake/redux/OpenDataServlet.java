@@ -1,8 +1,12 @@
 package no.javazone.cake.redux;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.oracle.javafx.jmx.json.JSONException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,16 +28,17 @@ public class OpenDataServlet extends HttpServlet {
         resp.setContentType("text/json");
         PrintWriter writer = resp.getWriter();
         String talkJson = emsCommunicator.fetchOneTalk(req.getParameter("talkId"));
-        JSONObject talkInfo = shortTalkVersion(talkJson);
+        ObjectNode talkInfo = shortTalkVersion(talkJson);
 
         writer.append(talkInfo.toString());
     }
 
-    private JSONObject shortTalkVersion(String talkJson) {
-        JSONObject talkInfo = new JSONObject();
+    private ObjectNode shortTalkVersion(String talkJson) {
+        ObjectNode talkInfo = JsonNodeFactory.instance.objectNode();
         try {
-            JSONObject jsonObject = new JSONObject(talkJson);
-            JSONArray tags = jsonObject.getJSONArray("tags");
+            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectNode jsonObject = (ObjectNode) objectMapper.readTree(talkJson);
+            ArrayNode tags = (ArrayNode) jsonObject.get("tags");
             String error = checkTags(tags);
             if (error != null) {
                 jsonObject.put("status","error");
@@ -41,21 +46,21 @@ public class OpenDataServlet extends HttpServlet {
                 return  jsonObject;
             }
             jsonObject.put("status","ok");
-            JSONObject talkData = new JSONObject();
-            talkData.put("title",jsonObject.getString("title"));
+            ObjectNode talkData = JsonNodeFactory.instance.objectNode();
+            talkData.put("title",jsonObject.get("title").asText());
             talkData.put("tags",tags);
-            talkData.put("lastModified",jsonObject.getString("lastModified"));
+            talkData.put("lastModified",jsonObject.get("lastModified").asText());
             jsonObject.put("talk",talkData);
-        } catch (JSONException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return talkInfo;
     }
 
-    private String checkTags(JSONArray tags) throws JSONException {
+    private String checkTags(ArrayNode tags) throws JSONException {
         boolean foundAccepted = false;
-        for (int i=0;i<tags.length();i++) {
-            String tag = tags.getString(i);
+        for (int i=0;i<tags.size();i++) {
+            String tag = tags.get(i).asText();
             if ("confirmed".equals(tag)) {
                 return "Talk is already confirmed";
             }
@@ -72,16 +77,14 @@ public class OpenDataServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String input = EmsCommunicator.toString(req.getInputStream());
-        JSONObject jsonObject;
-        try {
-            jsonObject = new JSONObject(input);
-            String encodedTalkUrl = jsonObject.getString("id");
-            String dinner = jsonObject.getString("dinner");
-            String status = emsCommunicator.confirmTalk(encodedTalkUrl,dinner);
-            resp.setContentType("text/json");
-            resp.getWriter().append(status);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        ObjectNode jsonObject;
+        ObjectMapper objectMapper = new ObjectMapper();
+        jsonObject = (ObjectNode) objectMapper.readTree(input);
+
+        String encodedTalkUrl = jsonObject.get("id").asText();
+        String dinner = jsonObject.get("dinner").asText();
+        String status = emsCommunicator.confirmTalk(encodedTalkUrl,dinner);
+        resp.setContentType("text/json");
+        resp.getWriter().append(status);
     }
 }
