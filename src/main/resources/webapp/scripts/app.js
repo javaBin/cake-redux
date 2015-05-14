@@ -30,6 +30,10 @@
                     when("/showSchedule", {
                         templateUrl: 'templates/showSchedule.html',
                         controller: 'ShowScheduleCtrl'
+                    }).
+                    when("/report", {
+                        templateUrl: "templates/talkReport.html",
+                        controller: "TalkReportCtrl"
                     })
                     ;
         }]);
