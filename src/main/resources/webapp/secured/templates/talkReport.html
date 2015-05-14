@@ -1,5 +1,78 @@
-<div>
-    <ul>
-        <li ng-repeat="talk in talks">{{talk.title}}</li>
-    </ul>
+<div class="cake-margin" ng-repeat="aTalk in talks" style="page-break-after:always;">
+    <h1>{{aTalk.title}}</h1>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Summary</strong></div>
+        <div class="col-md-10 preserve-newlines">{{aTalk.summary}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Abstract</strong></div>
+        <div class="col-md-10 preserve-newlines">{{aTalk.body}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Outline</strong></div>
+        <div class="col-md-10 preserve-newlines">{{aTalk.outline}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Keywords</strong></div>
+        <div class="col-md-10">{{joinArr(aTalk.keywords)}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Expected audience</strong></div>
+        <div class="col-md-10 preserve-newlines">{{aTalk.audience}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Equipment</strong></div>
+        <div class="col-md-10">{{aTalk.equipment}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>State</strong></div>
+        <div class="col-md-10">{{aTalk.state}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Published</strong></div>
+        <div class="col-md-10">{{aTalk.published}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Format</strong></div>
+        <div class="col-md-10">{{aTalk.format}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Level</strong></div>
+        <div class="col-md-10">{{aTalk.level}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Language</strong></div>
+        <div class="col-md-10">{{aTalk.lang}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Room</strong></div>
+        <div class="col-md-10">{{aTalk.room.name}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Slot</strong></div>
+        <div class="col-md-10">{{aTalk.slot.start}} - {{aTalk.slot.end}} <small>(yymmdd hhmm-yymmdd hhmm)</small></div>
+    </div>
+    <div ng-repeat="speaker in aTalk.speakers">
+        <h3>{{speaker.name}}</h3>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Email</strong></div>
+            <div class="col-md-10">{{speaker.email}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Bio</strong></div>
+            <div class="col-md-10 preserve-newlines">{{speaker.bio}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Postcode</strong></div>
+            <div class="col-md-10">{{speaker["zip-code"]}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Other talks</strong></div>
+            <ul class="col-md-10">
+                <li ng-repeat="otalk in speaker.otherTalks"><a ng-href=#/showTalk/{{otalk.ref}}">"{{otalk.title}}</a></li>
+            </ul>
+        </div>
+    </div>
+    <h6>Last modified: {{aTalk.lastModified}}</h6>
+    <hr/>
 </div>
