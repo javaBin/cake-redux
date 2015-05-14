@@ -1,12 +1,10 @@
 package no.javazone.cake.redux;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.oracle.javafx.jmx.json.JSONException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -57,7 +55,7 @@ public class OpenDataServlet extends HttpServlet {
         return talkInfo;
     }
 
-    private String checkTags(ArrayNode tags) throws JSONException {
+    private String checkTags(ArrayNode tags)  {
         boolean foundAccepted = false;
         for (int i=0;i<tags.size();i++) {
             String tag = tags.get(i).asText();
