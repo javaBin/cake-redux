@@ -1,6 +1,5 @@
 package no.javazone.cake.redux;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -9,6 +8,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.hamnaberg.funclite.Optional;
 import net.hamnaberg.json.*;
 import net.hamnaberg.json.parser.CollectionParser;
+import org.jsonbuddy.JsonArrayFactory;
+import org.jsonbuddy.JsonFactory;
+import org.jsonbuddy.JsonObjectFactory;
 
 import java.io.*;
 import java.net.*;
@@ -119,7 +121,7 @@ public class EmsCommunicator {
             Collection events = new CollectionParser().parse(openStream(connection));
             List<Item> items = events.getItems();
 
-            ArrayNode eventArray = JsonNodeFactory.instance.arrayNode();
+            JsonArrayFactory eventArrayFactor = JsonFactory.jsonArray();
             for (Item item : items) {
                 Data data = item.getData();
                 String eventname = data.propertyByName("name").get().getValue().get().asString();
@@ -128,15 +130,17 @@ public class EmsCommunicator {
 
                 href = Base64Util.encode(href);
 
-                ObjectNode event = JsonNodeFactory.instance.objectNode();
+                JsonObjectFactory jsonObjectFactory = JsonFactory.jsonObject()
+                        .withValue("name", eventname)
+                        .withValue("ref", href)
+                        .withValue("slug", slug);
 
-                event.put("name",eventname);
-                event.put("ref",href);
-                event.put("slug",slug);
+                eventArrayFactor.add(jsonObjectFactory);
 
-                eventArray.add(event);
+
             }
-            return eventArray.toString();
+
+            return eventArrayFactor.create().toJson();
         } catch (IOException  e) {
             throw new RuntimeException(e);
         }
