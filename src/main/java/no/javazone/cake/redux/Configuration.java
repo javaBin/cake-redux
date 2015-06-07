@@ -111,7 +111,11 @@ public class Configuration {
     }
 
     public static String mailUser() {
-        return null;
+        return getProperty("mailUser");
+    }
+
+    public static String mailPassword() {
+        return getProperty("mailPassword");
     }
 
     public static String cakeLocation() {
