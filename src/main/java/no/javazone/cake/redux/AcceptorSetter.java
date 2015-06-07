@@ -129,10 +129,23 @@ public class AcceptorSetter {
 
     private SimpleEmail setupMailHeader(SimpleEmail mail,String subject) throws EmailException {
         mail.setHostName(Configuration.smtpServer());
-        mail.setSmtpPort(Configuration.smtpPort());
         mail.setFrom("program@java.no", "Javazone program commitee");
-        mail.addCc("program@java.no");
+        mail.addBcc("program-auto@java.no");
         mail.setSubject(subject);
+
+
+        if (Configuration.useMailSSL()) {
+            mail.setSSLOnConnect(true);
+            mail.setSslSmtpPort("" + Configuration.smtpPort());
+        } else {
+            mail.setSmtpPort(Configuration.smtpPort());
+
+        }
+        String mailUser = Configuration.mailUser();
+        if (mailUser != null) {
+            mail.setAuthentication(mailUser, Configuration.mailPassword());
+        }
+
         return mail;
     }
 
