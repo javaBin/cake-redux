@@ -106,6 +106,14 @@ public class Configuration {
         return Integer.parseInt(getProperty("smtpport"));
     }
 
+    public static boolean useMailSSL() {
+        return "true".equals(getProperty("mailSsl"));
+    }
+
+    public static String mailUser() {
+        return null;
+    }
+
     public static String cakeLocation() {
         return getProperty("cakeLocation");
     }
