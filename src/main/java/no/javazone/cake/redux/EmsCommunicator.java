@@ -8,9 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.hamnaberg.funclite.Optional;
 import net.hamnaberg.json.*;
 import net.hamnaberg.json.parser.CollectionParser;
-import org.jsonbuddy.JsonArrayFactory;
-import org.jsonbuddy.JsonFactory;
-import org.jsonbuddy.JsonObjectFactory;
+import org.jsonbuddy.*;
 
 import java.io.*;
 import java.net.*;
@@ -121,7 +119,7 @@ public class EmsCommunicator {
             Collection events = new CollectionParser().parse(openStream(connection));
             List<Item> items = events.getItems();
 
-            JsonArrayFactory eventArrayFactor = JsonFactory.jsonArray();
+            JsonArray eventArray = JsonFactory.jsonArray();
             for (Item item : items) {
                 Data data = item.getData();
                 String eventname = data.propertyByName("name").get().getValue().get().asString();
@@ -130,17 +128,17 @@ public class EmsCommunicator {
 
                 href = Base64Util.encode(href);
 
-                JsonObjectFactory jsonObjectFactory = JsonFactory.jsonObject()
+                JsonObject jsonObjectFactory = JsonFactory.jsonObject()
                         .withValue("name", eventname)
                         .withValue("ref", href)
                         .withValue("slug", slug);
 
-                eventArrayFactor.add(jsonObjectFactory);
+                eventArray.add(jsonObjectFactory);
 
 
             }
 
-            return eventArrayFactor.create().toJson();
+            return eventArray.toJson();
         } catch (IOException  e) {
             throw new RuntimeException(e);
         }
@@ -224,11 +222,11 @@ public class EmsCommunicator {
         try {
             InputStream is = openStream(connection);
             Item talkItem = new CollectionParser().parse(is).getFirstItem().get();
-            JsonObjectFactory jsonObject = readTalk(talkItem, connection);
+            JsonObject jsonObject = readTalk(talkItem, connection);
             String submititLocation = Configuration.submititLocation() + encodedUrl;
             jsonObject.withValue("submititLoc",submititLocation);
             jsonObject.withValue("eventId",eventFromTalk(url));
-            return jsonObject.create().toJson();
+            return jsonObject.toJson();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -404,25 +402,25 @@ public class EmsCommunicator {
 
     public String talkShortVersion(String encodedEvent) {
         List<Item> items = getAllTalksSummary(encodedEvent);
-        JsonArrayFactory allTalks = JsonFactory.jsonArray();
+        JsonArray allTalks = JsonFactory.jsonArray();
         for (Item item : items) {
-            JsonObjectFactory jsonTalk = readItemProperties(item, null);
+            JsonObject jsonTalk = readItemProperties(item, null);
             addSpeakersToTalkFromLink(allTalks, item, jsonTalk);
 
             readRoom(item, jsonTalk);
             readSlot(item, jsonTalk);
         }
-        return allTalks.create().toJson();
+        return allTalks.toJson();
     }
 
-    private void addSpeakersToTalkFromLink(JsonArrayFactory allTalk, Item item, JsonObjectFactory jsonTalk) {
+    private void addSpeakersToTalkFromLink(JsonArray allTalk, Item item, JsonObject jsonTalk) {
         List<Link> links = item.getLinks();
-        JsonArrayFactory speakers = JsonFactory.jsonArray();
+        JsonArray speakers = JsonFactory.jsonArray();
         for (Link link : links) {
             if (!"speaker item".equals(link.getRel())) {
                 continue;
             }
-            JsonObjectFactory speaker = JsonFactory.jsonObject();
+            JsonObject speaker = JsonFactory.jsonObject();
             speaker.withValue("name", link.getPrompt().get().toString());
             speakers.add(speaker);
         }
@@ -434,7 +432,7 @@ public class EmsCommunicator {
     public String talksFullVersion(String encodedEvent) {
         List<Item> items = getAllTalksSummary(encodedEvent);
         // TODO There has to be a better way to do this
-        JsonArrayFactory talkArray = JsonFactory.jsonArray();
+        JsonArray talkArray = JsonFactory.jsonArray();
         int num=items.size();
         for (Item item : items) {
             System.out.println(num--);
@@ -445,11 +443,11 @@ public class EmsCommunicator {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            JsonObjectFactory jsonTalk = readTalk(talkIktem, talkConn);
+            JsonObject jsonTalk = readTalk(talkIktem, talkConn);
             talkArray.add(jsonTalk);
         }
 
-        return talkArray.create().toJson();
+        return talkArray.toJson();
     }
 
     private List<Item> getAllTalksSummary(String encodedEvent) {
@@ -465,8 +463,8 @@ public class EmsCommunicator {
         return events.getItems();
     }
 
-    private JsonObjectFactory readTalk(Item item, URLConnection connection) {
-        JsonObjectFactory jsonTalk = readItemProperties(item, connection);
+    private JsonObject readTalk(Item item, URLConnection connection) {
+        JsonObject jsonTalk = readItemProperties(item, connection);
 
         readRoom(item, jsonTalk);
         readSlot(item, jsonTalk);
@@ -482,9 +480,9 @@ public class EmsCommunicator {
             throw new RuntimeException(e);
         }
 
-        JsonArrayFactory jsonSpeakers = JsonFactory.jsonArray();
+        JsonArray jsonSpeakers = JsonFactory.jsonArray();
         for (Item speaker : speakers.getItems()) {
-            JsonObjectFactory jsonSpeaker = readItemProperties(speaker, speakerConnection);
+            JsonObject jsonSpeaker = readItemProperties(speaker, speakerConnection);
             jsonSpeakers.add(jsonSpeaker);
         }
 
@@ -494,27 +492,27 @@ public class EmsCommunicator {
 
 
 
-    private void readRoom(Item item, JsonObjectFactory jsonTalk) {
+    private void readRoom(Item item, JsonObject jsonTalk) {
         Optional<Link> roomLinkOpt = item.linkByRel("room item");
         if (roomLinkOpt.isSome()) {
             Link roomLink = roomLinkOpt.get();
             String roomName = roomLink.getPrompt().get();
             String ref = roomLink.getHref().toString();
-            JsonObjectFactory room = JsonFactory.jsonObject();
+            JsonObject room = JsonFactory.jsonObject();
             room.withValue("name", roomName);
             room.withValue("ref", Base64Util.encode(ref));
             jsonTalk.withValue("room", room);
         }
     }
 
-    private void readSlot(Item item, JsonObjectFactory jsonTalk) {
+    private void readSlot(Item item, JsonObject jsonTalk) {
         Optional<Link> slotLinkOpt = item.linkByRel("slot item");
         if (slotLinkOpt.isSome()) {
             Link slotLink = slotLinkOpt.get();
             String ref = slotLink.getHref().toString();
             String slotcode = slotLink.getPrompt().get();
             SlotTimeFormatter slotTimeFormatter = new SlotTimeFormatter(slotcode);
-            JsonObjectFactory slot = JsonObjectFactory.jsonObject()
+            JsonObject slot = JsonFactory.jsonObject()
                     .withValue("ref", Base64Util.encode(ref))
                     .withValue("start",slotTimeFormatter.getStart())
                     .withValue("end",slotTimeFormatter.getEnd());
@@ -523,15 +521,15 @@ public class EmsCommunicator {
     }
 
 
-    private JsonObjectFactory readItemProperties(Item item, URLConnection connection) {
-        JsonObjectFactory itemAsJson = JsonFactory.jsonObject();
+    private JsonObject readItemProperties(Item item, URLConnection connection) {
+        JsonObject itemAsJson = JsonFactory.jsonObject();
         Map<String,Property> dataAsMap = item.getData().getDataAsMap();
         for (Map.Entry<String,Property> propentry : dataAsMap.entrySet()) {
             String key = propentry.getKey();
             Property property = propentry.getValue();
             if (property.hasArray()) {
                 List<Value> array = property.getArray();
-                JsonArrayFactory values = JsonFactory.jsonArray();
+                JsonArray values = JsonFactory.jsonArray();
                 for (Value val : array) {
                     values.add(val.asString());
                 }
@@ -581,7 +579,7 @@ public class EmsCommunicator {
     }
 
     public String update(String ref, List<String> taglist, String state, String lastModified) {
-        Property newTag = Property.arrayObject("tags", new ArrayList<Object>(taglist));
+        Property newTag = Property.arrayObject("tags", new ArrayList<>(taglist));
         Property newState = Property.value("state",state);
         return update(ref, lastModified, Arrays.asList(newTag,newState));
     }

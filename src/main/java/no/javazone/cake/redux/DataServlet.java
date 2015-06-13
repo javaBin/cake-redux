@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.jsonbuddy.JsonArray;
+import org.jsonbuddy.JsonFactory;
+import org.jsonbuddy.JsonObject;
+import org.jsonbuddy.parse.JsonParser;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DataServlet extends HttpServlet {
     private EmsCommunicator emsCommunicator;
@@ -145,18 +149,14 @@ public class DataServlet extends HttpServlet {
     }
     private void updateTalk(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode update = objectMapper.readTree(inputStr);
+            JsonObject update = (JsonObject) JsonParser.parse(inputStream);
 
-            String ref = update.get("ref").asText();
-            ArrayNode tags = (ArrayNode) update.get("tags");
-            String state = update.get("state").asText();
-            String lastModified = update.get("lastModified").asText();
-            List<String> taglist = new ArrayList<>();
-            for (int i=0;i<tags.size();i++) {
-                taglist.add(tags.get(i).asText());
-            }
+            String ref = update.requiredString("ref");
+            JsonArray tags = (JsonArray) update.value("tags").orElse(JsonFactory.jsonArray());
+            String state = update.requiredString("state");
+            String lastModified = update.requiredString("lastModified");
+
+            List<String> taglist = tags.nodeStream().map(org.jsonbuddy.JsonNode::textValue).collect(Collectors.toList());
 
             String newTalk = emsCommunicator.update(ref, taglist, state, lastModified);
             resp.getWriter().append(newTalk);
