@@ -111,13 +111,12 @@ public class DataServlet extends HttpServlet {
 
     private void publishTalk(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode update = objectMapper.readTree(inputStr);
+            org.jsonbuddy.JsonNode update = JsonParser.parse(inputStream);
 
-            String ref = update.get("ref").asText();
 
-            String lastModified = update.get("lastModified").asText();
+            String ref = update.requiredString("ref");
+
+            String lastModified = update.requiredString("lastModified");
 
             String newTalk = emsCommunicator.publishTalk(ref, lastModified);
             resp.getWriter().append(newTalk);
