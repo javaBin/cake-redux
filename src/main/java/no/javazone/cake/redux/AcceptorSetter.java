@@ -26,7 +26,7 @@ public class AcceptorSetter {
         String template = loadTemplate();
         String tagToAdd = "accepted";
         String tagExistsErrormessage = "Talk is already accepted";
-        String subjectTemplate = "Javazone 2014 #talkType# accepted";
+        String subjectTemplate = "Javazone 2015 #talkType# accepted";
 
         return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage);
     }
