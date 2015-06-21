@@ -2,6 +2,10 @@ Dear #speakername#,
 
 We are pleased to inform you that your #talkType#, "#title#", has been accepted for JavaZone 2015!
 
+
+CONFIRM YOUR TALK
+-----------------------------------
+
 Please use the link below to confirm that you will be attending JavaZone and giving your #talkType#.
 
 #confirmLink#
@@ -10,22 +14,41 @@ Remember to confirm within two weeks! If you know that you unable to attend, ple
 
 Note that this #talkType# is accepted based upon both content and presenter. We do not accept substitute speakers.
 
+
+UPDATING YOUR TALK
+-----------------------------------
+
 Once you have confirmed that you are attending, we will publish your #talkType# in the agenda at http://2015.javazone.no. You can continue to edit your abstract and should therefore make sure that the following parts are updated via the below link:
 
-1) Be sure upload a good quality picture or portrait so that people know what you look like!
+1) Be sure to upload a good quality picture or portrait so that people know what you look like!
 2) Tag your abstract with the relevant tags - this will make it easier for our attendees to find your #talkType#.
-3) Remember that your abstract, title, bio and photo will be published when you confirm this email, and that any changes you make will also be available right away.  
+3) Remember that your abstract, title, bio and photo will be published when you confirm this email, and that any changes you make will also be available right away.
 
-To update your abstract visit #submititLink# 
+You can update your talk here: 
 
-Other things to remember:
+#submititLink#
 
-1) There is a very limited budget for reimbursing travelling costs. This e-mail does not automatically make you eligible for reimbursements. Please see http://2015.javazone.no/monetarypolicy.html for information about how you can apply for these.
-2) As stated at http://2015.javazone.no/speakers.html speakers of lightning talks will have to provide for their own admission to Javazone.
-3) JourneyZone 2015 will happen! Read more and apply for a spot at JourneyZone http://2015.javazone.no/journeyzone.html
-4) We'll be running a Speaker Workshop on the 26th August in Oslo. Here you'll get a free course in presentation technique, along with lots of useful practical information about speaking at JavaZone. To register (and for more information about the event) visit http://www.meetup.com/javaBin/events/223393995.
 
-For more information go to http://2015.javazone.no/speakers.html.  If you have any more questions, reply to this email. Please be aware that the response time on emails during the summer holidays (in July) will be longer than normal.
+OTHER PRACTICAL INFORMATION
+-----------------------------------
+
+1) Reimbursements:
+There is a very limited budget for reimbursing travelling costs. This e-mail does not automatically make you eligible for reimbursements. Please see http://2015.javazone.no/monetarypolicy.html for information about how you can apply for these.
+
+2) Tickets:
+As stated at http://2015.javazone.no/speakers.html speakers of lightning talks will have to provide for their own admission to Javazone.
+
+3) JourneyZone at Svalbard:
+JournneyZone will happen! Read more and apply for a spot at JourneyZone here: http://2015.javazone.no/journeyzone.html
+
+4) Speakers workshop:
+We'll be running a Speaker Workshop on the 26th August in Oslo. Here you'll get a free course in presentation technique, along with lots of useful practical information about speaking at JavaZone. To register (and for more information about the event) visit http://www.meetup.com/javaBin/events/223393995.
+
+For more information, see: http://2015.javazone.no/speakers.html 
+
+
+
+If you have any more questions, reply to this email. Please be aware that the response time on emails during the summer holidays (in July) will be longer than normal.
 
 If you have any questions regarding the conference, please feel free to contact the Programme Committee at program@java.no.
 
