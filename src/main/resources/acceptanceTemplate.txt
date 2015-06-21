@@ -22,9 +22,8 @@ Other things to remember:
 
 1) There is a very limited budget for reimbursing travelling costs. This e-mail does not automatically make you eligible for reimbursements. Please see http://2015.javazone.no/monetarypolicy.html for information about how you can apply for these.
 2) As stated at http://2015.javazone.no/speakers.html speakers of lightning talks will have to provide for their own admission to Javazone.
-3) JourneyZone 2015: Journeyzone will happen! Stay tuned for more information. Apply for a spot at JourneyZone <<here>>
+3) JourneyZone 2015: Journeyzone will happen! Stay tuned for more information. Read more and apply for a spot at JourneyZone <<here>>
 4) We'll be running a Speaker Workshop on the 26th August. Here you'll get a free course in presentation technique, along with lots of useful practical information about speaking at JavaZone. To register (and for more information about the event) visit http://www.meetup.com/javaBin/events/223393995.
-5) JourneyZone 2015 : JourneyZone 2015 will happen!  Stay tuned for more information.  Apply for a spot at JourneyZone <<here>>.
 
 For more information go to http://2015.javazone.no/speakers.html.  If you have any more questions, reply to this email. Please be aware that the response time on emails during the summer holidays (in July) will be longer than normal.
 
