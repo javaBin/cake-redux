@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="cakeOpen">
 <head>
-    <title>Javazone 2015 speaker confirmation</title>
+    <title>JavaZone 2015 speaker confirmation</title>
     <script src="scripts/ext/jquery-2.1.0.min.js"></script>
     <script src="scripts/ext/underscore-min.js"></script>
     <!-- Latest compiled and minified CSS -->
@@ -19,21 +19,21 @@
 
 </head>
 <body ng-controller="ConfirmCtrl">
-     <h1 class="col-xs-offset-1">Javazone talk confirmation</h1>
+     <h1 class="col-xs-offset-1">JavaZone speaker confirmation</h1>
     <div class="col-xs-offset-1 col-md-9 row" ng-show="showMain">
-        <p>By pressing the button below you confirm that you have received the talk acceptance. Your talk/workshop will now be visible in the program</p>
-        <p>We need you to indicate if you plan to attend speakers dinner. Speakers dinner will be at 19:00 on September 8th. This is just to get an approximate headcount, so we can decide how much food and drink to order.</p>
+        <p>By pressing the button below you confirm that you have received the talk acceptance. Shortly after you confirm, your talk/workshop will be published in the program.</p>
+        <p>We need to know if you plan to attend the speakers dinner. The speakers dinner will be at 19:00 on September 8th. This is just to get an approximate headcount, so we can decide how much food and drink to order.</p>
         <p>
             <div class="radio">
                 <label>
                     <input type="radio" name="dinner" id="optionsRadios1" value="yes" ng-model="dinner">
-                    Yes, I plan to attend speakers dinner
+                    Yes, I plan to attend the speakers dinner.
                 </label>
             </div>
             <div class="radio">
                 <label>
                     <input type="radio" name="dinner" id="optionsRadios2" value="no" ng-model="dinner">
-                    No, I am not able to attend speakers dinner.
+                    No, I am not able to attend the speakers dinner.
                 </label>
             </div>
             <button type="button" class="btn btn-primary btn-lg" ng-click="confirmTalk()">Confirm</button>
@@ -47,6 +47,6 @@
             Your talk has been confirmed.
         </div>
     </div>
-    <p class="col-xs-offset-1 row">If you have any questions please contact us at program@java.no</p>
+    <p class="col-xs-offset-1 row">If you have any questions, please contact us at program@java.no.</p>
 </body>
 </html>
