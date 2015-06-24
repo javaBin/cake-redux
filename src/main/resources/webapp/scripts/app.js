@@ -23,6 +23,10 @@
                         templateUrl: 'templates/acceptTalk.html',
                         controller: 'AcceptTalkCtrl'
                     }).
+                    when("/publish", {
+                        templateUrl: 'templates/publishTalk.html',
+                        controller: 'PublishTalkCtrl'
+                    }).
                     when("/massUpdate", {
                         templateUrl: 'templates/acceptTalk.html',
                         controller: 'AcceptTalkCtrl'

@@ -114,7 +114,7 @@ public class AcceptorSetter {
         mail.send();
     }
 
-    private List<String> toCollection(ArrayNode tags) {
+    public static List<String> toCollection(ArrayNode tags) {
         ArrayList<String> result = new ArrayList<>();
         if (tags == null) {
             return result;

@@ -34,9 +34,42 @@ public class DataServlet extends HttpServlet {
             assignRoom(req,resp);
         } else if ("/assignSlot".equals(pathInfo)) {
             assignSlot(req,resp);
+        } else if ("/massPublish".equals(pathInfo)) {
+            massPublish(req, resp);
         }
 
     }
+
+    private void massPublish(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try (InputStream inputStream = req.getInputStream()) {
+            String inputStr = EmsCommunicator.toString(inputStream);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode update = objectMapper.readTree(inputStr);
+            String ref = update.get("ref").asText();
+            approveTalk(ref);
+            publishTheTalk(ref);
+        }
+        ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
+        objectNode.put("status","ok");
+        resp.setContentType("text/json");
+        resp.getWriter().append(objectNode.toString());
+    }
+
+    private void approveTalk(String ref) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonTalk = objectMapper.readTree(emsCommunicator.fetchOneTalk(ref));
+        List<String> tags = AcceptorSetter.toCollection((ArrayNode) jsonTalk.get("tags"));
+        String lastModified = jsonTalk.get("lastModified").asText();
+        emsCommunicator.update(ref,tags,"approved",lastModified);
+    }
+
+    private void publishTheTalk(String ref) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonTalk = objectMapper.readTree(emsCommunicator.fetchOneTalk(ref));
+        String lastModified = jsonTalk.get("lastModified").asText();
+        emsCommunicator.publishTalk(ref,lastModified);
+    }
+
 
     private void assignRoom(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {

@@ -1,0 +1,21 @@
+<div class="cake-margin">
+    <h1>{{title}}</h1>
+    <p>Will publish {{numTalks}} talks. Will set publish</p>
+    <p >Prossessing {{numTalks}} talks.</p>
+
+    <h3>Will update:</h3>
+    <ul>
+        <li ng-repeat="talk in talks"><div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="talk.wasSelected"> {{talk.title}}
+            </label>
+        </div></li>
+    </ul>
+    <button class="btn btn-primary" ng-click="publishTalks()">Do it</button>
+    <table class="table table-bordered">
+        <tr ng-repeat="statLine in statusLines" ng-class="lineClass(statLine.status)">
+            <td>{{statLine.title}}</td>
+            <td>{{statLine.message}}</td>
+        </tr>
+    </table>
+</div>
