@@ -13,6 +13,7 @@ public class SlotTimeFormatter {
     private String end;
     private int length;
 
+
     public SlotTimeFormatter(String formattedSlot) {
         String[] split = formattedSlot.split("\\+");
         String startPart = split[0];
@@ -27,6 +28,20 @@ public class SlotTimeFormatter {
 
         Period period = new Period(startTime, endTime);
         length = period.toStandardMinutes().getMinutes();
+    }
+
+
+
+    public SlotTimeFormatter(String startPart,int duration) {
+
+        DateTimeFormatter outputFormat = DateTimeFormat.forPattern("yyMMdd HH:mm");
+
+        DateTime startTime = toTime(startPart);
+        start = outputFormat.print(startTime);
+        DateTime endTime = startTime.plusMinutes(duration);
+        end = outputFormat.print(endTime);
+
+        length = duration;
     }
 
     private DateTime toTime(String startPart) {

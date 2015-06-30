@@ -189,10 +189,10 @@ public class EmsCommunicator {
             for (Item item : items) {
                 Data data = item.getData();
                 String start = data.propertyByName("start").get().getValue().get().asString();
-                String end = data.propertyByName("end").get().getValue().get().asString();
+                int duration = data.propertyByName("duration").get().getValue().get().asNumber().intValue();
                 String href = item.getHref().get().toString();
 
-                SlotTimeFormatter slotTimeFormatter = new SlotTimeFormatter(start + "+" + end);
+                SlotTimeFormatter slotTimeFormatter = new SlotTimeFormatter(start,duration);
 
                 href = Base64Util.encode(href);
 
