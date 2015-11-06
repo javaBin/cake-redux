@@ -155,7 +155,7 @@ public class DataServlet extends HttpServlet {
             String state = update.requiredString("state");
             String lastModified = update.requiredString("lastModified");
 
-            List<String> taglist = tags.nodeStream().map(org.jsonbuddy.JsonNode::textValue).collect(Collectors.toList());
+            List<String> taglist = tags.nodeStream().map(org.jsonbuddy.JsonNode::stringValue).collect(Collectors.toList());
 
             String newTalk = emsCommunicator.update(ref, taglist, state, lastModified);
             resp.getWriter().append(newTalk);

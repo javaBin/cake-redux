@@ -129,9 +129,9 @@ public class EmsCommunicator {
                 href = Base64Util.encode(href);
 
                 JsonObject jsonObjectFactory = JsonFactory.jsonObject()
-                        .withValue("name", eventname)
-                        .withValue("ref", href)
-                        .withValue("slug", slug);
+                        .put("name", eventname)
+                        .put("ref", href)
+                        .put("slug", slug);
 
                 eventArray.add(jsonObjectFactory);
 
@@ -224,8 +224,8 @@ public class EmsCommunicator {
             Item talkItem = new CollectionParser().parse(is).getFirstItem().get();
             JsonObject jsonObject = readTalk(talkItem, connection);
             String submititLocation = Configuration.submititLocation() + encodedUrl;
-            jsonObject.withValue("submititLoc",submititLocation);
-            jsonObject.withValue("eventId",eventFromTalk(url));
+            jsonObject.put("submititLoc",submititLocation);
+            jsonObject.put("eventId",eventFromTalk(url));
             return jsonObject.toJson();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -421,10 +421,10 @@ public class EmsCommunicator {
                 continue;
             }
             JsonObject speaker = JsonFactory.jsonObject();
-            speaker.withValue("name", link.getPrompt().get().toString());
+            speaker.put("name", link.getPrompt().get().toString());
             speakers.add(speaker);
         }
-        jsonTalk.withValue("speakers", speakers);
+        jsonTalk.put("speakers", speakers);
         allTalk.add(jsonTalk);
     }
 
@@ -486,7 +486,7 @@ public class EmsCommunicator {
             jsonSpeakers.add(jsonSpeaker);
         }
 
-        jsonTalk.withValue("speakers", jsonSpeakers);
+        jsonTalk.put("speakers", jsonSpeakers);
         return jsonTalk;
     }
 
@@ -499,9 +499,9 @@ public class EmsCommunicator {
             String roomName = roomLink.getPrompt().get();
             String ref = roomLink.getHref().toString();
             JsonObject room = JsonFactory.jsonObject();
-            room.withValue("name", roomName);
-            room.withValue("ref", Base64Util.encode(ref));
-            jsonTalk.withValue("room", room);
+            room.put("name", roomName);
+            room.put("ref", Base64Util.encode(ref));
+            jsonTalk.put("room", room);
         }
     }
 
@@ -513,10 +513,10 @@ public class EmsCommunicator {
             String slotcode = slotLink.getPrompt().get();
             SlotTimeFormatter slotTimeFormatter = new SlotTimeFormatter(slotcode);
             JsonObject slot = JsonFactory.jsonObject()
-                    .withValue("ref", Base64Util.encode(ref))
-                    .withValue("start",slotTimeFormatter.getStart())
-                    .withValue("end",slotTimeFormatter.getEnd());
-            jsonTalk.withValue("slot",slot);
+                    .put("ref", Base64Util.encode(ref))
+                    .put("start",slotTimeFormatter.getStart())
+                    .put("end",slotTimeFormatter.getEnd());
+            jsonTalk.put("slot",slot);
         }
     }
 
@@ -533,17 +533,17 @@ public class EmsCommunicator {
                 for (Value val : array) {
                     values.add(val.asString());
                 }
-                itemAsJson.withValue(key, values);
+                itemAsJson.put(key, values);
 
             } else if (property.hasValue()) {
-                itemAsJson.withValue(key, property.getValue().get().asString());
+                itemAsJson.put(key, property.getValue().get().asString());
             }
         }
         String href = item.getHref().get().toString();
-        itemAsJson.withValue("ref", Base64Util.encode(href));
+        itemAsJson.put("ref", Base64Util.encode(href));
         String lastModified = (connection != null) ? connection.getHeaderField("last-modified") : null;
         if (lastModified != null) {
-            itemAsJson.withValue("lastModified", lastModified);
+            itemAsJson.put("lastModified", lastModified);
         }
         return itemAsJson;
     }
