@@ -1,0 +1,17 @@
+JavaZone, Europe's largest independent developer conference, is celebrating its 15th year!
+We are hoping for your contribution to our conference on September 7th-8th 2016 in Oslo, Norway. The Call for Speakers for JavaZone 2016 is now open.
+Your audience? More than 2600 passionate and truly interested developers working primarily with the Java platform.
+
+* Call for speakers is now open!
+* Call for speakers ends: April 18th
+
+We are looking forward to receiving your proposal(s).
+
+* For more info, visit http://2016.javazone.no/speakers
+* Submit your proposal at http://javazone.no/submitit
+
+The JavaZone conference is organized by javaBin, the Norwegian Java User Group (JUG). javaBin is an idealistic, non-profit organization established in 1996 by a group of Java enthusiasts. javaBin has since evolved to be the leading JUG in Scandinavia.
+This is your chance to learn new things and extend your network while simultaneously contributing to the Java community!
+
+Best Regards,
+The JavaZone Program Committee
