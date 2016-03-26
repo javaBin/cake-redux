@@ -1,52 +1,42 @@
-(function() {
+(function () {
+    "use strict";
 
-    angular.module('cakeReduxModule', []);
+    angular.module('cakeReduxModule', ['ngRoute']);
 
-    var bootstrap;
-    bootstrap = function() {
-        angular.module('cakeRedux', ['cakeReduxModule']).
-        config(['$routeProvider', function($routeProvider) {
-                $routeProvider.
-                    when('/', {
-                        templateUrl: 'templates/talkList.html',
-                        controller: 'TalkListCtrl'
-                    }).
-                    when("/talks/:eventSlug", {
-                        templateUrl: 'templates/talkList.html',
-                        controller: 'TalkListCtrl'
-                    }).
-                    when("/showTalk/:talkId", {
-                        templateUrl: 'templates/showTalk.html',
-                        controller: 'ShowTalkCtrl'
-                    }).
-                    when("/accept", {
-                        templateUrl: 'templates/acceptTalk.html',
-                        controller: 'AcceptTalkCtrl'
-                    }).
-                    when("/publish", {
-                        templateUrl: 'templates/publishTalk.html',
-                        controller: 'PublishTalkCtrl'
-                    }).
-                    when("/massUpdate", {
-                        templateUrl: 'templates/acceptTalk.html',
-                        controller: 'AcceptTalkCtrl'
-                    }).
-                    when("/showSchedule", {
-                        templateUrl: 'templates/showSchedule.html',
-                        controller: 'ShowScheduleCtrl'
-                    }).
-                    when("/report", {
-                        templateUrl: "templates/talkReport.html",
-                        controller: "TalkReportCtrl"
-                    })
-                    ;
-        }]);
+    angular.module('cakeRedux', ['cakeReduxModule']).
+    config(['$routeProvider', function($routeProvider) {
+        $routeProvider.when('/', {
+            templateUrl: 'templates/talkList.html',
+            controller: 'TalkListCtrl'
+        }).when("/talks/:eventSlug", {
+            templateUrl: 'templates/talkList.html',
+            controller: 'TalkListCtrl'
+        }).when("/showTalk/:talkId", {
+            templateUrl: 'templates/showTalk.html',
+            controller: 'ShowTalkCtrl'
+        }).when("/accept", {
+            templateUrl: 'templates/acceptTalk.html',
+            controller: 'AcceptTalkCtrl'
+        }).when("/publish", {
+            templateUrl: 'templates/publishTalk.html',
+            controller: 'PublishTalkCtrl'
+        }).when("/massUpdate", {
+            templateUrl: 'templates/acceptTalk.html',
+            controller: 'AcceptTalkCtrl'
+        }).when("/showSchedule", {
+            templateUrl: 'templates/showSchedule.html',
+            controller: 'ShowScheduleCtrl'
+        }).when("/report", {
+            templateUrl: "templates/talkReport.html",
+            controller: "TalkReportCtrl"
+        })
+        ;
+    }])
+    .run(['$rootScope',
+        function($rootScope) {}
+    ]);
+
         
-        angular.bootstrap(document,['cakeRedux']);
-        
-    };
-
-    bootstrap();
 
 
 }());
