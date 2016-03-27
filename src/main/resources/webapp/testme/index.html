@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="cakeRedux">
+<head>
+    <meta charset="UTF-8">
+    <title>Testit</title>
+    <script src="../scripts/ext/jquery-2.1.0.min.js"></script>
+    <script src="../scripts/ext/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../scripts/ext/bootstrap.min.css">
+
+    <script src="../scripts/ext/angular.1.5.2.min.js"></script>
+    <script src="../scripts/ext/angular-route.1.5.2.min.js"></script>
+
+    <script src="app.js"></script>
+    <script src="showTalkCtrl.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Cake-redux</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown"role="button" aria-haspopup="true" aria-expanded="false">
+                            Actions <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li ><a ng-href="#/accept">Accept talks...</a></li>
+                            <li ><a ng-href="#/publish">Publish talks...</a></li>
+                            <li ><a ng-href="#/massUpdate">Send mail and/or tag ...</a></li>
+                            <li ><a ng-href="#/showSchedule">Show schedule ...</a></li>
+                            <li ><a ng-href="#/report">Report</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <h1>Me</h1>
+    <div ng-view></div>
+
+</div>
+</body>
+</html>

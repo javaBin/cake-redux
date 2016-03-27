@@ -16,13 +16,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
-                        <a href="." class="dropdown-toggle" data-toggle="dropdown">Year <b class="caret"></b></a>
+                        <a class="dropdown-toggle" data-toggle="dropdown">Year <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li ng-repeat="event in events"><a ng-href="#/talks/{{event.slug}}">{{event.name}}</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="." class="dropdown-toggle" data-toggle="dropdown"role="button" aria-haspopup="true" aria-expanded="false">
+                        <a class="dropdown-toggle" data-toggle="dropdown"role="button" aria-haspopup="true" aria-expanded="false">
                             Actions <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li ><a ng-href="#/accept">Accept talks...</a></li>
