@@ -7,6 +7,8 @@ import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonObject;
 import org.jsonbuddy.parse.JsonParser;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,23 +22,36 @@ public class SpeakerMailSender {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 1) {
+        if (args.length < 2) {
             System.out.println("Usege SpeakerMailSender <configfile>");
             return;
         }
         System.setProperty("cake-redux-config-file",args[0]);
         SpeakerMailSender speakerMailSender = new SpeakerMailSender();
 
-        Set<String> allAddresses = speakerMailSender.readSpeakerList();
+        SortedSet<String> allAddresses = readFromFile(args[1]);
+        //Set<String> allAddresses = speakerMailSender.readSpeakerList();
+        System.out.println(allAddresses);
+        System.out.println("****");
         speakerMailSender.sendMailToAll(allAddresses);
     }
 
-    private void sendMailToAll(Set<String> allAddresses) throws Exception {
+    private static SortedSet<String> readFromFile(String filename) throws Exception {
+        String all = EmsCommunicator.toString(new FileInputStream(filename));
+
+        SortedSet<String> result = new TreeSet<>();
+        for (String line : all.split("\n")) {
+            result.add(line);
+        }
+        return result;
+    }
+
+    private void sendMailToAll(SortedSet<String> allAddresses) throws Exception {
         System.out.println("Sending...");
         for (String address : allAddresses) {
             System.out.println(address);
             sendMail(address);
-            Thread.sleep(2500);
+            Thread.sleep(10000);
         }
     }
 

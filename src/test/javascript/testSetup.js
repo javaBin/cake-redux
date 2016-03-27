@@ -1,1 +1,1 @@
-angular.module('cakeReduxModule', []);
+    angular.module('cakeReduxModule', []);
