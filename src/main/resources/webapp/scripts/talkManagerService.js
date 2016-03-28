@@ -4,12 +4,12 @@
     function talkManagerService($http) {
         function builldMap(event) {
             var res = _.clone(event);
-            res.talkList = $http({method: "GET", url: "data/talks?eventId=" + res.ref});
+            //res.talkList = $http({method: "GET", url: "data/talks?eventId=" + res.ref});
             return res;
         }
         this.eventMap = $http({method: "GET", url: "data/events"})
             .then(function(data) {
-                return _.map(data,builldMap)
+                return _.map(data.data,builldMap)
             });
 
         var self = this;
