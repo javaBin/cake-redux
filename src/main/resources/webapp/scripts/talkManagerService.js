@@ -19,7 +19,7 @@
 
         this.talkList = function (eventSlug) {
             return self.eventMap.then(function(eventList) {
-                return _.findWhere(eventList,{slug: eventSlug}).talkList;
+                return _.findWhere(eventList,{slug: eventSlug}).talkList();
             })
         }
     }
