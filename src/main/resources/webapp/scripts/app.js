@@ -8,15 +8,18 @@
         $routeProvider.when('/', {
             templateUrl: 'templates/talkList.html',
             controller: 'TalkListCtrl'
-        }).when("/list", {
-            templateUrl: 'templates/talkOverview.html',
-            controller: 'TalkOverviewController'
         }).when("/talks/:eventSlug", {
             templateUrl: 'templates/talkList.html',
             controller: 'TalkListCtrl'
         }).when("/showTalk/:talkId", {
             templateUrl: 'templates/showTalk.html',
             controller: 'ShowTalkCtrl'
+        }).when("/list", {
+            templateUrl: 'templates/talkOverview.html',
+            controller: 'TalkOverviewController'
+        }).when("/tlist/:eventSlug", {
+            templateUrl: 'templates/talkOverview.html',
+            controller: 'TalkOverviewController'    
         }).when("/accept", {
             templateUrl: 'templates/acceptTalk.html',
             controller: 'AcceptTalkCtrl'

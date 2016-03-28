@@ -4,7 +4,10 @@
     function talkManagerService($http) {
         function builldMap(event) {
             var res = _.clone(event);
-            //res.talkList = $http({method: "GET", url: "data/talks?eventId=" + res.ref});
+            res.talkList = function() {
+                var eventurl = "data/talks?eventId=" + res.ref;
+                return $http({method: "GET", url: eventurl});
+            };
             return res;
         }
         this.eventMap = $http({method: "GET", url: "data/events"})
