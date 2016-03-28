@@ -8,6 +8,9 @@
         $routeProvider.when('/', {
             templateUrl: 'templates/talkList.html',
             controller: 'TalkListCtrl'
+        }).when("/list", {
+            templateUrl: 'templates/talkOverview.html',
+            controller: 'TalkOverviewController'
         }).when("/talks/:eventSlug", {
             templateUrl: 'templates/talkList.html',
             controller: 'TalkListCtrl'
