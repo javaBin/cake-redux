@@ -114,6 +114,10 @@ public class EmsCommunicator {
     }
 
     public String allEvents()  {
+        return eventJsonNodes().toJson();
+    }
+
+    private JsonArray eventJsonNodes() {
         try {
             URLConnection connection = openConnection(Configuration.emsEventLocation(), false);
             Collection events = new CollectionParser().parse(openStream(connection));
@@ -137,9 +141,9 @@ public class EmsCommunicator {
 
 
             }
+            return eventArray;
 
-            return eventArray.toJson();
-        } catch (IOException  e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -222,7 +226,7 @@ public class EmsCommunicator {
         try {
             InputStream is = openStream(connection);
             Item talkItem = new CollectionParser().parse(is).getFirstItem().get();
-            JsonObject jsonObject = readTalk(talkItem, connection);
+            JsonObject jsonObject = readTalk(url,talkItem, connection);
             String submititLocation = Configuration.submititLocation() + encodedUrl;
             jsonObject.put("submititLoc",submititLocation);
             jsonObject.put("eventId",eventFromTalk(url));
@@ -436,14 +440,15 @@ public class EmsCommunicator {
         int num=items.size();
         for (Item item : items) {
             System.out.println(num--);
-            URLConnection talkConn = openConnection(item.getHref().get().toString(), true);
+            String url = item.getHref().get().toString();
+            URLConnection talkConn = openConnection(url, true);
             Item talkIktem = null;
             try (InputStream talkInpStr = talkConn.getInputStream()) {
                 talkIktem = new CollectionParser().parse(talkInpStr).getFirstItem().get();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            JsonObject jsonTalk = readTalk(talkIktem, talkConn);
+            JsonObject jsonTalk = readTalk(url, talkIktem, talkConn);
             talkArray.add(jsonTalk);
         }
 
@@ -463,7 +468,7 @@ public class EmsCommunicator {
         return events.getItems();
     }
 
-    private JsonObject readTalk(Item item, URLConnection connection) {
+    private JsonObject readTalk(String talkUrl, Item item, URLConnection connection) {
         JsonObject jsonTalk = readItemProperties(item, connection);
 
         readRoom(item, jsonTalk);
@@ -487,9 +492,22 @@ public class EmsCommunicator {
         }
 
         jsonTalk.put("speakers", jsonSpeakers);
+        java.util.Optional<String> eventSlug = findEventSlug(talkUrl);
+        if (eventSlug.isPresent()) {
+            jsonTalk.put("eventSlug", eventSlug.get());
+        }
         return jsonTalk;
     }
 
+    private java.util.Optional<String> findEventSlug(String talkUrl) {
+        JsonArray evnetnodes = eventJsonNodes();
+        java.util.Optional<String> eventSlug = evnetnodes.nodeStream()
+                .map(jn -> (JsonObject) jn)
+                .filter(jo -> talkUrl.startsWith(Base64Util.decode(jo.requiredString("ref"))))
+                .findAny()
+                .map(jo -> jo.requiredString("slug"));
+        return eventSlug;
+    }
 
 
     private void readRoom(Item item, JsonObject jsonTalk) {
