@@ -1,6 +1,6 @@
 angular.module('cakeReduxModule')
-    .controller('ShowTalkCtrl', ['$scope', '$http', '$routeParams', 'talkList','roomSlotFactory','slotFilterService',
-        function($scope, $http, $routeParams,talkList,roomSlotFactory,slotFilterService) {
+    .controller('ShowTalkCtrl', ['$scope', '$http', '$routeParams', 'talkList','roomSlotFactory','slotFilterService','talkManagerService',
+        function($scope, $http, $routeParams,talkList,roomSlotFactory,slotFilterService,talkManagerService) {
             $scope.filterSlot = slotFilterService.filterValue;
             $scope.roomsSlots = {};
 
@@ -17,18 +17,21 @@ angular.module('cakeReduxModule')
                     $scope.aTalk = data;
                 }
                 var talkSpeakers = $scope.aTalk.speakers;
-                _.each(talkSpeakers,function(tspeak) {
-                    tspeak.otherTalks = _.filter(talkList.allTalks,function(talk) {
-                        if (talk.ref == $scope.aTalk.ref) {
-                            return false;
-                        }
-                        var found = false;
-                        if (_.findWhere(talk.speakers,{name:tspeak.name})) {
-                            found = true;
-                        }
-                        return found;
-                    });
 
+                talkManagerService.talkList($scope.aTalk.eventSlug).then(function(data) {
+                    _.each(talkSpeakers, function (tspeak) {
+                        tspeak.otherTalks = _.filter(data.data, function (talk) {
+                            if (talk.ref == $scope.aTalk.ref) {
+                                return false;
+                            }
+                            var found = false;
+                            if (_.findWhere(talk.speakers, {name: tspeak.name})) {
+                                found = true;
+                            }
+                            return found;
+                        });
+
+                    });
                 });
                 if ($scope.aTalk) {
                     document.title = $scope.aTalk.title;
