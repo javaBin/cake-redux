@@ -76,15 +76,33 @@ public class EntranceServlet extends HttpServlet {
         userEmail = userInfo.get("email").asText();
 
         String userid = username + "<" + userEmail + ">";
-        if (!Configuration.getAutorizedUsers().contains(userid)) {
+        if (!haveAccess(userid)) {
             resp
                     .sendError(HttpServletResponse.SC_FORBIDDEN, "User not registered " + userid);
             return;
         }
 
         req.getSession().setAttribute("access_token", userid);
+        req.getSession().setAttribute("username",username);
 
         writeLoginMessage(resp, writer, userid);
+    }
+
+    private boolean haveAccess(String userid) {
+        if (Configuration.getAutorizedUsers().contains(userid)) {
+            return true;
+        }
+        String autorizedUserFile = Configuration.autorizedUserFile();
+        if (autorizedUserFile == null) {
+            return false;
+        }
+        String authUsers;
+        try {
+            authUsers = EmsCommunicator.toString(new FileInputStream(autorizedUserFile));
+        } catch (IOException e) {
+            return false;
+        }
+        return authUsers.contains(userid);
     }
 
     public static void writeLoginMessage(HttpServletResponse resp, PrintWriter writer, String userid) {

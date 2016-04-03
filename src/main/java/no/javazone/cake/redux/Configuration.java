@@ -78,6 +78,10 @@ public class Configuration {
         return authorizedUsers;
     }
 
+    public static String autorizedUserFile() {
+        return getProperty("autorizedUserFile");
+    }
+
     public static boolean noAuthMode() {
         return "true".equals(getProperty("noAuthMode"));
     }

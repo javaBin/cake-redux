@@ -13,6 +13,7 @@ public class SecurityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         if (Configuration.noAuthMode()) {
+            ((HttpServletRequest) req).getSession().setAttribute("username","Dummyuser");
             chain.doFilter(req,resp);
             return;
         }
