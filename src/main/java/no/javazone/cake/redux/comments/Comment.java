@@ -3,6 +3,11 @@ package no.javazone.cake.redux.comments;
 public class Comment extends Feedback {
     public final String talkComment;
 
+    @Override
+    public FeedbackType feedbackType() {
+        return FeedbackType.COMMENT;
+    }
+
     public static class Builder implements FeedbackBuilder {
         private String id;
         private String talkid;
@@ -39,6 +44,11 @@ public class Comment extends Feedback {
 
         public String getAuthor() {
             return author;
+        }
+
+        @Override
+        public void setInfo(String info) {
+            setTalkComment(info);
         }
 
         public Comment create() {

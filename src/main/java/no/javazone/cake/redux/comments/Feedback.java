@@ -10,4 +10,6 @@ public abstract class Feedback {
         this.talkid = feedbackBuilder.getTalkid();
         this.author = feedbackBuilder.getAuthor();
     }
+
+    public abstract FeedbackType feedbackType();
 }
