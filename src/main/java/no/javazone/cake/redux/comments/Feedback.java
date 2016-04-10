@@ -2,6 +2,7 @@ package no.javazone.cake.redux.comments;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 public abstract class Feedback {
     public final String id;
@@ -17,10 +18,10 @@ public abstract class Feedback {
     }
 
     public abstract static class FeedbackBuilder {
-        private String id;
+        private String id = UUID.randomUUID().toString();
         private String talkid;
         private String author;
-        private LocalDateTime created;
+        private LocalDateTime created = LocalDateTime.now();
 
         public FeedbackBuilder setId(String id) {
             this.id = id;
