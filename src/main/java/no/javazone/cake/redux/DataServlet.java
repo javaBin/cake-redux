@@ -180,13 +180,20 @@ public class DataServlet extends HttpServlet {
             writer.append(emsCommunicator.talkShortVersion(encEvent));
         } else if ("/atalk".equals(pathInfo)) {
             String encTalk = request.getParameter("talkId");
-            writer.append(emsCommunicator.fetchOneTalk(encTalk));
+            JsonObject oneTalkAsJson = emsCommunicator.oneTalkAsJson(encTalk);
+            appendComments(oneTalkAsJson,encTalk);
+            oneTalkAsJson.toJson(writer);
         } else if ("/events".equals(pathInfo)) {
             writer.append(emsCommunicator.allEvents());
         } else if ("/roomsSlots".equals(pathInfo)) {
             String encEvent = request.getParameter("eventId");
             writer.append(emsCommunicator.allRoomsAndSlots(encEvent));
         }
+    }
+
+    private void appendComments(JsonObject oneTalkAsJson, String encTalk) {
+        JsonArray comments = FeedbackService.get().commentsForTalk(encTalk);
+        oneTalkAsJson.put("comments",comments);
     }
 
     private String config() {

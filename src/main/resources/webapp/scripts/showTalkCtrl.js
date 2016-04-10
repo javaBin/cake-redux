@@ -7,6 +7,7 @@ angular.module('cakeReduxModule')
 
             var talkRef = $routeParams.talkId;
             $scope.showError = false;
+            $scope.comments = [];
 
             var updateFromServer = function(data) {
                 if ($scope.aTalk) {
@@ -15,6 +16,7 @@ angular.module('cakeReduxModule')
                     }
                 } else {
                     $scope.aTalk = data;
+                    $scope.comments = $scope.aTalk.comments;
                 }
                 var talkSpeakers = $scope.aTalk.speakers;
 
@@ -192,10 +194,7 @@ angular.module('cakeReduxModule')
                 });
             };
 
-            console.log("xxx");
-
             $scope.addComment = function () {
-                console.log("xxdfydg");
                 $http({
                     method: "POST",
                     url: "data/addComment",
@@ -203,6 +202,8 @@ angular.module('cakeReduxModule')
                         talkref: talkRef,
                         comment: $scope.newCommentText
                     }
+                }).success(function (data) {
+                    $scope.comments = data;
                 });
             };
 

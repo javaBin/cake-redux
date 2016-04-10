@@ -69,7 +69,7 @@ public abstract class Feedback  {
         return Objects.hash(id);
     }
 
-    public JsonObject asJson() {
+    public JsonObject asDisplayJson() {
         return JsonFactory.jsonObject()
                 .put("id",id)
                 .put("author",author)

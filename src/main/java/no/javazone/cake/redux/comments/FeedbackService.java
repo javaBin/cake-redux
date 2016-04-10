@@ -20,7 +20,7 @@ public class FeedbackService {
         FeedbackDao instance = FeedbackDao.instance();
         instance.addFeedback(feedback);
         List<Feedback> feedbacks = FeedbackDao.instance().feedbacksForTalk(talkref);
-        return JsonArray.fromNodeStream(feedbacks.stream().map(Feedback::asJson));
+        return JsonArray.fromNodeStream(feedbacks.stream().map(Feedback::asDisplayJson));
     }
 
     private static String cleanUserInput(String input) {
@@ -29,5 +29,10 @@ public class FeedbackService {
                 .replaceAll("&"," ")
                 .replaceAll("<","")
                 .replaceAll(">","");
+    }
+
+    public JsonArray commentsForTalk(String talkRef) {
+        List<Feedback> feedbacks = FeedbackDao.instance().feedbacksForTalk(talkRef);
+        return JsonArray.fromNodeStream(feedbacks.stream().map(Feedback::asDisplayJson));
     }
 }

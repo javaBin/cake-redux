@@ -218,8 +218,7 @@ public class EmsCommunicator {
         }
     }
 
-
-    public String fetchOneTalk(String encodedUrl) {
+    public JsonObject oneTalkAsJson(String encodedUrl) {
         String url = Base64Util.decode(encodedUrl);
         URLConnection connection = openConnection(url, true);
 
@@ -230,10 +229,14 @@ public class EmsCommunicator {
             String submititLocation = Configuration.submititLocation() + encodedUrl;
             jsonObject.put("submititLoc",submititLocation);
             jsonObject.put("eventId",eventFromTalk(url));
-            return jsonObject.toJson();
+            return jsonObject;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String fetchOneTalk(String encodedUrl) {
+        return oneTalkAsJson(encodedUrl).toJson();
     }
 
     private String eventFromTalk(String url) {
