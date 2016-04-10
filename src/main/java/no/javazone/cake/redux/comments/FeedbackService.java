@@ -13,7 +13,7 @@ public class FeedbackService {
     public JsonArray addComment(JsonObject payload,String username) {
         String talkref = payload.requiredString("talkref");
         Feedback feedback = Comment.builder()
-                .setTalkComment(payload.requiredString("comment"))
+                .setTalkComment(cleanUserInput(payload.requiredString("comment")))
                 .setTalkid(talkref)
                 .setAuthor(username)
                 .create();
@@ -21,6 +21,13 @@ public class FeedbackService {
         instance.addFeedback(feedback);
         List<Feedback> feedbacks = FeedbackDao.instance().feedbacksForTalk(talkref);
         return JsonArray.fromNodeStream(feedbacks.stream().map(Feedback::asJson));
+    }
 
+    private static String cleanUserInput(String input) {
+        return input
+                .replaceAll("\n"," ")
+                .replaceAll("&"," ")
+                .replaceAll("<","")
+                .replaceAll(">","");
     }
 }
