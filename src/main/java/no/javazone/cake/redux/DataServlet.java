@@ -43,6 +43,7 @@ public class DataServlet extends HttpServlet {
             massPublish(req, resp);
         } else if ("/addComment".equals(pathInfo)) {
             addComment(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
         }
 
     }
@@ -172,7 +173,7 @@ public class DataServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/json");
+        response.setContentType("application/json;charset=UTF-8");
         PrintWriter writer = response.getWriter();
         String pathInfo = request.getPathInfo();
         if ("/talks".equals(pathInfo)) {
