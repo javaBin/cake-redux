@@ -6,6 +6,7 @@ import org.jsonbuddy.JsonObject;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FeedbackService {
     public static FeedbackService get() {
@@ -21,15 +22,7 @@ public class FeedbackService {
                 .create();
         FeedbackDao feedbackDao = FeedbackDao.instance();
         feedbackDao.addFeedback(feedback);
-        return rereadFeedbacks(talkref, feedbackDao, FeedbackType.COMMENT);
-    }
-
-    private JsonArray rereadFeedbacks(String talkref, FeedbackDao feedbackDao, FeedbackType feedbackType) {
-        List<Feedback> feedbacks = feedbackDao.feedbacksForTalk(talkref)
-                .stream()
-                .filter(fb -> fb.feedbackType() == feedbackType)
-                .collect(Collectors.toList());
-        return JsonArray.fromNodeStream(feedbacks.stream().map(Feedback::asDisplayJson));
+        return commentsForTalk(talkref);
     }
 
     private static String cleanUserInput(String input) {
@@ -43,7 +36,7 @@ public class FeedbackService {
     public JsonArray giveRating(JsonObject payload,String username) {
         String talkref = payload.requiredString("talkref");
         FeedbackDao feedbackDao = FeedbackDao.instance();
-        Optional<Feedback> oldFeedback = feedbackDao.feedbacksForTalk(talkref).stream()
+        Optional<Feedback> oldFeedback = feedbackDao.feedbacksForTalk(talkref)
                 .filter(fb -> fb.feedbackType() == FeedbackType.TALK_RATING && fb.author.equals(username))
                 .findAny();
         if (oldFeedback.isPresent()) {
@@ -56,13 +49,31 @@ public class FeedbackService {
                 .setAuthor(username)
                 .create();
         feedbackDao.addFeedback(feedback);
-        return rereadFeedbacks(talkref, feedbackDao, FeedbackType.TALK_RATING);
+        return ratingsForTalk(talkref);
     }
 
 
 
     public JsonArray commentsForTalk(String talkRef) {
-        List<Feedback> feedbacks = FeedbackDao.instance().feedbacksForTalk(talkRef);
-        return JsonArray.fromNodeStream(feedbacks.stream().map(Feedback::asDisplayJson));
+        return JsonArray.fromNodeStream(FeedbackDao.instance().feedbacksForTalk(talkRef)
+                .filter(fb -> fb.feedbackType() == FeedbackType.COMMENT)
+                .sorted((o1,o2)->o1.created.compareTo(o2.created))
+                .map(Feedback::asDisplayJson)
+        );
+    }
+
+    public JsonArray ratingsForTalk(String talkRef) {
+        return JsonArray.fromNodeStream(FeedbackDao.instance().feedbacksForTalk(talkRef)
+                .filter(fb -> fb.feedbackType() == FeedbackType.TALK_RATING)
+                .map(fb -> (TalkRating) fb)
+                .sorted((o1,o2)-> {
+                    int val = o1.rating.compareTo(o2.rating);
+                    if (val != 0) {
+                        return val;
+                    }
+                    return o1.author.compareTo(o2.author);
+                })
+                .map(Feedback::asDisplayJson)
+        );
     }
 }

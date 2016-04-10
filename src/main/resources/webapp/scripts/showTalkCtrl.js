@@ -18,6 +18,7 @@ angular.module('cakeReduxModule')
                 } else {
                     $scope.aTalk = data;
                     $scope.comments = $scope.aTalk.comments;
+                    $scope.ratings = $scope.aTalk.ratings;
                 }
                 var talkSpeakers = $scope.aTalk.speakers;
 

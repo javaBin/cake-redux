@@ -1,11 +1,11 @@
 package no.javazone.cake.redux.comments;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 public interface FeedbackDao {
     void addFeedback(Feedback feedback);
     void deleteFeedback(String id);
-    List<Feedback> feedbacksForTalk(String talkid);
+    Stream<Feedback> feedbacksForTalk(String talkid);
 
     static FeedbackDao instance() {
         return FeedbackDaoFileImpl.get();

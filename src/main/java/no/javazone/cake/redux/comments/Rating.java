@@ -2,7 +2,7 @@ package no.javazone.cake.redux.comments;
 
 import java.util.Arrays;
 
-public enum Rating {
+public enum Rating implements Comparable<Rating> {
     VERY_POSITIVE("++"),
     POSITIVE("+"),
     NEUTRAL("0"),

@@ -190,7 +190,7 @@ public class DataServlet extends HttpServlet {
         } else if ("/atalk".equals(pathInfo)) {
             String encTalk = request.getParameter("talkId");
             JsonObject oneTalkAsJson = emsCommunicator.oneTalkAsJson(encTalk);
-            appendComments(oneTalkAsJson,encTalk);
+            appendFeedbacks(oneTalkAsJson,encTalk);
             oneTalkAsJson.toJson(writer);
         } else if ("/events".equals(pathInfo)) {
             writer.append(emsCommunicator.allEvents());
@@ -200,9 +200,11 @@ public class DataServlet extends HttpServlet {
         }
     }
 
-    private void appendComments(JsonObject oneTalkAsJson, String encTalk) {
+    private void appendFeedbacks(JsonObject oneTalkAsJson, String encTalk) {
         JsonArray comments = FeedbackService.get().commentsForTalk(encTalk);
         oneTalkAsJson.put("comments",comments);
+        JsonArray ratings = FeedbackService.get().ratingsForTalk(encTalk);
+        oneTalkAsJson.put("ratings",ratings);
     }
 
     private String config() {

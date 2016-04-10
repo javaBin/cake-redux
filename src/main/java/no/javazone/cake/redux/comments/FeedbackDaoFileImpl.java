@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FeedbackDaoFileImpl implements FeedbackDao {
     private static transient FeedbackDaoFileImpl _instance;
@@ -100,13 +101,11 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
     }
 
     @Override
-    public List<Feedback> feedbacksForTalk(String talkid) {
+    public Stream<Feedback> feedbacksForTalk(String talkid) {
         synchronized (feedbacks) {
             return feedbacks.stream()
-                    .filter(fe -> fe.talkid.equals(talkid))
-                    .sequential()
-                    .sorted((o1, o2) -> o1.created.compareTo(o2.created))
-                    .collect(Collectors.toList());
+                    .filter(fe -> fe.talkid.equals(talkid));
+
         }
     }
 
