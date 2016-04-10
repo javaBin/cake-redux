@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -56,6 +57,7 @@ public class DataServletReadTest {
 
     @Test
     public void shouldReadSingleTalk() throws Exception {
+        Configuration.setProps(Collections.emptyMap());
         when(req.getPathInfo()).thenReturn("/atalk");
         when(req.getParameter("talkId")).thenReturn("zzz");
         JsonObject val = JsonFactory.jsonObject();

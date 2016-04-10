@@ -152,4 +152,8 @@ public class Configuration {
 
     public static String applicationSecret() { return readConf("applicationSecret", "33879936R6Jr47D4Hj5R6p9qT");}
 
+    public static void setProps(Map<String,String> props) {
+        instance.properties = props;
+    }
+
 }
