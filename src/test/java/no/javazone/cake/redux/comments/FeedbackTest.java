@@ -1,13 +1,11 @@
 package no.javazone.cake.redux.comments;
 
-import org.assertj.core.api.Assertions;
 import org.jsonbuddy.JsonObject;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 public class FeedbackTest {
     @Test

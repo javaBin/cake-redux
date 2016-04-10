@@ -204,6 +204,7 @@ angular.module('cakeReduxModule')
                     }
                 }).success(function (data) {
                     $scope.comments = data;
+                    $scope.newCommentText = "";
                 });
             };
 

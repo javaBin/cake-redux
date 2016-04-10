@@ -1,6 +1,13 @@
 package no.javazone.cake.redux.comments;
 
+import no.javazone.cake.redux.Configuration;
+import no.javazone.cake.redux.EmsCommunicator;
+import org.jsonbuddy.parse.JsonParser;
+
+import java.io.*;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class FeedbackDaoFileImpl implements FeedbackDao {
@@ -12,10 +19,32 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
         }
         return _instance;
     }
+    private final ExecutorService executorService;
+    private final transient Set<Feedback> feedbacks;
 
-    private FeedbackDaoFileImpl() {}
+    private FeedbackDaoFileImpl() {
+        executorService = Executors.newSingleThreadExecutor();
+        this.feedbacks = new HashSet<>();
 
-    private final transient Set<Feedback> feedbacks = new HashSet<>();
+        String filename = Configuration.feedbackStoreFilename();
+        if (filename == null) {
+            return ;
+        }
+
+        String stored;
+        try {
+            stored = EmsCommunicator.toString(new FileInputStream(filename));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Arrays.asList(stored.split("\n")).stream()
+                .filter(line -> !line.trim().isEmpty())
+                .map(JsonParser::parseToObject)
+                .map(Feedback::fromStoreJson)
+                .forEach(feedbacks::add);
+
+
+    }
 
 
     @Override
@@ -23,6 +52,20 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
         synchronized (feedbacks) {
             feedbacks.add(feedback);
         }
+        String filename = Configuration.feedbackStoreFilename();
+        if (filename == null) {
+            return;
+        }
+        executorService.submit(() -> {
+            try(FileWriter fw = new FileWriter(filename, true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter writer = new PrintWriter(bw))
+            {
+                feedback.asStoreJson().toJson(writer);
+                writer.append("\n");
+            } catch (IOException e) {
+            }
+        });
     }
 
     @Override
