@@ -147,5 +147,23 @@
             <button class="btn btn-primary" ng-click="addComment()">Add</button>
         </p>
     </div>
+    <h2>My rating</h2>
+    <div class="btn-group" data-toggle="buttons">
+        <label class="btn btn-info btn-lg" ng-click="ratingClicked('--')">
+            <input type="radio" name="options" id="option1" autocomplete="off"> --
+        </label>
+        <label class="btn btn-info btn-lg" ng-click="ratingClicked('-')">
+            <input type="radio" name="options" id="option2" autocomplete="off"> -
+        </label>
+        <label class="btn btn-info btn-lg" ng-click="ratingClicked('0')">
+            <input type="radio" name="options" id="option3" autocomplete="off"> 0
+        </label>
+        <label class="btn btn-info btn-lg" ng-click="ratingClicked('+')">
+            <input type="radio" name="options" id="option4" autocomplete="off"> +
+        </label>
+        <label class="btn btn-info btn-lg" ng-click="ratingClicked('++')">
+            <input type="radio" name="options" id="option5" autocomplete="off"> ++
+        </label>
+    </div>
     <h6>Last modified: {{aTalk.lastModified}}</h6>
 </div>

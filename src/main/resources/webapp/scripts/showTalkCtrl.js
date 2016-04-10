@@ -208,5 +208,9 @@ angular.module('cakeReduxModule')
                 });
             };
 
+            $scope.ratingClicked = function (givenRating) {
+                console.log(givenRating);
+            }
+
         }]);
 
