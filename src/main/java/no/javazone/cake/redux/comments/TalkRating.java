@@ -1,5 +1,7 @@
 package no.javazone.cake.redux.comments;
 
+import java.time.LocalDateTime;
+
 public class TalkRating extends Feedback {
     public final Rating rating;
 
@@ -17,6 +19,7 @@ public class TalkRating extends Feedback {
         private String talkid;
         private String author;
         private Rating rating;
+        private LocalDateTime created;
 
         public Builder setId(String id) {
             this.id = id;
@@ -53,6 +56,16 @@ public class TalkRating extends Feedback {
         @Override
         public void setInfo(String info) {
             setRating(Rating.fromText(info));
+        }
+
+        @Override
+        public LocalDateTime getCreated() {
+            return created;
+        }
+
+        public Builder setCreated(LocalDateTime created) {
+            this.created = created;
+            return this;
         }
 
         @Override
