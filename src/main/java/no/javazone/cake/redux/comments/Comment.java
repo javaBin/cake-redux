@@ -23,8 +23,8 @@ public class Comment extends Feedback {
         }
 
         @Override
-        public void setInfo(String info) {
-            setTalkComment(info);
+        public Builder setInfo(String info) {
+            return setTalkComment(info);
         }
 
         @Override

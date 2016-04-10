@@ -4,6 +4,7 @@ import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonObject;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -46,7 +47,7 @@ public abstract class Feedback  {
             return this;
         }
 
-        public abstract void setInfo(String info);
+        public abstract FeedbackBuilder setInfo(String info);
 
 
         public abstract Feedback create();
@@ -74,5 +75,31 @@ public abstract class Feedback  {
                 .put("id",id)
                 .put("author",author)
                 .put("info",getInfo());
+    }
+
+    public JsonObject asStoreJson() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        return JsonFactory.jsonObject()
+                .put("id",id)
+                .put("feedbacktype",feedbackType().toString())
+                .put("talkid",talkid)
+                .put("author",author)
+                .put("created",created.format(formatter))
+                .put("info",getInfo());
+    }
+
+    public static Feedback fromStoreJson(JsonObject jsonObject) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String feedbacktype = jsonObject.requiredString("feedbacktype");
+        Feedback feedback = FeedbackType.valueOf(feedbacktype)
+                .builder()
+                .setId(jsonObject.requiredString("id"))
+                .setAuthor(jsonObject.requiredString("author"))
+                .setTalkid(jsonObject.requiredString("talkid"))
+                .setAuthor(jsonObject.requiredString("author"))
+                .setInfo(jsonObject.requiredString("info"))
+                .setCreated(LocalDateTime.parse(jsonObject.requiredString("created"), formatter))
+                .create();
+        return feedback;
     }
 }

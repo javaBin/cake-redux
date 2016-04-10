@@ -26,8 +26,8 @@ public class TalkRating extends Feedback {
         }
 
         @Override
-        public void setInfo(String info) {
-            setRating(Rating.fromText(info));
+        public Builder setInfo(String info) {
+            return setRating(Rating.fromText(info));
         }
 
         @Override
