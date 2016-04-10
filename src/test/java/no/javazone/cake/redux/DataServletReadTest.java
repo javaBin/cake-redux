@@ -1,5 +1,9 @@
 package no.javazone.cake.redux;
 
+import org.jsonbuddy.JsonFactory;
+import org.jsonbuddy.JsonNode;
+import org.jsonbuddy.JsonObject;
+import org.jsonbuddy.parse.JsonParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,12 +58,14 @@ public class DataServletReadTest {
     public void shouldReadSingleTalk() throws Exception {
         when(req.getPathInfo()).thenReturn("/atalk");
         when(req.getParameter("talkId")).thenReturn("zzz");
-        when(emsCommunicator.fetchOneTalk(anyString())).thenReturn("This is single talk json");
+        JsonObject val = JsonFactory.jsonObject();
+        when(emsCommunicator.oneTalkAsJson(anyString())).thenReturn(val);
 
         servlet.service(req,resp);
 
-        verify(emsCommunicator).fetchOneTalk("zzz");
-        assertThat(jsonResult.toString()).isEqualTo("This is single talk json");
+        verify(emsCommunicator).oneTalkAsJson("zzz");
+        JsonNode parsed = JsonParser.parse(jsonResult.toString());
+        assertThat(parsed).isNotNull();
 
     }
 
