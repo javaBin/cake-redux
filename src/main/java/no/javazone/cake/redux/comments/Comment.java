@@ -8,6 +8,11 @@ public class Comment extends Feedback {
         return FeedbackType.COMMENT;
     }
 
+    @Override
+    public String getInfo() {
+        return talkComment;
+    }
+
     public static class Builder extends FeedbackBuilder {
         private String talkComment;
 

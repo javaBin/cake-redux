@@ -38,7 +38,7 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
     }
 
     @Override
-    public List<? extends Feedback> feedbacksForTalk(String talkid) {
+    public List<Feedback> feedbacksForTalk(String talkid) {
         synchronized (feedbacks) {
             return feedbacks.stream()
                     .filter(fe -> fe.talkid.equals(talkid))

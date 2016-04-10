@@ -192,7 +192,19 @@ angular.module('cakeReduxModule')
                 });
             };
 
+            console.log("xxx");
 
+            $scope.addComment = function () {
+                console.log("xxdfydg");
+                $http({
+                    method: "POST",
+                    url: "data/addComment",
+                    data: {
+                        talkref: talkRef,
+                        comment: $scope.newCommentText
+                    }
+                });
+            };
 
         }]);
 

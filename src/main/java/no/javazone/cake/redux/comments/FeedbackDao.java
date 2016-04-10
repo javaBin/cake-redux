@@ -5,7 +5,7 @@ import java.util.List;
 public interface FeedbackDao {
     void addFeedback(Feedback feedback);
     void deleteFeedback(String id);
-    List<? extends Feedback> feedbacksForTalk(String talkid);
+    List<Feedback> feedbacksForTalk(String talkid);
 
     static FeedbackDao instance() {
         return FeedbackDaoFileImpl.get();

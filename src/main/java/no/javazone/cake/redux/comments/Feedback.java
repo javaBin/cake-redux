@@ -1,10 +1,13 @@
 package no.javazone.cake.redux.comments;
 
+import org.jsonbuddy.JsonFactory;
+import org.jsonbuddy.JsonObject;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-public abstract class Feedback {
+public abstract class Feedback  {
     public final String id;
     public final String talkid;
     public final String author;
@@ -51,6 +54,8 @@ public abstract class Feedback {
 
     public abstract FeedbackType feedbackType();
 
+    public abstract String getInfo();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,5 +67,12 @@ public abstract class Feedback {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public JsonObject asJson() {
+        return JsonFactory.jsonObject()
+                .put("id",id)
+                .put("author",author)
+                .put("info",getInfo());
     }
 }

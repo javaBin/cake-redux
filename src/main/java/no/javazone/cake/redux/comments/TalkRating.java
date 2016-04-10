@@ -8,6 +8,11 @@ public class TalkRating extends Feedback {
         return FeedbackType.TALK_RATING;
     }
 
+    @Override
+    public String getInfo() {
+        return null;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -33,6 +38,9 @@ public class TalkRating extends Feedback {
 
     private TalkRating(Builder builder) {
         super(builder);
+        if (builder.rating == null) {
+            throw new NullPointerException("Rating required");
+        }
         this.rating = builder.rating;
     }
 

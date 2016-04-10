@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import no.javazone.cake.redux.comments.FeedbackService;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonObject;
@@ -40,8 +41,15 @@ public class DataServlet extends HttpServlet {
             assignSlot(req,resp);
         } else if ("/massPublish".equals(pathInfo)) {
             massPublish(req, resp);
+        } else if ("/addComment".equals(pathInfo)) {
+            addComment(req,resp);
         }
 
+    }
+
+    private void addComment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonArray comments = FeedbackService.get().addComment(JsonParser.parseToObject(req.getInputStream()), req.getSession().getAttribute("username").toString());
+        comments.toJson(resp.getWriter());
     }
 
     private void massPublish(HttpServletRequest req, HttpServletResponse resp) throws IOException {
