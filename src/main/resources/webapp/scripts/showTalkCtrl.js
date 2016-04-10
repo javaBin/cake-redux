@@ -8,6 +8,7 @@ angular.module('cakeReduxModule')
             var talkRef = $routeParams.talkId;
             $scope.showError = false;
             $scope.comments = [];
+            $scope.ratings = [];
 
             var updateFromServer = function(data) {
                 if ($scope.aTalk) {
@@ -209,7 +210,16 @@ angular.module('cakeReduxModule')
             };
 
             $scope.ratingClicked = function (givenRating) {
-                console.log(givenRating);
+                $http({
+                    method: "POST",
+                    url: "data/giveRating",
+                    data: {
+                        talkref: talkRef,
+                        rating: givenRating
+                    }
+                }).success(function (data) {
+                    $scope.ratings = data;
+                });
             }
 
         }]);

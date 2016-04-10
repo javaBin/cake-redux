@@ -70,6 +70,7 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
 
     @Override
     public void deleteFeedback(String id) {
+        HashSet<Feedback> duplicate;
         synchronized (feedbacks) {
             Optional<Feedback> feedbackOptional = feedbacks.stream()
                     .filter(fe -> fe.id.equals(id))
@@ -77,7 +78,25 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
             if (feedbackOptional.isPresent()) {
                 feedbacks.remove(feedbackOptional.get());
             }
+            duplicate = new HashSet<>(this.feedbacks);
         }
+        String filename = Configuration.feedbackStoreFilename();
+        if (filename == null) {
+            return;
+        }
+        executorService.submit(() -> {
+            try(FileWriter fw = new FileWriter(filename, false);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter writer = new PrintWriter(bw))
+            {
+                duplicate.forEach(feedback -> {
+                    feedback.asStoreJson().toJson(writer);
+                    writer.append("\n");
+                });
+            } catch (IOException e) {
+            }
+
+        });
     }
 
     @Override

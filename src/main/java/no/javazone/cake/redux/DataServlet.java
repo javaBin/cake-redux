@@ -42,10 +42,18 @@ public class DataServlet extends HttpServlet {
         } else if ("/massPublish".equals(pathInfo)) {
             massPublish(req, resp);
         } else if ("/addComment".equals(pathInfo)) {
-            addComment(req,resp);
+            addComment(req, resp);
+            resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/giveRating".equals(pathInfo)) {
+            giveRating(req, resp);
             resp.setContentType("application/json;charset=UTF-8");
         }
 
+    }
+
+    private void giveRating(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonArray ratings = FeedbackService.get().giveRating(JsonParser.parseToObject(req.getInputStream()), req.getSession().getAttribute("username").toString());
+        ratings.toJson(resp.getWriter());
     }
 
     private void addComment(HttpServletRequest req, HttpServletResponse resp) throws IOException {

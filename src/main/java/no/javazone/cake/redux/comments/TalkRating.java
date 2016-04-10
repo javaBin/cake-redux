@@ -10,7 +10,7 @@ public class TalkRating extends Feedback {
 
     @Override
     public String getInfo() {
-        return null;
+        return rating.asText();
     }
 
     public static Builder builder() {
