@@ -31,6 +31,15 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
         if (filename == null) {
             return ;
         }
+        File file = new File(filename);
+        if (!file.exists()) {
+            System.out.println("Creating storage file '" + filename + "'");
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         String stored;
         try {
