@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.javazone.cake.redux.comments.FeedbackService;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonFactory;
+import org.jsonbuddy.JsonNull;
 import org.jsonbuddy.JsonObject;
 import org.jsonbuddy.parse.JsonParser;
 
@@ -206,6 +207,8 @@ public class DataServlet extends HttpServlet {
         if (feedback != null) {
             JsonObject feedbackAsJson = JsonParser.parseToObject(feedback);
             oneTalkAsJson.put("userFeedback", feedbackAsJson);
+        } else {
+            oneTalkAsJson.put("userFeedback", new JsonNull());
         }
     }
 
