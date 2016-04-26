@@ -8,7 +8,6 @@ import org.jsonbuddy.JsonObject;
 import org.jsonbuddy.parse.JsonParser;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,7 +17,7 @@ public class SpeakerMailSender {
     private EmsCommunicator emsCommunicator = new EmsCommunicator();
 
     public SpeakerMailSender() throws IOException {
-        msg = EmsCommunicator.toString(getClass().getClassLoader().getResourceAsStream("speakerInvMail.txt"));
+        msg = CommunicatorHelper.toString(getClass().getClassLoader().getResourceAsStream("speakerInvMail.txt"));
     }
 
     public static void main(String[] args) throws Exception {
@@ -37,7 +36,7 @@ public class SpeakerMailSender {
     }
 
     private static SortedSet<String> readFromFile(String filename) throws Exception {
-        String all = EmsCommunicator.toString(new FileInputStream(filename));
+        String all = CommunicatorHelper.toString(new FileInputStream(filename));
 
         SortedSet<String> result = new TreeSet<>();
         for (String line : all.split("\n")) {

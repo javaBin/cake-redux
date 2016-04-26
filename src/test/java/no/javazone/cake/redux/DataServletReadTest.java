@@ -7,8 +7,10 @@ import org.jsonbuddy.parse.JsonParser;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collections;
@@ -22,12 +24,14 @@ public class DataServletReadTest {
     private final HttpServletResponse resp = mock(HttpServletResponse.class);
     private final StringWriter jsonResult = new StringWriter();
     private final EmsCommunicator emsCommunicator = mock(EmsCommunicator.class);
+    private final UserFeedbackCommunicator userFeedbackCommunicator = mock(UserFeedbackCommunicator.class);
 
     @Before
     public void setUp() throws Exception {
         when(req.getMethod()).thenReturn("GET");
         when(resp.getWriter()).thenReturn(new PrintWriter(jsonResult));
         servlet.setEmsCommunicator(emsCommunicator);
+        servlet.setUserFeedbackCommunicator(userFeedbackCommunicator);
     }
 
     @Test
@@ -68,7 +72,6 @@ public class DataServletReadTest {
         verify(emsCommunicator).oneTalkAsJson("zzz");
         JsonNode parsed = JsonParser.parse(jsonResult.toString());
         assertThat(parsed).isNotNull();
-
     }
 
 }

@@ -88,6 +88,65 @@
         <li ng-repeat="arating in ratings"><b>{{arating.author}}:</b> {{arating.info}}</li>
     </ul>
 
+    <h2>DevNull feedbacks</h2>
+    <div class="row cake-row">
+        <h3>Online</h3>
+        <table class="table">
+            <tr>
+                <th>Type </th>
+                <th>Session</th>
+                <th>Conference</th>
+            </tr>
+            <tr>
+                <td>Count</td>
+                <td>{{aTalk.userFeedback.session.online.count}}</td>
+                <td>{{aTalk.userFeedback.conference.online.count}}</td>
+            </tr>
+            <tr>
+                <td>Overall</td>
+                <td>{{aTalk.userFeedback.session.online.overall}}</td>
+                <td>{{aTalk.userFeedback.conference.online.overall}}</td>
+            </tr>
+            <tr>
+                <td>Relevance</td>
+                <td>{{aTalk.userFeedback.session.online.relevance}}</td>
+                <td>{{aTalk.userFeedback.conference.online.relevance}}</td>
+            </tr>
+            <tr>
+                <td>Content</td>
+                <td>{{aTalk.userFeedback.session.online.content}}</td>
+                <td>{{aTalk.userFeedback.conference.online.content}}</td>
+            </tr>
+            <tr>
+                <td>Quality</td>
+                <td>{{aTalk.userFeedback.session.online.quality}}</td>
+                <td>{{aTalk.userFeedback.conference.online.quality}}</td>
+            </tr>
+        </table>
+        <h3>Paper</h3>
+        <table class="table">
+            <tr>
+                <th>Type </th>
+                <th>Session</th>
+                <th>Conference</th>
+            </tr>
+            <tr>
+                <td>Green</td>
+                <td>{{aTalk.userFeedback.session.paper.green}}</td>
+                <td>{{aTalk.userFeedback.conference.paper.green}}</td>
+            </tr>
+            <tr>
+                <td>Yellow</td>
+                <td>{{aTalk.userFeedback.session.paper.yellow}}</td>
+                <td>{{aTalk.userFeedback.conference.paper.yellow}}</td>
+            </tr>
+            <tr>
+                <td>Red</td>
+                <td>{{aTalk.userFeedback.session.paper.red}}</td>
+                <td>{{aTalk.userFeedback.conference.paper.red}}</td>
+            </tr>
+        </table>
+    </div>
 
     <h2>Update</h2>
     <div class="well" class="cake-margin-well">

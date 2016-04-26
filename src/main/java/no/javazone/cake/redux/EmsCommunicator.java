@@ -17,6 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static no.javazone.cake.redux.CommunicatorHelper.openConnection;
+import static no.javazone.cake.redux.CommunicatorHelper.openStream;
+
 public class EmsCommunicator {
 
 
@@ -68,7 +71,7 @@ public class EmsCommunicator {
         }
 
         try (InputStream is = putConnection.getInputStream()) {
-            toString(is);
+            CommunicatorHelper.toString(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -245,17 +248,6 @@ public class EmsCommunicator {
         return Base64Util.encode(eventUrl);
     }
 
-    private InputStream openStream(URLConnection connection) throws IOException {
-        InputStream inputStream = connection.getInputStream();
-        if (true) { // flip for debug :)
-            return inputStream;
-        }
-        String stream = toString(inputStream);
-        System.out.println("***STRAN***");
-        System.out.println(stream);
-        return new ByteArrayInputStream(stream.getBytes());
-    }
-
     public String assignRoom(String encodedTalk,String encodedRoomRef,String givenLastModified) {
         String talkUrl = Base64Util.decode(encodedTalk);
         String roomRef = Base64Util.decode(encodedRoomRef);
@@ -300,7 +292,7 @@ public class EmsCommunicator {
         }
 
         try (InputStream is = postConnection.getInputStream()) {
-            toString(is);
+            CommunicatorHelper.toString(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -351,7 +343,7 @@ public class EmsCommunicator {
         }
 
         try (InputStream is = postConnection.getInputStream()) {
-            toString(is);
+            CommunicatorHelper.toString(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -400,7 +392,7 @@ public class EmsCommunicator {
         }
 
         try (InputStream is = postConnection.getInputStream()) {
-           toString(is);
+           CommunicatorHelper.toString(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -572,35 +564,6 @@ public class EmsCommunicator {
         return itemAsJson;
     }
 
-
-
-    private static URLConnection openConnection(String questionUrl, boolean useAuthorization)  {
-        try {
-            URL url = new URL(questionUrl);
-            URLConnection urlConnection = url.openConnection();
-
-            if (useAuthorization) {
-                String authString = Configuration.getEmsUser() + ":" + Configuration.getEmsPassword();
-                String authStringEnc = Base64Util.encode(authString);
-                urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
-            }
-
-            return urlConnection;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String toString(InputStream inputStream) throws IOException {
-        try (Reader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"))) {
-            StringBuilder result = new StringBuilder();
-            int c;
-            while ((c = reader.read()) != -1) {
-                result.append((char)c);
-            }
-            return result.toString();
-        }
-    }
 
     public String update(String ref, List<String> taglist, String state, String lastModified) {
         Property newTag = Property.arrayObject("tags", new ArrayList<>(taglist));

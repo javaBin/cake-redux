@@ -1,14 +1,13 @@
 package no.javazone.cake.redux.comments;
 
+import no.javazone.cake.redux.CommunicatorHelper;
 import no.javazone.cake.redux.Configuration;
-import no.javazone.cake.redux.EmsCommunicator;
 import org.jsonbuddy.parse.JsonParser;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FeedbackDaoFileImpl implements FeedbackDao {
@@ -43,7 +42,7 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
 
         String stored;
         try {
-            stored = EmsCommunicator.toString(new FileInputStream(filename));
+            stored = CommunicatorHelper.toString(new FileInputStream(filename));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -74,7 +74,7 @@ public class OpenDataServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String input = EmsCommunicator.toString(req.getInputStream());
+        String input = CommunicatorHelper.toString(req.getInputStream());
         ObjectNode jsonObject;
         ObjectMapper objectMapper = new ObjectMapper();
         jsonObject = (ObjectNode) objectMapper.readTree(input);

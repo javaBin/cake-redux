@@ -51,7 +51,7 @@ public class EntranceServlet extends HttpServlet {
 
         String googleresp;
         try (InputStream inputStream = urlConnection.getInputStream()) {
-            googleresp = EmsCommunicator.toString(inputStream);
+            googleresp = CommunicatorHelper.toString(inputStream);
         }
 
         String accessToken;
@@ -65,7 +65,7 @@ public class EntranceServlet extends HttpServlet {
         URLConnection inconn = new URL(getStr).openConnection();
         String json;
         try (InputStream is = inconn.getInputStream()) {
-            json = EmsCommunicator.toString(is);
+            json = CommunicatorHelper.toString(is);
         }
 
 
@@ -98,7 +98,7 @@ public class EntranceServlet extends HttpServlet {
         }
         String authUsers;
         try {
-            authUsers = EmsCommunicator.toString(new FileInputStream(autorizedUserFile));
+            authUsers = CommunicatorHelper.toString(new FileInputStream(autorizedUserFile));
         } catch (IOException e) {
             return false;
         }

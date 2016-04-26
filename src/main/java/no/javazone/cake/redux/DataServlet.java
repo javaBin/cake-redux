@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.javazone.cake.redux.comments.FeedbackService;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonFactory;
+import org.jsonbuddy.JsonNull;
 import org.jsonbuddy.JsonObject;
 import org.jsonbuddy.parse.JsonParser;
 
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class DataServlet extends HttpServlet {
     private EmsCommunicator emsCommunicator;
     private AcceptorSetter acceptorSetter;
+    private UserFeedbackCommunicator userFeedbackCommunicator;
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
@@ -63,7 +65,7 @@ public class DataServlet extends HttpServlet {
 
     private void massPublish(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
+            String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode update = objectMapper.readTree(inputStr);
             String ref = update.get("ref").asText();
@@ -94,7 +96,7 @@ public class DataServlet extends HttpServlet {
 
     private void assignRoom(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
+            String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode update = objectMapper.readTree(inputStr);
             String ref = update.get("talkRef").asText();
@@ -110,7 +112,7 @@ public class DataServlet extends HttpServlet {
 
     private void assignSlot(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
+            String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode update = objectMapper.readTree(inputStr);
 
@@ -143,7 +145,7 @@ public class DataServlet extends HttpServlet {
 
     private void acceptTalks(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
+            String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonObject = objectMapper.readTree(inputStr);
 
@@ -155,7 +157,7 @@ public class DataServlet extends HttpServlet {
 
     private void massUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
+            String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonObject = objectMapper.readTree(inputStr);
             String statusJson = acceptorSetter.massUpdate((ObjectNode) jsonObject);
@@ -191,12 +193,22 @@ public class DataServlet extends HttpServlet {
             String encTalk = request.getParameter("talkId");
             JsonObject oneTalkAsJson = emsCommunicator.oneTalkAsJson(encTalk);
             appendFeedbacks(oneTalkAsJson,encTalk);
+            appendUserFeedback(oneTalkAsJson, userFeedbackCommunicator.feedback(encTalk));
             oneTalkAsJson.toJson(writer);
         } else if ("/events".equals(pathInfo)) {
             writer.append(emsCommunicator.allEvents());
         } else if ("/roomsSlots".equals(pathInfo)) {
             String encEvent = request.getParameter("eventId");
             writer.append(emsCommunicator.allRoomsAndSlots(encEvent));
+        }
+    }
+
+    private void appendUserFeedback(JsonObject oneTalkAsJson, String feedback) {
+        if (feedback != null) {
+            JsonObject feedbackAsJson = JsonParser.parseToObject(feedback);
+            oneTalkAsJson.put("userFeedback", feedbackAsJson);
+        } else {
+            oneTalkAsJson.put("userFeedback", new JsonNull());
         }
     }
 
@@ -217,10 +229,16 @@ public class DataServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         emsCommunicator = new EmsCommunicator();
+        userFeedbackCommunicator = new UserFeedbackCommunicator();
         acceptorSetter = new AcceptorSetter(emsCommunicator);
     }
 
     public void setEmsCommunicator(EmsCommunicator emsCommunicator) {
         this.emsCommunicator = emsCommunicator;
     }
+
+    public void setUserFeedbackCommunicator(UserFeedbackCommunicator userFeedbackCommunicator) {
+        this.userFeedbackCommunicator = userFeedbackCommunicator;
+    }
+
 }
