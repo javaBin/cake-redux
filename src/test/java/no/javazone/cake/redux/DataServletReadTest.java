@@ -74,16 +74,4 @@ public class DataServletReadTest {
         assertThat(parsed).isNotNull();
     }
 
-    @Test
-    public void shouldReadFeedback() throws Exception {
-        when(req.getPathInfo()).thenReturn("/userFeedbacks");
-        when(req.getParameter("userFeedbackId")).thenReturn("someFeedbackId");
-
-        when(userFeedbackCommunicator.feedback("someFeedbackId")).thenReturn("{\"some\": \"value\"}");
-
-        servlet.service(req, resp);
-
-        verify(userFeedbackCommunicator).feedback("someFeedbackId");
-    }
-
 }
