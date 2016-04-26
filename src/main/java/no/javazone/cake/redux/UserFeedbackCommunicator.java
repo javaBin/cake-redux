@@ -6,8 +6,8 @@ import java.net.URLConnection;
 
 public class UserFeedbackCommunicator {
 
-    public String feedback(String encFeedback) {
-        String urlToDevNull = Base64Util.decode(encFeedback);
+    public String feedback(String emsFeedbackUrl) {
+        String urlToDevNull = convertFromEmsToDevNullUrl(emsFeedbackUrl);
         URLConnection urlConnection = CommunicatorHelper.openConnection(urlToDevNull, false);
         try {
             InputStream is = CommunicatorHelper.openStream(urlConnection);
@@ -15,6 +15,11 @@ public class UserFeedbackCommunicator {
         } catch (IOException ignore) {
         }
         return null;
+    }
+
+    private String convertFromEmsToDevNullUrl(String encEmsUrl) {
+        String emsUrl = Base64Util.decode(encEmsUrl);
+        return emsUrl.replaceAll("\\/ems\\/", "/devnull/") + "/feedbacks";
     }
 
 }

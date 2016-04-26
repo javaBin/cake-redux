@@ -232,16 +232,10 @@ public class EmsCommunicator {
             String submititLocation = Configuration.submititLocation() + encodedUrl;
             jsonObject.put("submititLoc",submititLocation);
             jsonObject.put("eventId",eventFromTalk(url));
-            jsonObject.put("userFeedbacks", feedback(url));
             return jsonObject;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private String feedback(String emsUrl) {
-        String devnullUrl = emsUrl.replaceAll("\\/ems\\/", "/devnull/") + "/feedbacks";
-        return Base64Util.encode(devnullUrl);
     }
 
     public String fetchOneTalk(String encodedUrl) {

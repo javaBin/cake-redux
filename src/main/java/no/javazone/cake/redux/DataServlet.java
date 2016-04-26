@@ -192,15 +192,20 @@ public class DataServlet extends HttpServlet {
             String encTalk = request.getParameter("talkId");
             JsonObject oneTalkAsJson = emsCommunicator.oneTalkAsJson(encTalk);
             appendFeedbacks(oneTalkAsJson,encTalk);
+            appendUserFeedback(oneTalkAsJson, userFeedbackCommunicator.feedback(encTalk));
             oneTalkAsJson.toJson(writer);
         } else if ("/events".equals(pathInfo)) {
             writer.append(emsCommunicator.allEvents());
         } else if ("/roomsSlots".equals(pathInfo)) {
             String encEvent = request.getParameter("eventId");
             writer.append(emsCommunicator.allRoomsAndSlots(encEvent));
-        } else if ("/userFeedbacks".equals(pathInfo)) {
-            String encFeedback = request.getParameter("userFeedbackId");
-            writer.append(userFeedbackCommunicator.feedback(encFeedback));
+        }
+    }
+
+    private void appendUserFeedback(JsonObject oneTalkAsJson, String feedback) {
+        if (feedback != null) {
+            JsonObject feedbackAsJson = JsonParser.parseToObject(feedback);
+            oneTalkAsJson.put("userFeedback", feedbackAsJson);
         }
     }
 
