@@ -63,7 +63,7 @@ public class DataServlet extends HttpServlet {
 
     private void massPublish(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
+            String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode update = objectMapper.readTree(inputStr);
             String ref = update.get("ref").asText();
@@ -94,7 +94,7 @@ public class DataServlet extends HttpServlet {
 
     private void assignRoom(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
+            String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode update = objectMapper.readTree(inputStr);
             String ref = update.get("talkRef").asText();
@@ -110,7 +110,7 @@ public class DataServlet extends HttpServlet {
 
     private void assignSlot(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
+            String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode update = objectMapper.readTree(inputStr);
 
@@ -143,7 +143,7 @@ public class DataServlet extends HttpServlet {
 
     private void acceptTalks(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
+            String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonObject = objectMapper.readTree(inputStr);
 
@@ -155,7 +155,7 @@ public class DataServlet extends HttpServlet {
 
     private void massUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = EmsCommunicator.toString(inputStream);
+            String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonObject = objectMapper.readTree(inputStr);
             String statusJson = acceptorSetter.massUpdate((ObjectNode) jsonObject);

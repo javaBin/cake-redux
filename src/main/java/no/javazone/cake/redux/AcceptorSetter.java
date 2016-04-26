@@ -1,6 +1,5 @@
 package no.javazone.cake.redux;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -187,7 +186,7 @@ public class AcceptorSetter {
     private String loadTemplate() {
         String template;
         try (InputStream is = getClass().getClassLoader().getResourceAsStream("acceptanceTemplate.txt")) {
-            template = EmsCommunicator.toString(is);
+            template = CommunicatorHelper.toString(is);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

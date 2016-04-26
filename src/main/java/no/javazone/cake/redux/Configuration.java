@@ -17,7 +17,7 @@ public class Configuration {
 
     private static String readConfigFile(String filename) {
         try (FileInputStream inputStream = new FileInputStream(filename)) {
-            return EmsCommunicator.toString(inputStream);
+            return CommunicatorHelper.toString(inputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
