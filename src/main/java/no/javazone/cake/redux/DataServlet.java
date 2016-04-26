@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class DataServlet extends HttpServlet {
     private EmsCommunicator emsCommunicator;
     private AcceptorSetter acceptorSetter;
+    private UserFeedbackCommunicator userFeedbackCommunicator;
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
@@ -197,6 +198,9 @@ public class DataServlet extends HttpServlet {
         } else if ("/roomsSlots".equals(pathInfo)) {
             String encEvent = request.getParameter("eventId");
             writer.append(emsCommunicator.allRoomsAndSlots(encEvent));
+        } else if ("/userFeedbacks".equals(pathInfo)) {
+            String encFeedback = request.getParameter("userFeedbackId");
+            writer.append(userFeedbackCommunicator.feedback(encFeedback));
         }
     }
 
@@ -217,10 +221,16 @@ public class DataServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         emsCommunicator = new EmsCommunicator();
+        userFeedbackCommunicator = new UserFeedbackCommunicator();
         acceptorSetter = new AcceptorSetter(emsCommunicator);
     }
 
     public void setEmsCommunicator(EmsCommunicator emsCommunicator) {
         this.emsCommunicator = emsCommunicator;
     }
+
+    public void setUserFeedbackCommunicator(UserFeedbackCommunicator userFeedbackCommunicator) {
+        this.userFeedbackCommunicator = userFeedbackCommunicator;
+    }
+
 }
