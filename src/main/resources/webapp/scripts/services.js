@@ -261,6 +261,7 @@ angular.module('cakeReduxModule')
         var fis = {
             filters : myFilt,
             filterOperators : filterOperators,
+            filteredTalks: [],
             doFilter : function(talks,allTalks) {
                 var self = this;
                 cookieService.setCookie("cakeFilter",JSON.stringify(self.filters),1);
@@ -276,6 +277,7 @@ angular.module('cakeReduxModule')
                         talks.push(talk);
                     }
                 });
+                this.filteredTalks = talks;
             },
             injectFilter: function(filterstr) {
                 if (_.isString(filterstr)) {

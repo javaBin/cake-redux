@@ -1,7 +1,8 @@
 angular.module('cakeReduxModule')
-    .controller('TalkReportCtrl', ['$scope', '$http', '$routeParams', 'talkList','roomSlotFactory','slotFilterService',
-        function($scope, $http, $routeParams,talkList,roomSlotFactory,slotFilterService) {
-            $scope.talks = talkList.talks;
+    .controller('TalkReportCtrl', ['$scope', '$http', '$routeParams', 'talkList','roomSlotFactory','slotFilterService','filterService',
+        function($scope, $http, $routeParams,talkList,roomSlotFactory,slotFilterService, filterService) {
+            //$scope.talks = talkList.talks;
+            $scope.talks = filterService.filteredTalks;
 
 
             $scope.showTitle = true;
