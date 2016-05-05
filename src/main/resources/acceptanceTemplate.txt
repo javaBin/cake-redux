@@ -1,6 +1,6 @@
 Dear #speakername#,
 
-We are pleased to inform you that your #talkType#, "#title#", has been accepted for JavaZone 2015!
+We are pleased to inform you that your #talkType#, "#title#", has been accepted for JavaZone 2016!
 
 
 CONFIRM YOUR TALK
