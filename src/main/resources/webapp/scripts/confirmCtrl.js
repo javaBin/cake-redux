@@ -3,6 +3,9 @@
     angular.module('openCakeModule', []);
 
     angular.module('cakeOpen',['openCakeModule'])
+        .run(['$rootScope',
+            function($rootScope) {}
+        ])
     .controller('ConfirmCtrl', ['$scope', '$http',
         function($scope, $http) {
             $scope.showMain = false;
@@ -51,5 +54,4 @@
 
         }]);
 
-    angular.bootstrap(document,['cakeOpen']);
 }());
