@@ -47,6 +47,11 @@ angular.module('cakeReduxModule')
 
             };
 
+            $scope.toCommaSeperated = function(arr) {
+                return _.reduce(arr,function(a,b) {
+                   return a + ", " + b;
+                });
+            }
 
             $scope.slotFilterUpdated = function() {
                 $scope.roomsSlots.slots = slotFilterService.doFilter($scope.roomsSlots.allSlots);
