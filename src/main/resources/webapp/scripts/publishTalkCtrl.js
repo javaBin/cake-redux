@@ -1,10 +1,9 @@
 angular.module('cakeReduxModule')
-    .controller('PublishTalkCtrl', ['$scope', '$http', 'talkList','$location',
-        function($scope, $http, talkList,$location) {
+    .controller('PublishTalkCtrl', ['$scope', '$http', '$location','filterService',
+        function($scope, $http, $location,filterService) {
 
 
-
-            $scope.talks = talkList.talks;
+            $scope.talks = filterService.filteredTalks;
             _.each($scope.talks,function(talk) {
                 talk.wasSelected = true;
             });

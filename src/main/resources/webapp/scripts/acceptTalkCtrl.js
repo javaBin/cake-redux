@@ -1,6 +1,6 @@
 angular.module('cakeReduxModule')
-    .controller('AcceptTalkCtrl', ['$scope', '$http', 'talkList','$location',
-        function($scope, $http, talkList,$location) {
+    .controller('AcceptTalkCtrl', ['$scope', '$http','$location','filterService',
+        function($scope, $http,$location,filterService) {
 
             $scope.accept = ($location.path() === "/accept");
             $scope.title = ($scope.accept) ? "Accept talks" : "Mass update";
@@ -8,7 +8,8 @@ angular.module('cakeReduxModule')
             $scope.doTag = false;
 
 
-            $scope.talks = talkList.talks;
+            $scope.talks = filterService.filteredTalks;
+
             _.each($scope.talks,function(talk) {
                 talk.wasSelected = true;
             });
