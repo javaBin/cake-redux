@@ -23,6 +23,7 @@ angular.module('cakeReduxModule')
             $scope.showSpeakers = true;
             $scope.showSpeakername = true;
             $scope.showSpeakerbio = true;
+            $scope.showSpeakerEmail = true;
             $scope.showPostcode = true;
             $scope.showLastModified = true;
 
