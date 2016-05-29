@@ -155,7 +155,12 @@ angular.module('cakeReduxModule')
                    return;
                 }
                 if (excactMatch) {
-                    if (item.toLowerCase() === filter.toLowerCase()) {
+                    if (filter.endsWith("*")) {
+                        if (item.toLowerCase().startsWith(filter.toLowerCase().substr(0,filter.length-1))) {
+                            found = true;
+                        }
+                    }
+                    else if (item.toLowerCase() === filter.toLowerCase()) {
                         found = true;
                     }
                 } else {
