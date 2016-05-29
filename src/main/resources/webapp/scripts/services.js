@@ -267,10 +267,12 @@ angular.module('cakeReduxModule')
             filters : myFilt,
             filterOperators : filterOperators,
             filteredTalks: [],
+            usedTags: "",
             doFilter : function(talks,allTalks) {
                 var self = this;
                 cookieService.setCookie("cakeFilter",JSON.stringify(self.filters),1);
                 talks.splice(0,talks.length);
+                var tagSet = new Set();
                 _.each(allTalks,function(talk) {
                     var res;
                     if (self.filters.length == 0) {
@@ -280,9 +282,16 @@ angular.module('cakeReduxModule')
                     }
                     if (res.match) {
                         talks.push(talk);
+                        if (_.isArray(talk.tags)) {
+                            talk.tags.forEach(function(at) {
+                                tagSet.add(at);
+                            });
+                        }
                     }
                 });
                 this.filteredTalks = talks;
+                this.usedTags = Array.from(tagSet).sort();
+
             },
             injectFilter: function(filterstr) {
                 if (_.isString(filterstr)) {
