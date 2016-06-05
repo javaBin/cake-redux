@@ -41,11 +41,10 @@ As stated at http://2016.javazone.no/speakers speakers of lightning talks will h
 3) JourneyZone:
 JourneyZone will happen! Read more and apply for a spot at JourneyZone here: http://2016.javazone.no/journeyzone.html
 
-4) Speakers workshop:
-We'll be running a Speaker Workshop.
+4) Speakers Workshop and Presentation Technique Course:
+Here you'll get a free Presentation Technique Course with Vibeke Holtskog, in addition to all you need to know about speaking at JavaZone! Places are limited, so visit http://www.meetup.com/javaBin/events/228729018 and register today! 
 
-For more information, see: http://2016.javazone.no/speakers
-
+For more information see: http://2016.javazone.no/speakers
 
 
 If you have any more questions, reply to this email. Please be aware that the response time on emails during the summer holidays (in July) will be longer than normal.
