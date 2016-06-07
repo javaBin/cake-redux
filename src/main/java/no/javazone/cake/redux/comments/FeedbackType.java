@@ -9,6 +9,8 @@ public enum FeedbackType {
                 return Comment.builder();
             case TALK_RATING:
                 return TalkRating.builder();
+            case CONTACT:
+                return Contact.builder();
             default:
                 throw new RuntimeException("Unknown feedback type " + this);
         }
