@@ -33,7 +33,8 @@
                 var din = $scope.dinner;
                 var postData = {
                     id      : talkId,
-                    dinner  : din
+                    dinner  : din,
+                    contactPhone: $scope.contactPhone
                 };
                 $http({
                     method: "POST",

@@ -5,6 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import no.javazone.cake.redux.comments.Contact;
+import no.javazone.cake.redux.comments.Feedback;
+import no.javazone.cake.redux.comments.FeedbackDao;
+import org.jsonbuddy.JsonObject;
+import org.jsonbuddy.parse.JsonParser;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -75,14 +80,36 @@ public class OpenDataServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String input = CommunicatorHelper.toString(req.getInputStream());
-        ObjectNode jsonObject;
-        ObjectMapper objectMapper = new ObjectMapper();
-        jsonObject = (ObjectNode) objectMapper.readTree(input);
+        JsonObject jsonObject = JsonParser.parseToObject(input);
 
-        String encodedTalkUrl = jsonObject.get("id").asText();
-        String dinner = jsonObject.get("dinner").asText();
+        String encodedTalkUrl = jsonObject.requiredString("id");
+        String dinner = jsonObject.requiredString("dinner");
+        String contactPhone = removeIllegalChars(jsonObject.stringValue("contactPhone").filter(te -> !te.trim().isEmpty()).orElse("Unknown"));
+
+
+
+        Feedback contact = Contact.builder()
+                .setContactPhone(contactPhone)
+                .setTalkid(encodedTalkUrl)
+                .setAuthor("SpeakerFromSystem")
+                .create();
+
+        FeedbackDao feedbackDao = FeedbackDao.instance();
+        feedbackDao.addFeedback(contact);
+
         String status = emsCommunicator.confirmTalk(encodedTalkUrl,dinner);
         resp.setContentType("text/json");
         resp.getWriter().append(status);
+    }
+
+    private String removeIllegalChars(String text) {
+        StringBuilder res = new StringBuilder(text);
+        for (int i=0;i<res.length();i++) {
+            if (Character.isLetterOrDigit(res.charAt(i))) {
+                continue;
+            }
+            res.replace(i,i+1," ");
+        }
+        return res.toString();
     }
 }

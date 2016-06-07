@@ -1,7 +1,7 @@
 package no.javazone.cake.redux.comments;
 
 public enum FeedbackType {
-    COMMENT,TALK_RATING;
+    COMMENT,TALK_RATING,CONTACT;
 
     Feedback.FeedbackBuilder builder() {
         switch (this) {
