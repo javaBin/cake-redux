@@ -299,6 +299,42 @@ public class EmsCommunicator {
         return fetchOneTalk(encodedTalk);
     }
 
+    public void addRoomToEvent(String eventid,String roomname) {
+        JsonObject roomtemplate = JsonFactory.jsonObject().put("template", JsonFactory.jsonObject().put("data",
+                JsonFactory.jsonArray().add(
+                        JsonFactory.jsonObject().put("name", "name").put("value", roomname)
+                )));
+
+        StringWriter out = new StringWriter();
+        roomtemplate.toJson(new PrintWriter(out));
+        System.out.println(out);
+
+        String url = eventid + "/rooms";
+        HttpURLConnection postConnection = (HttpURLConnection) openConnection(url, true);
+
+        postConnection.setDoOutput(true);
+        try {
+            postConnection.setRequestMethod("POST");
+            postConnection.setRequestProperty("content-type","application/vnd.collection+json");
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(postConnection.getOutputStream()))) {
+            roomtemplate.toJson(writer);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (InputStream is = postConnection.getInputStream()) {
+            String res = CommunicatorHelper.toString(is);
+            System.out.println(res);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public String assignSlot(String encodedTalk,String encodedSlotRef,String givenLastModified) {
         String talkUrl = Base64Util.decode(encodedTalk);
         String slotRef = Base64Util.decode(encodedSlotRef);
@@ -326,6 +362,7 @@ public class EmsCommunicator {
         try {
             postConnection.setRequestMethod("POST");
             postConnection.setRequestProperty("content-type","application/x-www-form-urlencoded");
+
             postConnection.setRequestProperty("if-unmodified-since",lastModified);
         } catch (ProtocolException e) {
             throw new RuntimeException(e);
