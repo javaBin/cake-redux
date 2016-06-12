@@ -335,6 +335,39 @@ public class EmsCommunicator {
 
     }
 
+    public void addSlotToEvent() {
+        String url = "http://test.javazone.no/ems/server/events/0e6d98e9-5b06-42e7-b275-6abadb498c81/slots";
+        JsonObject roomtemplate = JsonFactory.jsonObject().put("template", JsonFactory.jsonObject().put("data",
+                JsonFactory.jsonArray()
+                        .add(JsonFactory.jsonObject().put("name", "start").put("value", "2016-09-09T15:00:00Z"))
+                        .add(JsonFactory.jsonObject().put("name", "duration").put("value", new JsonNumber(10)))
+                ));
+
+        HttpURLConnection postConnection = (HttpURLConnection) openConnection(url, true);
+
+        postConnection.setDoOutput(true);
+        try {
+            postConnection.setRequestMethod("POST");
+            postConnection.setRequestProperty("content-type","application/vnd.collection+json");
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(postConnection.getOutputStream()))) {
+            roomtemplate.toJson(writer);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try (InputStream is = postConnection.getInputStream()) {
+            String res = CommunicatorHelper.toString(is);
+            System.out.println(res);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public String assignSlot(String encodedTalk,String encodedSlotRef,String givenLastModified) {
         String talkUrl = Base64Util.decode(encodedTalk);
         String slotRef = Base64Util.decode(encodedSlotRef);

@@ -17,7 +17,8 @@ public class TestEmsCommunication {
         //testAllRooms();
         //testPublishRoom();
         //readOneTalk();
-        new EmsCommunicator().addRoomToEvent("http://test.javazone.no/ems/server/events/aad84b5a-b527-45d4-b532-c5be1f25c1d0","Room 1");
+        //new EmsCommunicator().addRoomToEvent("http://test.javazone.no/ems/server/events/aad84b5a-b527-45d4-b532-c5be1f25c1d0","Room 1");
+        new EmsCommunicator().addSlotToEvent();
         long duration = System.currentTimeMillis() -start;
         System.out.println("Took " + duration);
     }
