@@ -57,6 +57,10 @@
             <input type="checkbox" ng-model="showSlot">
         </label>
         <label>
+            Tags
+            <input type="checkbox" ng-model="showTags">
+        </label>
+        <label>
             Speakers
             <input type="checkbox" ng-model="showSpeakers">
         </label>
@@ -136,6 +140,10 @@
         <div class="col-md-1 cake-margin"><strong>Slot</strong></div>
         <div class="col-md-10">{{aTalk.slot.start}} - {{aTalk.slot.end}} <small>(yymmdd hhmm-yymmdd hhmm)</small></div>
     </div>
+    <div class="row cake-row" ng-show="$parent.showTags">
+        <div class="col-md-1 cake-margin"><strong>Tags</strong></div>
+        <div class="col-md-10">{{aTalk.tags}}</div>
+    </div>
     <div ng-repeat="speaker in aTalk.speakers" ng-show="$parent.showSpeakers">
         <h3 ng-show="$parent.$parent.showSpeakername">{{speaker.name}}</h3>
         <div class="row cake-row" ng-show="$parent.$parent.showSpeakerEmail">
@@ -151,6 +159,7 @@
             <div class="col-md-10">{{speaker["zip-code"]}}</div>
         </div>
     </div>
+
     <h6 ng-show="$parent.showLastModified">Last modified: {{aTalk.lastModified}}</h6>
     <hr/>
 </div>
