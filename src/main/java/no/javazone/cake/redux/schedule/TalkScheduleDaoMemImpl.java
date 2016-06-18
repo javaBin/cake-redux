@@ -4,15 +4,17 @@ import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonNode;
 import org.jsonbuddy.JsonObject;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class TalkScheduleDaoFileImpl implements TalkSceduleDao {
-    private static transient TalkScheduleDaoFileImpl instance = null;
+public class TalkScheduleDaoMemImpl implements TalkSceduleDao {
+    private static transient TalkScheduleDaoMemImpl instance = null;
     private static final JsonObject store = JsonFactory.jsonObject();
 
-    public static synchronized TalkScheduleDaoFileImpl get() {
+    public static synchronized TalkScheduleDaoMemImpl get() {
         if (instance == null) {
-            instance = new TalkScheduleDaoFileImpl();
+            instance = new TalkScheduleDaoMemImpl();
         }
         return instance;
     }
@@ -30,5 +32,16 @@ public class TalkScheduleDaoFileImpl implements TalkSceduleDao {
         synchronized (store) {
             return store.objectValue(talkid).map(jo -> new TalkSchedule.Mapper().build(jo));
         }
+    }
+
+    @Override
+    public List<TalkSchedule> allScedules() {
+        synchronized (store) {
+            return store.keys().stream()
+                    .map(key -> new TalkSchedule.Mapper().build(store.requiredObject(key)))
+                    .collect(Collectors.toList());
+        }
+
+
     }
 }

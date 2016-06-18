@@ -117,4 +117,14 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
         }
     }
 
+    @Override
+    public List<Feedback> allFeedbacks() {
+        List<Feedback> result = new ArrayList<>();
+        synchronized (feedbacks) {
+            result.addAll(feedbacks);
+        }
+        result.sort((a,b) -> a.created.compareTo(b.created));
+        return result;
+    }
+
 }

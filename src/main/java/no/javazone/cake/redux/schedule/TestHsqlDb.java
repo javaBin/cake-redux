@@ -1,10 +1,8 @@
 package no.javazone.cake.redux.schedule;
 
-import org.flywaydb.core.Flyway;
 import org.hsqldb.jdbc.JDBCDataSource;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 

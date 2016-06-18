@@ -62,4 +62,13 @@ public class TalkSchedule implements OverridesJsonGenerator {
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "TalkSchedule{" +
+                "talkid='" + talkid + '\'' +
+                ", talkSlot=" + talkSlot +
+                ", room=" + room +
+                '}';
+    }
 }
