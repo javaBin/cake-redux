@@ -35,8 +35,14 @@ public class TalkSchedule implements OverridesJsonGenerator {
             Optional<JsonObject> tslotobj = jsonObject.objectValue("talkSlot");
             Optional<TalkSlot> talkSlot = Optional.empty();
             if (tslotobj.isPresent()) {
-                DateTimeFormatter pattern = DateTimeFormatter.ofPattern("YYYYMMddHHmm");
-                LocalDateTime time = LocalDateTime.parse(tslotobj.get().requiredString("time"), pattern);
+                String correcttime = tslotobj.get().requiredString("time");
+                LocalDateTime time = LocalDateTime.of(2016, 9, 9, 10, 10, 0, 0)
+                        .withYear(Integer.parseInt(correcttime.substring(0,4)))
+                        .withMonth(Integer.parseInt(correcttime.substring(4,6)))
+                        .withDayOfMonth(Integer.parseInt(correcttime.substring(6,8)))
+                        .withHour(Integer.parseInt(correcttime.substring(8,10)))
+                        .withMinute(Integer.parseInt(correcttime.substring(10,12)));
+
                 int duration = (int) tslotobj.get().requiredLong("duration");
                 talkSlot = Optional.of(new TalkSlot(time,duration));
             }

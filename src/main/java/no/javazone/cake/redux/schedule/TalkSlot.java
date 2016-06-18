@@ -10,4 +10,12 @@ public class TalkSlot {
         this.time = time;
         this.duration = duration;
     }
+
+    @Override
+    public String toString() {
+        return "TalkSlot{" +
+                "time=" + time +
+                ", duration=" + duration +
+                '}';
+    }
 }
