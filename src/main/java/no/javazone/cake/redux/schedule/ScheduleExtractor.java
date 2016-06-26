@@ -9,8 +9,10 @@ import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonObject;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ScheduleExtractor {
     private final TalkSceduleDao talkSceduleDao;
@@ -26,19 +28,19 @@ public class ScheduleExtractor {
         feedbacks.stream()
                 .filter(fb -> fb instanceof Comment)
                 .map(fb -> (Comment) fb)
-                .filter(co -> co.talkComment.toLowerCase().startsWith("rom:"))
+                .filter(co -> co.talkComment.toLowerCase().contains("rom:"))
                 .forEach(comment -> {
                     Optional<TalkSchedule> exsisting = talkSceduleDao.getSchedule(comment.talkid);
-                    Optional<String> talkComment = Optional.of(comment.talkComment);
+                    Optional<String> roomVal = Optional.of(computeRom(comment.talkComment));
                     TalkSchedule ts = exsisting
-                            .map(exs -> new TalkSchedule(exs.talkid, exs.talkSlot, talkComment))
-                            .orElse(new TalkSchedule(comment.talkid, Optional.empty(), talkComment));
+                            .map(exs -> new TalkSchedule(exs.talkid, exs.talkSlot, roomVal))
+                            .orElse(new TalkSchedule(comment.talkid, Optional.empty(), roomVal));
                     talkSceduleDao.updateSchedule(ts);
                 });
         feedbacks.stream()
                 .filter(fb -> fb instanceof Comment)
                 .map(fb -> (Comment) fb)
-                .filter(co -> co.talkComment.toLowerCase().startsWith("tid:"))
+                .filter(co -> co.talkComment.toLowerCase().contains("tid:"))
                 .forEach(comment -> {
                     TalkSlot talkSlot = computeSlot(comment);
                     if (talkSlot == null) {
@@ -53,13 +55,26 @@ public class ScheduleExtractor {
 
     }
 
-    private TalkSlot computeSlot(Comment comment) {
+    private static String computeRom(String comment) {
+        int stind = comment.toLowerCase().indexOf("rom:");
+        int endind = comment.toLowerCase().indexOf("tid:");
+        if (endind == -1) {
+            endind = comment.length();
+        }
+        return "Rom " + comment.substring(stind + "rom:".length(),endind).trim();
+    }
+
+
+    private static TalkSlot computeSlot(Comment comment) {
+        String talkComment = comment.talkComment;
+        talkComment = talkComment.substring(talkComment.toLowerCase().indexOf("tid:")).toLowerCase();
+
         LocalDateTime wednesday = LocalDateTime.of(2016,9,7,1,1);
         LocalDateTime thursday = LocalDateTime.of(2016,9,8,1,1);
         LocalDateTime start;
-        if (comment.talkComment.toLowerCase().startsWith("tid: ons_")) {
+        if (talkComment.toLowerCase().startsWith("tid: ons_")) {
             start = wednesday;
-        } else if (comment.talkComment.toLowerCase().startsWith("tid: tor_")) {
+        } else if (talkComment.toLowerCase().startsWith("tid: tor_")) {
             start = thursday;
         } else {
             return null;
@@ -67,8 +82,8 @@ public class ScheduleExtractor {
         int hour;
         int min;
         try {
-            hour = Integer.parseInt(comment.talkComment.substring(9, 11));
-            min = Integer.parseInt(comment.talkComment.substring(11));
+            hour = Integer.parseInt(talkComment.substring(9, 11));
+            min = Integer.parseInt(talkComment.substring(11));
         } catch (Exception e) {
             return null;
         }
@@ -101,6 +116,14 @@ public class ScheduleExtractor {
         scheduleExtractor.extractScheduleFromComments();
 
         List<TalkSchedule> talkSchedules = talkSceduleDao.allScedules();
-        System.out.println(talkSchedules);
+        //System.out.println(talkSchedules);
+        List<String> allRefs = talkSchedules.stream()
+                .map(ts -> ts.talkid)
+                .distinct()
+                .collect(Collectors.toList());
+
+        TalkScheduleGrid talkScheduleGrid = TalkScheduleService.get().makeGrid(allRefs, Collections.emptyList(), Collections.emptyList());
+        talkScheduleGrid.asHtmlTable(System.out);
+
     }
 }

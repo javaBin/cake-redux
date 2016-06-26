@@ -7,4 +7,8 @@ public interface TalkSceduleDao {
     void updateSchedule(TalkSchedule talkSchedule);
     Optional<TalkSchedule> getSchedule(String talkid);
     List<TalkSchedule> allScedules();
+
+    static TalkSceduleDao getImpl() {
+        return TalkScheduleDaoMemImpl.get();
+    }
 }

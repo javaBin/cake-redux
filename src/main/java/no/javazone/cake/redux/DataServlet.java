@@ -228,7 +228,7 @@ public class DataServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        emsCommunicator = new EmsCommunicator();
+        emsCommunicator = EmsCommunicator.get();
         userFeedbackCommunicator = new UserFeedbackCommunicator();
         acceptorSetter = new AcceptorSetter(emsCommunicator);
     }

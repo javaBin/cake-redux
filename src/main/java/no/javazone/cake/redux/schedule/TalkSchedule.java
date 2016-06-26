@@ -61,7 +61,11 @@ public class TalkSchedule implements OverridesJsonGenerator {
             DateTimeFormatter pattern = DateTimeFormatter.ofPattern("YYYYMMddHHmm");
             String time = talkSlot.get().time.format(pattern);
             result.put("talkSlot",
-                JsonFactory.jsonObject().put("time",time).put("duration",new JsonNumber(talkSlot.get().duration)));
+                JsonFactory.jsonObject()
+                        .put("time",time)
+                        .put("duration",new JsonNumber(talkSlot.get().duration))
+                        .put("display",talkSlot.get().getDisplay())
+            );
         }
         if (room.isPresent()) {
             result.put("room",room.get());

@@ -117,6 +117,7 @@ public class EmsCommunicator {
     }
 
     public String allEvents()  {
+        //[{"ref":"aHR0cDovL2phdmF6b25lLm5vL2Vtcy9zZXJ2ZXIvZXZlbnRzLzFjYTg5YWVmLWM3Y2UtNDViNS05NWEwLTYzMGY1NWQ3ZWZhNg==","name":"JavaZone 2006","slug":"javazone_2006"},{"ref":"aHR0cDovL2phdmF6b25lLm5vL2Vtcy9zZXJ2ZXIvZXZlbnRzLzQwN2YzNjhmLTQxZDQtNDI0OC1iODI1LTM5ZDBmOTczZGZlMQ==","name":"JavaZone 2007","slug":"javazone_2007"},{"ref":"aHR0cDovL2phdmF6b25lLm5vL2Vtcy9zZXJ2ZXIvZXZlbnRzLzVlMTMwMzcyLTI4NWQtNDljZC1hZWRiLTdmMzA2ZDk3YjA0ZA==","name":"JavaZone 2008","slug":"javazone_2008"},{"ref":"aHR0cDovL2phdmF6b25lLm5vL2Vtcy9zZXJ2ZXIvZXZlbnRzL2I1ODJhMDcxLWQ0YzItNGE0OC1hYzY2LTgxMmE1ZWY5NGMxYg==","name":"JavaZone 2009","slug":"javazone_2009"},{"ref":"aHR0cDovL2phdmF6b25lLm5vL2Vtcy9zZXJ2ZXIvZXZlbnRzLzI4YTFjNWMyLWI2MWUtNGQyZi1hNjdlLWI2MGY5ZWZkYzJhOA==","name":"JavaZone 2010","slug":"javazone_2010"},{"ref":"aHR0cDovL2phdmF6b25lLm5vL2Vtcy9zZXJ2ZXIvZXZlbnRzLzEzMDdkYmNjLTA0OGUtNGY4MC05ZmFhLWZmYTFiZWY0MGZkYQ==","name":"JavaZone 2011","slug":"javazone_2011"},{"ref":"aHR0cDovL2phdmF6b25lLm5vL2Vtcy9zZXJ2ZXIvZXZlbnRzLzRjMThmNDVhLTA1NGEtNDY5OS1hMmJjLTZhNTlhOWRkODM4Mg==","name":"JavaZone 2012","slug":"javazone_2012"},{"ref":"aHR0cDovL2phdmF6b25lLm5vL2Vtcy9zZXJ2ZXIvZXZlbnRzL2NlZTM3Y2MxLTUzOTktNDdlZi05NDE4LTIxZjliNjQ0NGJmYQ==","name":"JavaZone 2013","slug":"javazone_2013"},{"ref":"aHR0cDovL2phdmF6b25lLm5vL2Vtcy9zZXJ2ZXIvZXZlbnRzLzlmNDAwNjNhLTVmMjAtNGQ3Yi1iMWU4LWVkMGM2Y2MxOGE1Zg==","name":"JavaZone 2014","slug":"javazone_2014"},{"ref":"aHR0cDovL2phdmF6b25lLm5vL2Vtcy9zZXJ2ZXIvZXZlbnRzLzBlNmQ5OGU5LTViMDYtNDJlNy1iMjc1LTZhYmFkYjQ5OGM4MQ==","name":"JavaZone 2015","slug":"javazone_2015"},{"ref":"aHR0cDovL2phdmF6b25lLm5vL2Vtcy9zZXJ2ZXIvZXZlbnRzLzNiYWEyNWQzLTljY2EtNDU5YS05MGQ3LTlmYzM0OTIwOTI4OQ==","name":"JavaZone 2016","slug":"javazone_2016"}]
         return eventJsonNodes().toJson();
     }
 
@@ -639,5 +640,9 @@ public class EmsCommunicator {
         Property newTag = Property.arrayObject("tags", new ArrayList<>(taglist));
         Property newState = Property.value("state",state);
         return update(ref, lastModified, Arrays.asList(newTag,newState));
+    }
+
+    public static EmsCommunicator get() {
+        return new EmsCommunicator();
     }
 }
