@@ -6,11 +6,15 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.javazone.cake.redux.comments.FeedbackService;
+import no.javazone.cake.redux.schedule.TalkSceduleDao;
+import no.javazone.cake.redux.schedule.TalkScheduleGrid;
+import no.javazone.cake.redux.schedule.TalkScheduleService;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonNull;
 import org.jsonbuddy.JsonObject;
 import org.jsonbuddy.parse.JsonParser;
+import org.jsonbuddy.pojo.JsonGenerator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -49,8 +53,21 @@ public class DataServlet extends HttpServlet {
         } else if ("/giveRating".equals(pathInfo)) {
             giveRating(req, resp);
             resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/computeSchedule".equals(pathInfo)) {
+            computeSchedule(req, resp);
+            resp.setContentType("application/json;charset=UTF-8");
         }
 
+    }
+
+    private void computeSchedule(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject jsonObject = JsonParser.parseToObject(req.getInputStream());
+        List<String> talkReferences = jsonObject.requiredArray("talkReferences").stringStream().collect(Collectors.toList());
+        List<String> wantedRooms = jsonObject.requiredArray("wantedRooms").stringStream().collect(Collectors.toList());
+        List<String> wantedSlots = jsonObject.requiredArray("wantedSlots").stringStream().collect(Collectors.toList());
+        TalkScheduleGrid talkScheduleGrid = TalkScheduleService.get().makeGrid(talkReferences, wantedRooms, wantedSlots);
+        org.jsonbuddy.JsonNode result = JsonGenerator.generate(talkScheduleGrid);
+        result.toJson(resp.getWriter());
     }
 
     private void giveRating(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -231,6 +248,7 @@ public class DataServlet extends HttpServlet {
         emsCommunicator = EmsCommunicator.get();
         userFeedbackCommunicator = new UserFeedbackCommunicator();
         acceptorSetter = new AcceptorSetter(emsCommunicator);
+
     }
 
     public void setEmsCommunicator(EmsCommunicator emsCommunicator) {

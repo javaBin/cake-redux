@@ -1,5 +1,7 @@
 package no.javazone.cake.redux.schedule;
 
+import no.javazone.cake.redux.comments.FeedbackDao;
+import no.javazone.cake.redux.comments.FeedbackDaoFileImpl;
 import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonNode;
 import org.jsonbuddy.JsonObject;
@@ -15,6 +17,12 @@ public class TalkScheduleDaoMemImpl implements TalkSceduleDao {
     public static synchronized TalkScheduleDaoMemImpl get() {
         if (instance == null) {
             instance = new TalkScheduleDaoMemImpl();
+            FeedbackDao feedbackDao = FeedbackDaoFileImpl.get();
+
+            ScheduleExtractor scheduleExtractor = new ScheduleExtractor(instance, feedbackDao);
+            scheduleExtractor.extractScheduleFromComments();
+
+
         }
         return instance;
     }

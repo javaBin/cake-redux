@@ -1,0 +1,24 @@
+<div>
+    <h1>Ops</h1>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>x</th>
+            <th ng-repeat="room in grid.rooms">{{room}}</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="row in grid.rows">
+                <td>{{row.displaySlot}}</td>
+                <td ng-repeat="cell in row.cells">
+                    <ul>
+                        <li ng-repeat="talkInfo in cell.contents">{{talkInfo.title}}</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <ul>
+        <li ng-repeat="talk in talks">Bobo {{talk.title}} -- {{talk.ref}}</li>
+    </ul>
+</div>

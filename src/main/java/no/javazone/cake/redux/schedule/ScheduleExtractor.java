@@ -109,12 +109,7 @@ public class ScheduleExtractor {
 
     public static void main(String[] args) {
         System.setProperty("cake-redux-config-file",args[0]);
-        TalkSceduleDao talkSceduleDao = new TalkScheduleDaoMemImpl();
-        FeedbackDao feedbackDao = FeedbackDaoFileImpl.get();
-
-        ScheduleExtractor scheduleExtractor = new ScheduleExtractor(talkSceduleDao, feedbackDao);
-        scheduleExtractor.extractScheduleFromComments();
-
+        TalkSceduleDao talkSceduleDao = TalkSceduleDao.getImpl();
         List<TalkSchedule> talkSchedules = talkSceduleDao.allScedules();
         //System.out.println(talkSchedules);
         List<String> allRefs = talkSchedules.stream()

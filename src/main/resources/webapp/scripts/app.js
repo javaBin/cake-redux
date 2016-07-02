@@ -27,6 +27,9 @@
         }).when("/showSchedule", {
             templateUrl: 'templates/showSchedule.html',
             controller: 'ShowScheduleCtrl'
+        }).when("/updateSchedule", {
+            templateUrl: 'templates/updateSchedule.html',
+            controller: 'UpdateScheduleCtrl'
         }).when("/report", {
             templateUrl: "templates/talkReport.html",
             controller: "TalkReportCtrl"

@@ -11,6 +11,8 @@ public class TalkScheduleService {
         return new TalkScheduleService();
     }
 
+    private static final Map<String,String> talkTitlesCache = new HashMap<>();
+
     private final EmsCommunicator emsCommunicator = new EmsCommunicator();
 
     public TalkScheduleGrid makeGrid(List<String> talkReferences,List<String> wantedRooms,List<String> wantedSlots) {
@@ -44,7 +46,7 @@ public class TalkScheduleService {
         usedSlots.sort(String::compareTo);
 
         List<TalkScheduleRow> rows = new ArrayList<>();
-        for (String slot : usedSlotsSet) {
+        for (String slot : usedSlots) {
             List<TalkScheduleCell> schedules = new ArrayList<>();
             Set<String> rowSlots = Optional.ofNullable(assignedSlots.get(slot)).orElse(Collections.emptySet());
             for (String room : usedRooms) {
@@ -63,8 +65,19 @@ public class TalkScheduleService {
     }
 
     private String readTitle(String ref) {
+        String title;
+        synchronized (talkTitlesCache) {
+            title = talkTitlesCache.get(ref);
+        }
+        if (title != null) {
+            return title;
+        }
         JsonObject jsonObject = emsCommunicator.oneTalkAsJson(ref);
-        return jsonObject.requiredString("title");
+        title = jsonObject.requiredString("title");
+        synchronized (talkTitlesCache) {
+            talkTitlesCache.put(ref,title);
+        }
+        return title;
     }
 
     private void putVal(Map<String, Set<String>> map, String key,String ref) {
