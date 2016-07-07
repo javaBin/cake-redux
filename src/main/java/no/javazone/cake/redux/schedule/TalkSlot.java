@@ -3,8 +3,9 @@ package no.javazone.cake.redux.schedule;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Objects;
 
-public class TalkSlot {
+public class TalkSlot implements Comparable<TalkSlot> {
     public final LocalDateTime time;
     public final int duration;
 
@@ -40,5 +41,28 @@ public class TalkSlot {
             res = "0" + res;
         }
         return res;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TalkSlot)) return false;
+        TalkSlot talkSlot = (TalkSlot) o;
+        return duration == talkSlot.duration &&
+                Objects.equals(time, talkSlot.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(time, duration);
+    }
+
+    @Override
+    public int compareTo(TalkSlot o) {
+        int comp = time.compareTo(o.time);
+        if (comp != 0) {
+            return comp;
+        }
+        return new Integer(duration).compareTo(new Integer(o.duration));
     }
 }

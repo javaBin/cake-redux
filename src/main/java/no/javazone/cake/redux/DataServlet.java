@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.javazone.cake.redux.comments.FeedbackService;
+import no.javazone.cake.redux.schedule.MoveDirection;
 import no.javazone.cake.redux.schedule.TalkSceduleDao;
 import no.javazone.cake.redux.schedule.TalkScheduleGrid;
 import no.javazone.cake.redux.schedule.TalkScheduleService;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,8 +58,22 @@ public class DataServlet extends HttpServlet {
         } else if ("/computeSchedule".equals(pathInfo)) {
             computeSchedule(req, resp);
             resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/scheduleUpdate".equals(pathInfo)) {
+            scheduleUpdate(req, resp);
+            resp.setContentType("application/json;charset=UTF-8");
+
         }
 
+    }
+
+    private void scheduleUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject jsonObject = JsonParser.parseToObject(req.getInputStream());
+        List<String> talkReferences = jsonObject.requiredArray("talkReferences").stringStream().collect(Collectors.toList());
+        String talkRef = jsonObject.requiredString("talkRef");
+        MoveDirection moveDirection = MoveDirection.valueOf(jsonObject.requiredString("moveDirection"));
+        TalkScheduleGrid talkScheduleGrid = TalkScheduleService.get().move(talkReferences, Collections.emptyList(), Collections.emptyList(), talkRef, moveDirection);
+        org.jsonbuddy.JsonNode result = JsonGenerator.generate(talkScheduleGrid);
+        result.toJson(resp.getWriter());
     }
 
     private void computeSchedule(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -65,7 +81,7 @@ public class DataServlet extends HttpServlet {
         List<String> talkReferences = jsonObject.requiredArray("talkReferences").stringStream().collect(Collectors.toList());
         List<String> wantedRooms = jsonObject.requiredArray("wantedRooms").stringStream().collect(Collectors.toList());
         List<String> wantedSlots = jsonObject.requiredArray("wantedSlots").stringStream().collect(Collectors.toList());
-        TalkScheduleGrid talkScheduleGrid = TalkScheduleService.get().makeGrid(talkReferences, wantedRooms, wantedSlots);
+        TalkScheduleGrid talkScheduleGrid = TalkScheduleService.get().makeGrid(talkReferences, wantedRooms, Collections.emptyList());
         org.jsonbuddy.JsonNode result = JsonGenerator.generate(talkScheduleGrid);
         result.toJson(resp.getWriter());
     }

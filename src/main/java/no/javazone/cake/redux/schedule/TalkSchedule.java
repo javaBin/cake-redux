@@ -11,6 +11,7 @@ import org.jsonbuddy.pojo.OverridesJsonGenerator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Optional;
 
 @OverrideMapper(using = TalkSchedule.Mapper.class)
@@ -80,5 +81,18 @@ public class TalkSchedule implements OverridesJsonGenerator {
                 ", talkSlot=" + talkSlot +
                 ", room=" + room +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TalkSchedule)) return false;
+        TalkSchedule that = (TalkSchedule) o;
+        return Objects.equals(talkid, that.talkid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(talkid);
     }
 }
