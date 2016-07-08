@@ -94,7 +94,7 @@ public class OpenDataServlet extends HttpServlet {
                 .setAuthor("SpeakerFromSystem")
                 .create();
 
-        FeedbackDao feedbackDao = FeedbackDao.instance();
+        FeedbackDao feedbackDao = FeedbackDao.impl();
         feedbackDao.addFeedback(contact);
 
         String status = emsCommunicator.confirmTalk(encodedTalkUrl,dinner);

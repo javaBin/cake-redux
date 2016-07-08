@@ -17,7 +17,7 @@ public class TalkScheduleDaoMemImpl implements TalkSceduleDao {
     public static synchronized TalkScheduleDaoMemImpl get() {
         if (instance == null) {
             instance = new TalkScheduleDaoMemImpl();
-            FeedbackDao feedbackDao = FeedbackDaoFileImpl.get();
+            FeedbackDao feedbackDao = FeedbackDao.impl();
 
             ScheduleExtractor scheduleExtractor = new ScheduleExtractor(instance, feedbackDao);
             scheduleExtractor.extractScheduleFromComments();

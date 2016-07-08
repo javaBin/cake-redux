@@ -3,10 +3,7 @@ package no.javazone.cake.redux.comments;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonObject;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FeedbackService {
     public static FeedbackService get() {
@@ -20,7 +17,7 @@ public class FeedbackService {
                 .setTalkid(talkref)
                 .setAuthor(username)
                 .create();
-        FeedbackDao feedbackDao = FeedbackDao.instance();
+        FeedbackDao feedbackDao = FeedbackDao.impl();
         feedbackDao.addFeedback(feedback);
         return commentsForTalk(talkref);
     }
@@ -35,7 +32,7 @@ public class FeedbackService {
 
     public JsonArray giveRating(JsonObject payload,String username) {
         String talkref = payload.requiredString("talkref");
-        FeedbackDao feedbackDao = FeedbackDao.instance();
+        FeedbackDao feedbackDao = FeedbackDao.impl();
         Optional<Feedback> oldFeedback = feedbackDao.feedbacksForTalk(talkref)
                 .filter(fb -> fb.feedbackType() == FeedbackType.TALK_RATING && fb.author.equals(username))
                 .findAny();
@@ -55,7 +52,7 @@ public class FeedbackService {
 
 
     public JsonArray commentsForTalk(String talkRef) {
-        return JsonArray.fromNodeStream(FeedbackDao.instance().feedbacksForTalk(talkRef)
+        return JsonArray.fromNodeStream(FeedbackDao.impl().feedbacksForTalk(talkRef)
                 .filter(fb -> fb.feedbackType() == FeedbackType.COMMENT)
                 .sorted((o1,o2)->o1.created.compareTo(o2.created))
                 .map(Feedback::asDisplayJson)
@@ -63,7 +60,7 @@ public class FeedbackService {
     }
 
     public JsonArray ratingsForTalk(String talkRef) {
-        return JsonArray.fromNodeStream(FeedbackDao.instance().feedbacksForTalk(talkRef)
+        return JsonArray.fromNodeStream(FeedbackDao.impl().feedbacksForTalk(talkRef)
                 .filter(fb -> fb.feedbackType() == FeedbackType.TALK_RATING)
                 .map(fb -> (TalkRating) fb)
                 .sorted((o1,o2)-> {

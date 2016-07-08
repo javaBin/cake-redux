@@ -9,7 +9,7 @@ public interface FeedbackDao {
     Stream<Feedback> feedbacksForTalk(String talkid);
     List<Feedback> allFeedbacks();
 
-    static FeedbackDao instance() {
+    public static FeedbackDao impl() {
         return FeedbackDaoFileImpl.get();
     }
 }
