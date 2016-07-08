@@ -12,13 +12,18 @@
                 <td>{{row.displaySlot}}</td>
                 <td ng-repeat="cell in row.cells">
                     <ul>
-                        <li ng-repeat="talkInfo in cell.contents">{{talkInfo.title}}</li>
+                        <li ng-repeat="talkInfo in cell.contents">
+                            {{talkInfo.title}}
+                            <div class="btn-group btn-group-xs">
+                                <button type="button" class="btn btn-default" ng-click="moveSchedule(talkInfo.ref,'LEFT')">Left</button>
+                                <button type="button" class="btn btn-default" ng-click="moveSchedule(talkInfo.ref,'RIGHT')">Right</button>
+                                <button type="button" class="btn btn-default" ng-click="moveSchedule(talkInfo.ref,'UP')">Up</button>
+                                <button type="button" class="btn btn-default" ng-click="moveSchedule(talkInfo.ref,'DOWN')">Down</button>
+                            </div>
+                        </li>
                     </ul>
                 </td>
             </tr>
         </tbody>
     </table>
-    <ul>
-        <li ng-repeat="talk in talks">Bobo {{talk.title}} -- {{talk.ref}}</li>
-    </ul>
 </div>

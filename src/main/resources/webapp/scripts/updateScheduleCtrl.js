@@ -21,6 +21,23 @@ angular.module('cakeReduxModule')
                         $scope.grid = data;
                 });
 
+                $scope.moveSchedule = function (ref, direction) {
+                        var moveData = {
+                                talkReferences: allRefs,
+                                wantedRooms: [],
+                                wantedSlots: [],
+                                talkRef: ref,
+                                moveDirection: direction
+                        };
+                        $http({
+                                method: "POST",
+                                url: "data/scheduleUpdate",
+                                data: moveData
+                        }).success(function(data) {
+                                $scope.grid = data;
+                        });
+                }
+
         }]);
 
 
