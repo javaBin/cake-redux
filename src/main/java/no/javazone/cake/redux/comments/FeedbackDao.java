@@ -1,5 +1,7 @@
 package no.javazone.cake.redux.comments;
 
+import no.javazone.cake.redux.Configuration;
+
 import java.util.List;
 import java.util.stream.Stream;
 

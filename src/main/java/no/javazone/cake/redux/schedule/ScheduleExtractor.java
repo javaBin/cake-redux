@@ -108,9 +108,28 @@ public class ScheduleExtractor {
     }
 
     public static void main(String[] args) {
+        if (args.length < 1) {
+            System.out.println("Use config");
+            return;
+        }
         System.setProperty("cake-redux-config-file",args[0]);
+
+        FeedbackDao feedbackDao = FeedbackDao.impl();
+
         TalkSceduleDao talkSceduleDao = TalkSceduleDao.getImpl();
+
         List<TalkSchedule> talkSchedules = talkSceduleDao.allScedules();
+        if (!talkSchedules.isEmpty()) {
+            System.out.println("Dao already has schedules");
+            return;
+        }
+
+        ScheduleExtractor scheduleExtractor = new ScheduleExtractor(talkSceduleDao, feedbackDao);
+        scheduleExtractor.extractScheduleFromComments();
+
+
+
+        talkSchedules = talkSceduleDao.allScedules();
         //System.out.println(talkSchedules);
         List<String> allRefs = talkSchedules.stream()
                 .map(ts -> ts.talkid)

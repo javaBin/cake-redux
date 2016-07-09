@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TalkScheduleDaoMemImpl implements TalkSceduleDao {
-    private static transient TalkScheduleDaoMemImpl instance = null;
+    private static volatile TalkScheduleDaoMemImpl instance = null;
     private static final JsonObject store = JsonFactory.jsonObject();
 
     public static synchronized TalkScheduleDaoMemImpl get() {

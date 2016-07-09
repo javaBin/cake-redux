@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 public class FeedbackDaoFileImpl implements FeedbackDao {
-    private static transient FeedbackDaoFileImpl _instance;
+    private static volatile FeedbackDaoFileImpl _instance;
 
     public static synchronized FeedbackDaoFileImpl get() {
         if (_instance == null) {
@@ -20,7 +20,7 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
         return _instance;
     }
     private final ExecutorService executorService;
-    private final transient Set<Feedback> feedbacks;
+    private final Set<Feedback> feedbacks;
 
     private FeedbackDaoFileImpl() {
         executorService = Executors.newSingleThreadExecutor();
