@@ -66,45 +66,7 @@ public class ScheduleExtractor {
 
 
     private static TalkSlot computeSlot(Comment comment) {
-        String talkComment = comment.talkComment;
-        talkComment = talkComment.substring(talkComment.toLowerCase().indexOf("tid:")).toLowerCase();
-
-        LocalDateTime wednesday = LocalDateTime.of(2016,9,7,1,1);
-        LocalDateTime thursday = LocalDateTime.of(2016,9,8,1,1);
-        LocalDateTime start;
-        if (talkComment.toLowerCase().startsWith("tid: ons_")) {
-            start = wednesday;
-        } else if (talkComment.toLowerCase().startsWith("tid: tor_")) {
-            start = thursday;
-        } else {
-            return null;
-        }
-        int hour;
-        int min;
-        try {
-            hour = Integer.parseInt(talkComment.substring(9, 11));
-            min = Integer.parseInt(talkComment.substring(11));
-        } catch (Exception e) {
-            return null;
-        }
-        start = start.withHour(hour);
-        start = start.withMinute(min);
-        JsonObject jsonObject = new EmsCommunicator().oneTalkAsJson(comment.talkid);
-        JsonArray tags = jsonObject.requiredArray("tags");
-        Integer duration = tags.stringStream()
-                .filter(s -> s.startsWith("len") && s.length() > 3)
-                .filter(s -> {
-                    try {
-                        Integer.parseInt(s.substring(3));
-                        return true;
-                    } catch (NumberFormatException ex) {
-                        return false;
-                    }
-                })
-                .map(s -> Integer.parseInt(s.substring(3)))
-                .findAny()
-                .orElse(60);
-        return new TalkSlot(start,duration);
+        return TalkSlot.computeSlot(comment.talkComment,comment.talkid);
     }
 
     public static void main(String[] args) {
@@ -130,7 +92,9 @@ public class ScheduleExtractor {
 
 
         talkSchedules = talkSceduleDao.allScedules();
+        System.out.println("Done read " + talkSchedules.size());
         //System.out.println(talkSchedules);
+        /*
         List<String> allRefs = talkSchedules.stream()
                 .map(ts -> ts.talkid)
                 .distinct()
@@ -138,6 +102,7 @@ public class ScheduleExtractor {
 
         TalkScheduleGrid talkScheduleGrid = TalkScheduleService.get().makeGrid(allRefs, Collections.emptyList(), Collections.emptyList());
         talkScheduleGrid.asHtmlTable(System.out);
+        */
 
     }
 }
