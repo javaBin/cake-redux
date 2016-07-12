@@ -156,6 +156,27 @@ public class Configuration {
         return readConf("scheduleDBFileName",null);
     }
 
+    public static String emsDbServer() {
+        return readConf("emsDbServer","localhost");
+    }
+
+    public static String emsDbName() {
+        return readConf("emsDbName","ems");
+    }
+
+    public static String emsDbUser() {
+        return readConf("emsDbUser","ems");
+    }
+
+
+    public static String emsDbPassword() {
+        return readConf("emsDbPassword",null);
+    }
+
+    public static int emsDbPort() {
+        return Integer.parseInt(readConf("emsDbPort","5432"));
+    }
+
     public static void setProps(Map<String,String> props) {
         instance.properties = props;
     }

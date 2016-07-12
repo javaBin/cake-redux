@@ -1,6 +1,9 @@
 package no.javazone.cake.redux.schedule;
 
+import no.javazone.cake.redux.Base64Util;
+import no.javazone.cake.redux.Configuration;
 import no.javazone.cake.redux.EmsCommunicator;
+import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonObject;
 
 import java.util.*;
@@ -221,5 +224,75 @@ public class TalkScheduleService {
         TalkSceduleDao.getImpl().updateSchedule(newTalkSchedule);
         return makeGrid(talkReferences,wantedRooms,wantedSlots);
 
+    }
+
+    private static JsonObject exportResult(String status,String message) {
+        return JsonFactory.jsonObject().put("status",status).put("message",message);
+    }
+
+    public JsonObject exportToEms(List<String> talkRefs) {
+        if (Configuration.emsDbPassword() ==  null) {
+            return exportResult("error","Need to have emsdb config present");
+        }
+        TalkSceduleDao talkSceduleDao = TalkSceduleDao.getImpl();
+        for (String ref : talkRefs) {
+            Optional<TalkSchedule> schedule = talkSceduleDao.getSchedule(ref);
+            if (!schedule.isPresent()) {
+                return exportResult("error","Missing schedule for talk " + ref);
+            }
+            if (!schedule.get().room.isPresent()) {
+                return exportResult("error","Missing room for talk " + ref);
+            }
+            if (!schedule.get().talkSlot.isPresent()) {
+                return exportResult("error","Missing slot for talk " + ref);
+            }
+            String emsRef = Base64Util.decode(ref);
+            String sessionId = idFromRef(emsRef);
+            if (sessionId == null) {
+                return exportResult("error","Illegal sessionid for talk " + ref);
+            }
+            String eventId = eventidFromRef(emsRef);
+            if (eventId == null) {
+                return exportResult("error","Illegal eventid for talk " + ref);
+            }
+
+
+        }
+        EmsDbDao emsDbDao = EmsDbDao.get();
+        for (String ref : talkRefs) {
+            String emsRef = Base64Util.decode(ref);
+            String sessionid = idFromRef(emsRef);
+            String eventId = eventidFromRef(emsRef);
+            TalkSchedule talkSchedule = talkSceduleDao.getSchedule(ref).get();
+
+            String roomid = emsDbDao.findOrCreateRoom(eventId, talkSchedule.room.get());
+            emsDbDao.setRoomForSession(sessionid,eventId,roomid);
+
+            String slotid = emsDbDao.findOrCreateSlot(eventId,talkSchedule.talkSlot.get());
+            emsDbDao.setSlotForSession(sessionid,eventId,slotid);
+
+        }
+        return exportResult("ok","Updated " + talkRefs.size() + " talks");
+    }
+
+    private String eventidFromRef(String emsRef) {
+        int start = emsRef.indexOf("events/");
+        if (start == -1) {
+            return null;
+        }
+        start = start+"events/".length();
+        int end = emsRef.indexOf("/",start);
+        if (end == -1) {
+            return null;
+        }
+        return emsRef.substring(start,end);
+    }
+
+    private String idFromRef(String emsRef) {
+        int ind = emsRef.lastIndexOf("/");
+        if (ind == -1) {
+            return null;
+        }
+        return emsRef.substring(ind +1);
     }
 }
