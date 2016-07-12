@@ -61,7 +61,7 @@ public class ScheduleExtractor {
         if (endind == -1) {
             endind = comment.length();
         }
-        return "Rom " + comment.substring(stind + "rom:".length(),endind).trim();
+        return "Room " + comment.substring(stind + "rom:".length(),endind).trim();
     }
 
 

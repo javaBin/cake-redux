@@ -61,9 +61,17 @@ public class DataServlet extends HttpServlet {
         } else if ("/scheduleUpdate".equals(pathInfo)) {
             scheduleUpdate(req, resp);
             resp.setContentType("application/json;charset=UTF-8");
-
+        } else if ("/exportScheduleEms".equals(pathInfo)) {
+            exportScheduleEms(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
         }
 
+    }
+
+    private void exportScheduleEms(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        List<String> refs = JsonParser.parseToArray(req.getInputStream()).stringStream().collect(Collectors.toList());
+        JsonObject result = TalkScheduleService.get().exportToEms(refs);
+        result.toJson(resp.getWriter());
     }
 
     private void scheduleUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {

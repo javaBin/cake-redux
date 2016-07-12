@@ -26,4 +26,11 @@
             </tr>
         </tbody>
     </table>
+    <p>
+        <button class="btn btn-danger" ng-disabled="emsExportDisabled" ng-click="exportToEms()">
+            <span ng-hide="emsExportDisabled">Export to ems</span>
+            <span ng-show="emsExportDisabled">Exporting ...</span>
+        </button>
+    </p>
+    <p>{{exportMessage}}</p>
 </div>

@@ -49,7 +49,6 @@ public class EmsDbDao {
                 ps.setString(3,roomname);
                 ps.executeUpdate();
             }
-            connection.commit();
             return id.toString();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -77,7 +76,6 @@ public class EmsDbDao {
                 ps.setInt(4,talkSlot.duration);
                 ps.executeUpdate();
             }
-            connection.commit();
             return id.toString();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -92,7 +90,6 @@ public class EmsDbDao {
                 ps.setObject(3,UUID.fromString(eventid));
                 ps.executeUpdate();
             }
-            connection.commit();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -106,7 +103,6 @@ public class EmsDbDao {
                 ps.setObject(3,UUID.fromString(eventid));
                 ps.executeUpdate();
             }
-            connection.commit();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

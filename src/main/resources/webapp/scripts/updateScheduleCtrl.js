@@ -1,6 +1,8 @@
 angular.module('cakeReduxModule')
     .controller('UpdateScheduleCtrl', ['$scope', '$http','filterService',
         function($scope, $http, filterService) {
+                $scope.emsExportDisabled = false;
+                $scope.exportMessage = "";
                 $scope.talks = filterService.filteredTalks;
 
                 var allRefs = _.pluck($scope.talks,"ref");
@@ -36,7 +38,25 @@ angular.module('cakeReduxModule')
                         }).success(function(data) {
                                 $scope.grid = data;
                         });
+                };
+                
+                $scope.exportToEms = function () {
+                        $scope.exportMessage = "";
+                        $scope.emsExportDisabled = true;
+                        $http({
+                                method: "POST",
+                                url: "data/exportScheduleEms",
+                                data: allRefs
+                        }).success(function (data) {
+                                $scope.emsExportDisabled = false;
+                                $scope.exportMessage = data;
+                        }).failure(function () {
+                                $scope.emsExportDisabled = false;
+                                
+                        })
+                        
                 }
+                
 
         }]);
 
