@@ -15,6 +15,8 @@
                         <li ng-repeat="talkInfo in cell.contents">
                             {{talkInfo.title}}
                             <div class="btn-group btn-group-xs">
+                                <button type="button" class="btn btn-default" ng-click="openTalk(talkInfo.ref)">View</button>
+                                <button type="button" class="btn btn-default" ng-click="setForEdit(talkInfo)">Edit</button>
                                 <button type="button" class="btn btn-default" ng-click="moveSchedule(talkInfo.ref,'LEFT')">Left</button>
                                 <button type="button" class="btn btn-default" ng-click="moveSchedule(talkInfo.ref,'RIGHT')">Right</button>
                                 <button type="button" class="btn btn-default" ng-click="moveSchedule(talkInfo.ref,'UP')">Up</button>
@@ -26,6 +28,14 @@
             </tr>
         </tbody>
     </table>
+    <h2>Edit</h2>
+    <form class="form-inline">
+        <label>{{toEdit.title}}</label>
+        <input type="text" placeholder="slot" ng-model="editedSlot"/>
+        <input type="text" placeholder="room" ng-model="editedRoom"/>
+        <button class="btn btn-default" ng-click="editOneTalk()">Update this talk</button>
+    </form>
+    <h2>Ems Export</h2>
     <p>
         <button class="btn btn-danger" ng-disabled="emsExportDisabled" ng-click="exportToEms()">
             <span ng-hide="emsExportDisabled">Export to ems</span>

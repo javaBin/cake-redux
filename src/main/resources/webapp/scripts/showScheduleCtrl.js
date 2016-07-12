@@ -17,7 +17,7 @@ angular.module('cakeReduxModule')
 
             $scope.refresh = function() {
                 doRefresh();
-            }
+            };
 
         }]);
 

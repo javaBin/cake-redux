@@ -1,6 +1,6 @@
 angular.module('cakeReduxModule')
-    .controller('UpdateScheduleCtrl', ['$scope', '$http','filterService',
-        function($scope, $http, filterService) {
+    .controller('UpdateScheduleCtrl', ['$scope', '$http','filterService','$window',
+        function($scope, $http, filterService,$window) {
                 $scope.emsExportDisabled = false;
                 $scope.exportMessage = "";
                 $scope.talks = filterService.filteredTalks;
@@ -57,6 +57,24 @@ angular.module('cakeReduxModule')
                         
                 }
                 
+                $scope.openTalk = function (ref) {
+                        $window.open("#/showTalk/" + ref);
+                };
+                
+                $scope.setForEdit = function (ref) {
+                        $scope.toEdit = ref;
+                };
+
+                $scope.editOneTalk = function () {
+                        var data = {
+                                talkref: $scope.toEdit.ref,
+                                editedSlot: $scope.editedSlot,
+                                editedRoom: $scope.editedRoom,
+                                talkReferences: allRefs
+                        };
+                        console.log(data);
+                }
+
 
         }]);
 
