@@ -19,6 +19,8 @@ public class TalkScheduleService {
     private final EmsCommunicator emsCommunicator = new EmsCommunicator();
 
 
+
+
     private static class ComutedSchedule {
         private final List<OptTalkSlot> usedSlots;
         private final List<OptRoom> usedRooms;
@@ -294,5 +296,19 @@ public class TalkScheduleService {
             return null;
         }
         return emsRef.substring(ind +1);
+    }
+
+    public TalkScheduleGrid updateSlotSchedule(String talkref, String editedSlot, String editedRoom, List<String> talkReferences) {
+        if (!editedSlot.startsWith("tid: ")) {
+            editedSlot = "tid: " + editedSlot;
+        }
+        TalkSlot talkSlot = TalkSlot.computeSlot(editedSlot, talkref);
+        if (!editedRoom.startsWith("Room ")) {
+            editedRoom = "Room " + editedRoom;
+        }
+
+        TalkSchedule ts = new TalkSchedule(talkref,Optional.of(talkSlot),Optional.of(editedRoom));
+        TalkSceduleDao.getImpl().updateSchedule(ts);
+        return makeGrid(talkReferences,Collections.emptyList(),Collections.emptyList());
     }
 }

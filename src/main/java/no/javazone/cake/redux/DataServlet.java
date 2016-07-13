@@ -64,8 +64,22 @@ public class DataServlet extends HttpServlet {
         } else if ("/exportScheduleEms".equals(pathInfo)) {
             exportScheduleEms(req,resp);
             resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/updateSlotSchedule".equals(pathInfo)) {
+            updateSlotSchedule(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
         }
 
+    }
+
+    private void updateSlotSchedule(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject jsonObject = JsonParser.parseToObject(req.getInputStream());
+        List<String> talkReferences = jsonObject.requiredArray("talkReferences").stringStream().collect(Collectors.toList());
+        String editedSlot = jsonObject.requiredString("editedSlot");
+        String editedRoom = jsonObject.requiredString("editedRoom");
+        String talkref = jsonObject.requiredString("talkref");
+        TalkScheduleGrid talkScheduleGrid = TalkScheduleService.get().updateSlotSchedule(talkref,editedSlot,editedRoom,talkReferences);
+        org.jsonbuddy.JsonNode result = JsonGenerator.generate(talkScheduleGrid);
+        result.toJson(resp.getWriter());
     }
 
     private void exportScheduleEms(HttpServletRequest req, HttpServletResponse resp) throws IOException {

@@ -66,14 +66,21 @@ angular.module('cakeReduxModule')
                 };
 
                 $scope.editOneTalk = function () {
-                        var data = {
+                        var slotUpdate = {
                                 talkref: $scope.toEdit.ref,
                                 editedSlot: $scope.editedSlot,
                                 editedRoom: $scope.editedRoom,
                                 talkReferences: allRefs
                         };
-                        console.log(data);
-                }
+                        $http({
+                                method: "POST",
+                                url: "data/updateSlotSchedule",
+                                data: slotUpdate
+                        }).success(function (data) {
+                                $scope.grid = data;
+                        });
+
+                };
 
 
         }]);
