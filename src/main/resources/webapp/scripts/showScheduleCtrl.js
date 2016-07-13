@@ -3,7 +3,7 @@ angular.module('cakeReduxModule')
         function($scope,talkList,showScheduleService,filterService) {
 
             var doRefresh = function() {
-                var sorted = showScheduleService(talkList.talks);
+                var sorted = showScheduleService(filterService.filteredTalks);
 
                 $scope.rooms = sorted.rooms;
                 $scope.slots = sorted.slots;
