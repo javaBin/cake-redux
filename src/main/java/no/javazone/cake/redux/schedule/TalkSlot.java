@@ -74,7 +74,12 @@ public class TalkSlot implements Comparable<TalkSlot> {
 
     public static TalkSlot computeSlot(String comment, String ref) {
         String talkComment = comment;
-        talkComment = talkComment.substring(talkComment.toLowerCase().indexOf("tid:")).toLowerCase();
+        if (talkComment.toLowerCase().indexOf("tid:") == -1) {
+            talkComment = "tid: " + talkComment;
+        }
+        int tidind = talkComment.toLowerCase().indexOf("tid:");
+
+        talkComment = talkComment.substring(tidind).toLowerCase();
 
         LocalDateTime tuesday = LocalDateTime.of(2016,9,6,1,1);
         LocalDateTime wednesday = LocalDateTime.of(2016,9,7,1,1);
