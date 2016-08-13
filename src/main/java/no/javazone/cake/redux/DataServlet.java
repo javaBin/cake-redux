@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DataServlet extends HttpServlet {
@@ -217,6 +218,8 @@ public class DataServlet extends HttpServlet {
         oneTalkAsJson.put("comments",comments);
         JsonArray ratings = FeedbackService.get().ratingsForTalk(encTalk);
         oneTalkAsJson.put("ratings",ratings);
+        Optional<String> contact = FeedbackService.get().contactForTalk(encTalk);
+        oneTalkAsJson.put("contactPhone",contact.orElse("Unknown"));
     }
 
     private String config() {

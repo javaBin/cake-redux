@@ -76,4 +76,11 @@ public class FeedbackService {
                 .map(Feedback::asDisplayJson)
         );
     }
+
+    public Optional<String> contactForTalk(String talkRef) {
+        return FeedbackDao.instance().feedbacksForTalk(talkRef)
+                .filter(fb -> fb.feedbackType() == FeedbackType.CONTACT)
+                .map(Feedback::getInfo)
+                .findAny();
+    }
 }
