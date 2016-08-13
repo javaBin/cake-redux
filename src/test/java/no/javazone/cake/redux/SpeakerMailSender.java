@@ -1,5 +1,7 @@
 package no.javazone.cake.redux;
 
+import no.javazone.cake.redux.mail.MailSenderService;
+import no.javazone.cake.redux.mail.SmtpMailSender;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.jsonbuddy.JsonArray;
@@ -95,7 +97,7 @@ public class SpeakerMailSender {
         mail = setupMailHeader(mail,"JavaZone 2016 Call for Speaker");
         mail.addTo(email);
         mail.setMsg(msg);
-        mail.send();
+        MailSenderService.get().sendMail(SmtpMailSender.create(mail));
     }
 
     private Set<String> readSpeakerList() {

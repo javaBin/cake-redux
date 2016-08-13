@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import no.javazone.cake.redux.mail.MailSenderService;
+import no.javazone.cake.redux.mail.SmtpMailSender;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 
@@ -110,7 +112,7 @@ public class AcceptorSetter {
 
         String message = generateMessage(template,title, talkType, speakerName, submitLink, confirmLocation);
         mail.setMsg(message);
-        mail.send();
+        MailSenderService.get().sendMail(SmtpMailSender.create(mail));
     }
 
     public static List<String> toCollection(ArrayNode tags) {

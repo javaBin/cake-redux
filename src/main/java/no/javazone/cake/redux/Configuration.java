@@ -156,4 +156,7 @@ public class Configuration {
         instance.properties = props;
     }
 
+    public static long emailSleepTime() {
+        return 5000;
+    }
 }
