@@ -61,6 +61,10 @@
             <input type="checkbox" ng-model="showTags">
         </label>
         <label>
+            Contact phone
+            <input type="checkbox" ng-model="showContactPhone">
+        </label>
+        <label>
             Speakers
             <input type="checkbox" ng-model="showSpeakers">
         </label>
@@ -144,6 +148,11 @@
         <div class="col-md-1 cake-margin"><strong>Tags</strong></div>
         <div class="col-md-10">{{aTalk.tags}}</div>
     </div>
+    <div class="row cake-row" ng-show="$parent.showContactPhone">
+        <div class="col-md-1 cake-margin"><strong>Contact phone</strong></div>
+        <div class="col-md-10">{{aTalk.contactPhone}}</div>
+    </div>
+
     <div ng-repeat="speaker in aTalk.speakers" ng-show="$parent.showSpeakers">
         <h3 ng-show="$parent.$parent.showSpeakername">{{speaker.name}}</h3>
         <div class="row cake-row" ng-show="$parent.$parent.showSpeakerEmail">

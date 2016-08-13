@@ -27,6 +27,7 @@ angular.module('cakeReduxModule')
             $scope.showPostcode = true;
             $scope.showLastModified = true;
             $scope.showTags = true;
+            $scope.showContactPhone = true;
 
             var updateFromServer = function(data) {
                 var atalk = _.findWhere($scope.talks,{ref:data.ref});
