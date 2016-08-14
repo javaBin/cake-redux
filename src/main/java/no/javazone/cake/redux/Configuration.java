@@ -157,6 +157,6 @@ public class Configuration {
     }
 
     public static long emailSleepTime() {
-        return 5000;
+        return Long.parseLong(readConf("emailSleepTime","5000"));
     }
 }
