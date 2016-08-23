@@ -49,16 +49,32 @@ angular.module('cakeReduxModule')
             $scope.exportText = "xxx";
 
             $scope.exportCsv = function () {
-                var mapped = _.map($scope.talks,function (theTalk) {
+                var filteredTalks;
+                if ($scope.showEquipment) {
+                    filteredTalks = _.filter($scope.talks, function (theTalk) {
+                        return theTalk.equipment && (theTalk.equipment.trim().length > 0);
+                    });
+                } else {
+                    filteredTalks = $scope.talks;
+                }
+                var mapped = _.map(filteredTalks,function (theTalk) {
                     var speakerNames = _.reduce(_.map(theTalk.speakers,function (theSpeaker) {
                         return theSpeaker.name;
                     }), function (a, b) {
                         return a + " and " + b;
-                    })
-                    return theTalk.title + ";" + speakerNames;
+                    });
+                    var equip = "";
+                    if ($scope.showEquipment) {
+                        equip = ";" + theTalk.equipment;
+                    }
+                    return theTalk.title + ";" + speakerNames + equip;
                 });
 
-                $scope.exportText = "title;speakernames\n" + _.reduce(mapped,function(a,b) {
+                var headerRow = "title;speakernames";
+                if ($scope.showEquipment) {
+                    headerRow = headerRow + ";equipment";
+                }
+                $scope.exportText = headerRow + "\n" + _.reduce(mapped,function(a,b) {
                     return a + "\n" + b;
                 })
             };
