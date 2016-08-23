@@ -88,8 +88,10 @@
             LastModified
             <input type="checkbox" ng-model="showLastModified">
         </label>
+        <button class="btn btn-default" ng-click="exportCsv()">Export csv</button>
     </div>
 </form>
+<p><pre>{{exportText}}</pre></p>
 <div class="cake-margin" ng-repeat="aTalk in talks" style="page-break-after:always;">
     <h1 ng-show="$parent.showTitle">{{aTalk.title}}</h1>
     <div class="row cake-row" ng-show="$parent.showSummary">
