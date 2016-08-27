@@ -23,10 +23,23 @@ import static no.javazone.cake.redux.CommunicatorHelper.openStream;
 public class EmsCommunicator {
 
 
-    public String updateTags(String encodedTalkUrl,List<String> tags,String givenLastModified) {
+    public String updateTags(String encodedTalkUrl,List<String> tags,String givenLastModified,UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
         Property newVals = Property.arrayObject("tags", new ArrayList<Object>(tags));
-
         return update(encodedTalkUrl, givenLastModified, Arrays.asList(newVals));
+    }
+
+    private void checkWriteAccess(UserAccessType userAccessType) {
+        if (Configuration.noAuthMode()) {
+            return;
+        }
+        switch (userAccessType) {
+            case FULL:
+            case OPENSERVLET:
+                return;
+            default:
+                throw new NoUserAceessException();
+        }
     }
 
     private String update(String encodedTalkUrl, String givenLastModified, List<Property> newVals) {
@@ -86,7 +99,8 @@ public class EmsCommunicator {
         return jsonObject.toString();
     }
 
-    public String confirmTalk(String encodedTalkUrl, String dinner) {
+    public String confirmTalk(String encodedTalkUrl, String dinner,UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonTalk = objectMapper.readTree(fetchOneTalk(encodedTalkUrl));
@@ -108,7 +122,7 @@ public class EmsCommunicator {
             }
             tags.add("confirmed");
             String lastModified = jsonTalk.get("lastModified").asText();
-            updateTags(encodedTalkUrl,tags, lastModified);
+            updateTags(encodedTalkUrl,tags, lastModified,userAccessType);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -248,7 +262,8 @@ public class EmsCommunicator {
         return Base64Util.encode(eventUrl);
     }
 
-    public String assignRoom(String encodedTalk,String encodedRoomRef,String givenLastModified) {
+    public String assignRoom(String encodedTalk,String encodedRoomRef,String givenLastModified,UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
         String talkUrl = Base64Util.decode(encodedTalk);
         String roomRef = Base64Util.decode(encodedRoomRef);
         StringBuilder formData = new StringBuilder();
@@ -299,7 +314,8 @@ public class EmsCommunicator {
         return fetchOneTalk(encodedTalk);
     }
 
-    public void addRoomToEvent(String eventid,String roomname) {
+    public void addRoomToEvent(String eventid,String roomname,UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
         JsonObject roomtemplate = JsonFactory.jsonObject().put("template", JsonFactory.jsonObject().put("data",
                 JsonFactory.jsonArray().add(
                         JsonFactory.jsonObject().put("name", "name").put("value", roomname)
@@ -335,7 +351,8 @@ public class EmsCommunicator {
 
     }
 
-    public void addSlotToEvent() {
+    public void addSlotToEvent(UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
         String url = "http://test.javazone.no/ems/server/events/0e6d98e9-5b06-42e7-b275-6abadb498c81/slots";
         JsonObject roomtemplate = JsonFactory.jsonObject().put("template", JsonFactory.jsonObject().put("data",
                 JsonFactory.jsonArray()
@@ -368,7 +385,8 @@ public class EmsCommunicator {
 
     }
 
-    public String assignSlot(String encodedTalk,String encodedSlotRef,String givenLastModified) {
+    public String assignSlot(String encodedTalk,String encodedSlotRef,String givenLastModified,UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
         String talkUrl = Base64Util.decode(encodedTalk);
         String slotRef = Base64Util.decode(encodedSlotRef);
         StringBuilder formData = new StringBuilder();
@@ -420,7 +438,8 @@ public class EmsCommunicator {
         return fetchOneTalk(encodedTalk);
     }
 
-    public String publishTalk(String encodedTalkUrl,String givenLastModified) {
+    public String publishTalk(String encodedTalkUrl,String givenLastModified,UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
         String talkUrl = Base64Util.decode(encodedTalkUrl);
         HttpURLConnection connection = (HttpURLConnection) openConnection(talkUrl, true);
 
@@ -635,7 +654,8 @@ public class EmsCommunicator {
     }
 
 
-    public String update(String ref, List<String> taglist, String state, String lastModified) {
+    public String update(String ref, List<String> taglist, String state, String lastModified,UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
         Property newTag = Property.arrayObject("tags", new ArrayList<>(taglist));
         Property newState = Property.value("state",state);
         return update(ref, lastModified, Arrays.asList(newTag,newState));

@@ -18,7 +18,7 @@ public class TestEmsCommunication {
         //testPublishRoom();
         //readOneTalk();
         //new EmsCommunicator().addRoomToEvent("http://test.javazone.no/ems/server/events/aad84b5a-b527-45d4-b532-c5be1f25c1d0","Room 1");
-        new EmsCommunicator().addSlotToEvent();
+        new EmsCommunicator().addSlotToEvent(UserAccessType.FULL);
         long duration = System.currentTimeMillis() -start;
         System.out.println("Took " + duration);
     }
@@ -27,7 +27,7 @@ public class TestEmsCommunication {
         String encodedTalk = "aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy9jZWUzN2NjMS01Mzk5LTQ3ZWYtOTQxOC0yMWY5YjY0NDRiZmEvc2Vzc2lvbnMvZWQ2Y2RiNzctZTVlMy00MGQ2LWE0NjktODRkYzhkMTA5ZGM1";
         String room = "http://test.2014.javazone.no/ems/server/events/cee37cc1-5399-47ef-9418-21f9b6444bfa/rooms/893b1b52-d158-4125-9725-34039abaf6a4";
         //String room = "http://test.2014.javazone.no/ems/server/events/cee37cc1-5399-47ef-9418-21f9b6444bfa/slots/c92511fc-5063-4054-b55d-6d5cd78b5e18";
-        new EmsCommunicator().assignRoom(encodedTalk,room,"xxx");
+        new EmsCommunicator().assignRoom(encodedTalk,room,"xxx",UserAccessType.FULL);
     }
 
     private static void testAllRooms() {
@@ -38,7 +38,7 @@ public class TestEmsCommunication {
     private static void updateTagsOnEvent() {
         String talkEvent="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWYvc2Vzc2lvbnMvOWQzMWVmZGYtN2MzMi00ZDg1LWEyYjUtYjM2YmVlZjMyYzQ0";
         List<String> tags = Arrays.asList("testTag");
-        System.out.println(new EmsCommunicator().updateTags(talkEvent,tags,""));
+        System.out.println(new EmsCommunicator().updateTags(talkEvent,tags,"",UserAccessType.FULL));
     }
 
     private static void testAllTaks() {
@@ -60,7 +60,7 @@ public class TestEmsCommunication {
 
     private static void publishTalk() {
         String talkEvent="aHR0cDovL3Rlc3QuMjAxNC5qYXZhem9uZS5uby9lbXMvc2VydmVyL2V2ZW50cy85ZjQwMDYzYS01ZjIwLTRkN2ItYjFlOC1lZDBjNmNjMThhNWYvc2Vzc2lvbnMvOWQzMWVmZGYtN2MzMi00ZDg1LWEyYjUtYjM2YmVlZjMyYzQ0";
-        String publishTalk = new EmsCommunicator().publishTalk(talkEvent,"");
+        String publishTalk = new EmsCommunicator().publishTalk(talkEvent,"",UserAccessType.FULL);
         System.out.println("result: " + publishTalk);
     }
 

@@ -35,7 +35,7 @@ public class DataServletWriteTest {
 
         servlet.service(req,resp);
 
-        verify(emsCommunicator).update("abra", Arrays.asList("test"),"pending","Tue, 04 Feb 2014 23:55:06 GMT");
+        verify(emsCommunicator).update("abra", Arrays.asList("test"),"pending","Tue, 04 Feb 2014 23:55:06 GMT",UserAccessType.READ_ONLY);
 
     }
 
@@ -62,7 +62,7 @@ public class DataServletWriteTest {
 
         servlet.service(req,resp);
 
-        verify(emsCommunicator).publishTalk("abra","Tue, 04 Feb 2014 23:55:06 GMT");
+        verify(emsCommunicator).publishTalk("abra","Tue, 04 Feb 2014 23:55:06 GMT",UserAccessType.READ_ONLY);
 
 
     }

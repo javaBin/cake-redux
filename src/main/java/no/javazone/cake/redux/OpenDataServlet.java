@@ -97,7 +97,7 @@ public class OpenDataServlet extends HttpServlet {
         FeedbackDao feedbackDao = FeedbackDao.instance();
         feedbackDao.addFeedback(contact);
 
-        String status = emsCommunicator.confirmTalk(encodedTalkUrl,dinner);
+        String status = emsCommunicator.confirmTalk(encodedTalkUrl,dinner,UserAccessType.OPENSERVLET);
         resp.setContentType("text/json");
         resp.getWriter().append(status);
     }

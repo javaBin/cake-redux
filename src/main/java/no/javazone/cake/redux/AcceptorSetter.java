@@ -28,16 +28,16 @@ public class AcceptorSetter {
         this.emsCommunicator = emsCommunicator;
     }
 
-    public String accept(ArrayNode talks) {
+    public String accept(ArrayNode talks,UserAccessType userAccessType) {
         String template = loadTemplate();
         String tagToAdd = "accepted";
         String tagExistsErrormessage = "Talk is already accepted";
         String subjectTemplate = "Javazone 2016 #talkType# accepted";
 
-        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage);
+        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType);
     }
 
-    public String massUpdate(ObjectNode jsonObject) {
+    public String massUpdate(ObjectNode jsonObject,UserAccessType userAccessType) {
         ArrayNode talks = (ArrayNode) jsonObject.get("talks");
 
         String template = null;
@@ -53,10 +53,10 @@ public class AcceptorSetter {
         }
         String tagExistsErrormessage = "Tag already exsists";
 
-        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage);
+        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType);
     }
 
-    private String doUpdates(ArrayNode talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage) {
+    private String doUpdates(ArrayNode talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage,UserAccessType userAccessType) {
         List<JsonNode> statusAllTalks = new ArrayList<>();
         for (int i=0;i<talks.size();i++) {
             ObjectNode accept = JsonNodeFactory.instance.objectNode();
@@ -82,7 +82,7 @@ public class AcceptorSetter {
                 if (tagToAdd != null) {
                     tags.add(tagToAdd);
                     String lastModified = jsonTalk.requiredString("lastModified");
-                    emsCommunicator.updateTags(encodedTalkRef, tags, lastModified);
+                    emsCommunicator.updateTags(encodedTalkRef, tags, lastModified,userAccessType);
                 }
                 accept.put("status","ok");
                 accept.put("message","ok");

@@ -70,8 +70,8 @@ public class DataServlet extends HttpServlet {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode update = objectMapper.readTree(inputStr);
             String ref = update.get("ref").asText();
-            approveTalk(ref);
-            publishTheTalk(ref);
+            approveTalk(ref,computeAccessType(req));
+            publishTheTalk(ref,computeAccessType(req));
         }
         ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
         objectNode.put("status","ok");
@@ -79,19 +79,19 @@ public class DataServlet extends HttpServlet {
         resp.getWriter().append(objectNode.toString());
     }
 
-    private void approveTalk(String ref) throws IOException {
+    private void approveTalk(String ref,UserAccessType userAccessType) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonTalk = objectMapper.readTree(emsCommunicator.fetchOneTalk(ref));
         List<String> tags = AcceptorSetter.toCollection((ArrayNode) jsonTalk.get("tags"));
         String lastModified = jsonTalk.get("lastModified").asText();
-        emsCommunicator.update(ref,tags,"approved",lastModified);
+        emsCommunicator.update(ref,tags,"approved",lastModified,userAccessType);
     }
 
-    private void publishTheTalk(String ref) throws IOException {
+    private void publishTheTalk(String ref,UserAccessType userAccessType) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonTalk = objectMapper.readTree(emsCommunicator.fetchOneTalk(ref));
         String lastModified = jsonTalk.get("lastModified").asText();
-        emsCommunicator.publishTalk(ref,lastModified);
+        emsCommunicator.publishTalk(ref,lastModified,userAccessType);
     }
 
 
@@ -105,7 +105,7 @@ public class DataServlet extends HttpServlet {
 
             String lastModified = update.get("lastModified").asText();
 
-            String newTalk = emsCommunicator.assignRoom(ref,roomRef,lastModified);
+            String newTalk = emsCommunicator.assignRoom(ref,roomRef,lastModified,computeAccessType(req));
             resp.getWriter().append(newTalk);
         }
 
@@ -122,7 +122,7 @@ public class DataServlet extends HttpServlet {
 
             String lastModified = update.get("lastModified").asText();
 
-            String newTalk = emsCommunicator.assignSlot(ref, slotRef, lastModified);
+            String newTalk = emsCommunicator.assignSlot(ref, slotRef, lastModified,computeAccessType(req));
             resp.getWriter().append(newTalk);
         }
 
@@ -138,10 +138,14 @@ public class DataServlet extends HttpServlet {
 
             String lastModified = update.requiredString("lastModified");
 
-            String newTalk = emsCommunicator.publishTalk(ref, lastModified);
+            String newTalk = emsCommunicator.publishTalk(ref, lastModified,computeAccessType(req));
             resp.getWriter().append(newTalk);
         }
 
+    }
+
+    private static UserAccessType computeAccessType(HttpServletRequest request) {
+        return UserAccessType.READ_ONLY;
     }
 
     private void acceptTalks(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -151,7 +155,7 @@ public class DataServlet extends HttpServlet {
             JsonNode jsonObject = objectMapper.readTree(inputStr);
 
             ArrayNode talks = (ArrayNode) jsonObject.get("talks");
-            String statusJson = acceptorSetter.accept(talks);
+            String statusJson = acceptorSetter.accept(talks,computeAccessType(req));
             resp.getWriter().append(statusJson);
         }
     }
@@ -161,7 +165,7 @@ public class DataServlet extends HttpServlet {
             String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonObject = objectMapper.readTree(inputStr);
-            String statusJson = acceptorSetter.massUpdate((ObjectNode) jsonObject);
+            String statusJson = acceptorSetter.massUpdate((ObjectNode) jsonObject,computeAccessType(req));
             resp.getWriter().append(statusJson);
 
         }
@@ -177,7 +181,7 @@ public class DataServlet extends HttpServlet {
 
             List<String> taglist = tags.nodeStream().map(org.jsonbuddy.JsonNode::stringValue).collect(Collectors.toList());
 
-            String newTalk = emsCommunicator.update(ref, taglist, state, lastModified);
+            String newTalk = emsCommunicator.update(ref, taglist, state, lastModified,computeAccessType(req));
             resp.getWriter().append(newTalk);
         }
 
@@ -244,4 +248,12 @@ public class DataServlet extends HttpServlet {
         this.userFeedbackCommunicator = userFeedbackCommunicator;
     }
 
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            super.service(req, resp);
+        } catch (NoUserAceessException ex) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN,"User do not have write access");
+        }
+    }
 }
