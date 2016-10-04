@@ -560,6 +560,7 @@ public class EmsCommunicator {
 
         readRoom(item, jsonTalk);
         readSlot(item, jsonTalk);
+        readPermalink(item,jsonTalk);
 
         String speakerLink = item.linkByRel("speaker collection").get().getHref().toString();
 
@@ -607,6 +608,15 @@ public class EmsCommunicator {
             room.put("name", roomName);
             room.put("ref", Base64Util.encode(ref));
             jsonTalk.put("room", room);
+        }
+    }
+
+    private void readPermalink(Item item,JsonObject jsonTalk) {
+        Optional<Link> alternate = item.linkByRel("alternate");
+        if (alternate.isSome()) {
+            String link = alternate.get().getHref().toString();
+            String permalink = link.substring(link.lastIndexOf("/")+1);
+            jsonTalk.put("permalink",permalink);
         }
     }
 
