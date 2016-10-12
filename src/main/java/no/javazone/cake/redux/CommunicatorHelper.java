@@ -26,7 +26,7 @@ public final class CommunicatorHelper {
 
     public static InputStream openStream(URLConnection connection) throws IOException {
         InputStream inputStream = connection.getInputStream();
-        if (false) { // flip for debug :)
+        if (true) { // flip for debug :)
             return inputStream;
         }
         String stream = toString(inputStream);
