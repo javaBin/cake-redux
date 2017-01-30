@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.javazone.cake.redux.comments.FeedbackService;
+import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonNull;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 public class DataServlet extends HttpServlet {
     private EmsCommunicator emsCommunicator;
+    private SleepingpillCommunicator sleepingpillCommunicator;
     private AcceptorSetter acceptorSetter;
     private UserFeedbackCommunicator userFeedbackCommunicator;
 
@@ -131,7 +133,7 @@ public class DataServlet extends HttpServlet {
 
     private void publishTalk(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            org.jsonbuddy.JsonNode update = JsonParser.parse(inputStream);
+            JsonObject update = JsonParser.parseToObject(inputStream);
 
 
             String ref = update.requiredString("ref");
@@ -201,7 +203,7 @@ public class DataServlet extends HttpServlet {
             appendUserFeedback(oneTalkAsJson, userFeedbackCommunicator.feedback(encTalk));
             oneTalkAsJson.toJson(writer);
         } else if ("/events".equals(pathInfo)) {
-            writer.append(emsCommunicator.allEvents());
+            writer.append(sleepingpillCommunicator.allEvents());
         } else if ("/roomsSlots".equals(pathInfo)) {
             String encEvent = request.getParameter("eventId");
             writer.append(emsCommunicator.allRoomsAndSlots(encEvent));
@@ -236,6 +238,7 @@ public class DataServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         emsCommunicator = new EmsCommunicator();
+        sleepingpillCommunicator = new SleepingpillCommunicator();
         userFeedbackCommunicator = new UserFeedbackCommunicator();
         acceptorSetter = new AcceptorSetter(emsCommunicator);
     }

@@ -498,7 +498,7 @@ public class EmsCommunicator {
             readRoom(item, jsonTalk);
             readSlot(item, jsonTalk);
         }
-        allTalks = JsonArray.fromNodeStream(allTalks.nodeStream()
+        allTalks = JsonArray.fromNodeStream(allTalks.objectStream()
                 .sorted((n1,n2) -> n1.requiredString("title").compareTo(n2.requiredString("title"))));
 
         return allTalks.toJson();

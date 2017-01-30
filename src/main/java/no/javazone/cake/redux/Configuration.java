@@ -159,4 +159,8 @@ public class Configuration {
     public static long emailSleepTime() {
         return Long.parseLong(readConf("emailSleepTime","5000"));
     }
+
+    public static String sleepingPillBaseLocation() {
+        return readConf("sleepingPillBaseLocation","http://localhost:8082");
+    }
 }
