@@ -7,15 +7,13 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.hamnaberg.funclite.Optional;
 import net.hamnaberg.json.*;
+import net.hamnaberg.json.Collection;
 import net.hamnaberg.json.parser.CollectionParser;
 import org.jsonbuddy.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static no.javazone.cake.redux.CommunicatorHelper.openConnection;
 import static no.javazone.cake.redux.CommunicatorHelper.openStream;
@@ -499,7 +497,7 @@ public class EmsCommunicator {
             readSlot(item, jsonTalk);
         }
         allTalks = JsonArray.fromNodeStream(allTalks.objectStream()
-                .sorted((n1,n2) -> n1.requiredString("title").compareTo(n2.requiredString("title"))));
+                .sorted(Comparator.comparing(n -> n.requiredString("title"))));
 
         return allTalks.toJson();
     }
