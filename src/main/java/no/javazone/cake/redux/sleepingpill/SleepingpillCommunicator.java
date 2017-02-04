@@ -1,10 +1,7 @@
 package no.javazone.cake.redux.sleepingpill;
 
 import no.javazone.cake.redux.Configuration;
-import org.jsonbuddy.JsonArray;
-import org.jsonbuddy.JsonFactory;
-import org.jsonbuddy.JsonNode;
-import org.jsonbuddy.JsonObject;
+import org.jsonbuddy.*;
 import org.jsonbuddy.parse.JsonParser;
 
 import java.io.IOException;
@@ -64,13 +61,13 @@ public class SleepingpillCommunicator {
         talkob.put("title",readValueFromProp(jsonObject,"title"));
         talkob.put("format",readValueFromProp(jsonObject,"format"));
         talkob.put("lang",readValueFromProp(jsonObject,"language"));
-        talkob.put("keywords",readValueFromProp(jsonObject,"keywords"));
+        talkob.put("keywords",readValueFromProp(jsonObject,"keywords",JsonFactory.jsonArray()));
         talkob.put("audience",readValueFromProp(jsonObject,"intendedAudience"));
         talkob.put("equipment",readValueFromProp(jsonObject,"equipment"));
         talkob.put("outline",readValueFromProp(jsonObject,"outline"));
         talkob.put("summary","");
         talkob.put("level","beginner");
-        talkob.put("tags",readValueFromProp(jsonObject,"tags"));
+        talkob.put("tags",readValueFromProp(jsonObject,"tags",JsonFactory.jsonArray()));
         talkob.put("published",new Boolean(Arrays.asList("APPROVED","HISTORIC").contains(jsonObject.requiredString("status"))).toString());
         talkob.put("body",readValueFromProp(jsonObject,"abstract"));
         talkob.put("ref",jsonObject.requiredString("id"));
@@ -79,9 +76,10 @@ public class SleepingpillCommunicator {
         talkob.put("speakers",JsonArray.fromNodeStream(
             jsonObject.requiredArray("speakers").objectStream()
                 .map(ob -> JsonFactory.jsonObject()
-                                .put("name",ob.requiredString("name"))
-                                .put("email",ob.requiredString("email"))
+                                .put("name",ob.stringValue("name").orElse(""))
+                                .put("email",ob.stringValue("email").orElse(""))
                                 .put("bio",readValueFromProp(ob,"bio"))
+                                .put("zip-code",readValueFromProp(ob,"zip-code"))
                         )));
 
         return talkob;
@@ -90,7 +88,14 @@ public class SleepingpillCommunicator {
     }
 
     private static JsonNode readValueFromProp(JsonObject talkObj,String key) {
-        return talkObj.requiredObject("data").requiredObject(key).value("value").orElseThrow(() -> new RuntimeException("Ubknown property " + key));
+        return readValueFromProp(talkObj,key,new JsonString(""));
+    }
+
+    private static JsonNode readValueFromProp(JsonObject talkObj,String key,JsonNode defaultValue) {
+        return talkObj.requiredObject("data")
+                .objectValue(key).orElse(JsonFactory.jsonObject().put("value",defaultValue))
+                .value("value").orElseThrow(() -> new RuntimeException("Ubknown property " + key));
+
     }
 
 
