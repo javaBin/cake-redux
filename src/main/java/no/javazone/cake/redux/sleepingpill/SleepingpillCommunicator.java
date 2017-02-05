@@ -1,5 +1,6 @@
 package no.javazone.cake.redux.sleepingpill;
 
+import no.javazone.cake.redux.Base64Util;
 import no.javazone.cake.redux.Configuration;
 import org.jsonbuddy.*;
 import org.jsonbuddy.parse.JsonParser;
@@ -114,7 +115,14 @@ public class SleepingpillCommunicator {
     private URLConnection openConnection(String urlpath) {
         try {
             URL url = new URL(urlpath);
-            return url.openConnection();
+            URLConnection urlConnection = url.openConnection();
+            String sleepingpillUser = Configuration.sleepingpillUser();
+            if (sleepingpillUser != null) {
+                String authString = sleepingpillUser + ":" + Configuration.sleepingpillPassword();
+                String authStringEnc = Base64Util.encode(authString);
+                urlConnection.setRequestProperty("Authorization", "Basic " + authStringEnc);
+            }
+            return urlConnection;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

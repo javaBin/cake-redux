@@ -163,4 +163,12 @@ public class Configuration {
     public static String sleepingPillBaseLocation() {
         return readConf("sleepingPillBaseLocation","http://localhost:8082");
     }
+
+    public static String sleepingpillUser() {
+        return readConf("sleepingpillUser",null);
+    }
+
+    public static String sleepingpillPassword() {
+        return readConf("sleepingpillPassword",null);
+    }
 }
