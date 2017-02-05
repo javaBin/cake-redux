@@ -52,18 +52,56 @@ public class SleepingpillCommunicator {
     }
 
     public JsonObject oneTalkAsJson(String talkid) {
-        return oneTalkStripped(talkid);
+        JsonObject talk = oneTalkStripped(talkid);
+        JsonArray allConferences = parseJsonFromConnection(openConnection(Configuration.sleepingPillBaseLocation() + "/data/conference")).requiredArray("conferences");
+        talk.requiredArray("speakers").objectStream().forEach(speaker -> {
+            String url = Configuration.sleepingPillBaseLocation() + "/data/submitter/" + speaker.requiredString("email") + "/session";
+            JsonObject speakerTalks = parseJsonFromConnection(openConnection(url));
+            JsonArray otherTalks = JsonArray.fromNodeStream(
+                    speakerTalks.requiredArray("sessions").objectStream().map(obj -> buildSimularTalk(obj,allConferences))
+            );
+            speaker.put("spOtherTalks",otherTalks);
+        });
+
+        return talk;
+    }
+
+    private static JsonObject buildSimularTalk(JsonObject obj,JsonArray allConferences) {
+        String href = Configuration.cakeLocation() + "secured/#/showTalk/" + obj.requiredString("sessionId");
+        String confid = obj.requiredString("conferenceId");
+        String confname = allConferences.objectStream()
+                .filter(ob -> ob.requiredString("id").equals(confid))
+                .findAny()
+                .map(ob -> ob.requiredString("name"))
+                .orElse("UNKNOWN");
+        String title = obj.requiredObject("data").objectValue("title").orElse(JsonFactory.jsonObject().put("value", "xxx")).requiredString("value");
+        JsonArray tags = obj.requiredObject("data").objectValue("tags").orElse(JsonFactory.jsonObject().put("value", JsonFactory.jsonArray())).requiredArray("value");
+        String status = obj.requiredString("status");
+
+        return JsonFactory.jsonObject()
+                .put("sessionId", obj.requiredString("sessionId"))
+                .put("href", href)
+                .put("title", title)
+                .put("conference",confname)
+                .put("tags",tags)
+                .put("status",status);
+
     }
 
     private JsonObject oneTalkStripped(String talkid) {
         String talkurl = Configuration.sleepingPillBaseLocation() + "/data/session/" + talkid;
         URLConnection urlConnection = openConnection(talkurl);
+        return talkObj(parseJsonFromConnection(urlConnection));
+    }
+
+    private JsonObject parseJsonFromConnection(URLConnection urlConnection) {
+        JsonObject jsonObject;
         try (InputStream inputStream = urlConnection.getInputStream()) {
-            JsonObject jsonObject = JsonParser.parseToObject(inputStream);
-            return talkObj(jsonObject);
+            jsonObject = JsonParser.parseToObject(inputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return jsonObject;
     }
 
     public String fetchOneTalk(String talkid) {
