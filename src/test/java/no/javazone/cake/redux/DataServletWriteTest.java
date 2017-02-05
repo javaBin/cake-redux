@@ -1,5 +1,6 @@
 package no.javazone.cake.redux;
 
+import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,12 +20,15 @@ public class DataServletWriteTest {
     private final HttpServletResponse resp = mock(HttpServletResponse.class);
     private final StringWriter jsonResult = new StringWriter();
     private final EmsCommunicator emsCommunicator = mock(EmsCommunicator.class);
+    private final SleepingpillCommunicator sleepingpillCommunicator = mock(SleepingpillCommunicator.class);
+
 
     @Before
     public void setUp() throws Exception {
         when(req.getMethod()).thenReturn("POST");
         when(resp.getWriter()).thenReturn(new PrintWriter(jsonResult));
         servlet.setEmsCommunicator(emsCommunicator);
+        servlet.setSleepingpillCommunicator(sleepingpillCommunicator);
     }
 
     @Test
@@ -35,7 +39,7 @@ public class DataServletWriteTest {
 
         servlet.service(req,resp);
 
-        verify(emsCommunicator).update("abra", Arrays.asList("test"),"pending","Tue, 04 Feb 2014 23:55:06 GMT",UserAccessType.READ_ONLY);
+        verify(sleepingpillCommunicator).update("abra", Arrays.asList("test"),"pending","Tue, 04 Feb 2014 23:55:06 GMT",UserAccessType.READ_ONLY);
 
     }
 

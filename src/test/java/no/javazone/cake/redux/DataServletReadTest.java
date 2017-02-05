@@ -1,5 +1,6 @@
 package no.javazone.cake.redux;
 
+import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
 import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonNode;
 import org.jsonbuddy.JsonObject;
@@ -24,6 +25,7 @@ public class DataServletReadTest {
     private final HttpServletResponse resp = mock(HttpServletResponse.class);
     private final StringWriter jsonResult = new StringWriter();
     private final EmsCommunicator emsCommunicator = mock(EmsCommunicator.class);
+    private final SleepingpillCommunicator sleepingpillCommunicator = mock(SleepingpillCommunicator.class);
     private final UserFeedbackCommunicator userFeedbackCommunicator = mock(UserFeedbackCommunicator.class);
 
     @Before
@@ -32,17 +34,18 @@ public class DataServletReadTest {
         when(resp.getWriter()).thenReturn(new PrintWriter(jsonResult));
         servlet.setEmsCommunicator(emsCommunicator);
         servlet.setUserFeedbackCommunicator(userFeedbackCommunicator);
+        servlet.setSleepingpillCommunicator(sleepingpillCommunicator);
     }
 
     @Test
     public void shouldGiveListOfAllEvents() throws Exception {
         when(req.getPathInfo()).thenReturn("/events");
-        when(emsCommunicator.allEvents()).thenReturn("This is a json");
+        when(sleepingpillCommunicator.allEvents()).thenReturn("This is a json");
 
         servlet.service(req, resp);
 
         verify(resp).setContentType("application/json;charset=UTF-8");
-        verify(emsCommunicator).allEvents();
+        verify(sleepingpillCommunicator).allEvents();
 
         assertThat(jsonResult.toString()).isEqualTo("This is a json");
     }
@@ -51,11 +54,11 @@ public class DataServletReadTest {
     public void shouldReadSlotList() throws Exception {
         when(req.getPathInfo()).thenReturn("/talks");
         when(req.getParameter("eventId")).thenReturn("xxx");
-        when(emsCommunicator.talkShortVersion(anyString())).thenReturn("This is slot list json");
+        when(sleepingpillCommunicator.talkShortVersion(anyString())).thenReturn("This is slot list json");
 
         servlet.service(req,resp);
 
-        verify(emsCommunicator).talkShortVersion("xxx");
+        verify(sleepingpillCommunicator).talkShortVersion("xxx");
         assertThat(jsonResult.toString()).isEqualTo("This is slot list json");
     }
 
@@ -65,11 +68,11 @@ public class DataServletReadTest {
         when(req.getPathInfo()).thenReturn("/atalk");
         when(req.getParameter("talkId")).thenReturn("zzz");
         JsonObject val = JsonFactory.jsonObject();
-        when(emsCommunicator.oneTalkAsJson(anyString())).thenReturn(val);
+        when(sleepingpillCommunicator.oneTalkAsJson(anyString())).thenReturn(val);
 
         servlet.service(req,resp);
 
-        verify(emsCommunicator).oneTalkAsJson("zzz");
+        verify(sleepingpillCommunicator).oneTalkAsJson("zzz");
         JsonNode parsed = JsonParser.parse(jsonResult.toString());
         assertThat(parsed).isNotNull();
     }

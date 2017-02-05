@@ -267,4 +267,9 @@ public class DataServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN,"User do not have write access");
         }
     }
+
+    public DataServlet setSleepingpillCommunicator(SleepingpillCommunicator sleepingpillCommunicator) {
+        this.sleepingpillCommunicator = sleepingpillCommunicator;
+        return this;
+    }
 }
