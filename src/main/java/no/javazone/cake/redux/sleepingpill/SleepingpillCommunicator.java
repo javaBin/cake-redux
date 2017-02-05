@@ -2,14 +2,23 @@ package no.javazone.cake.redux.sleepingpill;
 
 import no.javazone.cake.redux.Base64Util;
 import no.javazone.cake.redux.Configuration;
+import no.javazone.cake.redux.NoUserAceessException;
+import no.javazone.cake.redux.UserAccessType;
 import org.jsonbuddy.*;
 import org.jsonbuddy.parse.JsonParser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.List;
+
+import static org.jsonbuddy.JsonFactory.jsonObject;
 
 public class SleepingpillCommunicator {
 
@@ -43,6 +52,10 @@ public class SleepingpillCommunicator {
     }
 
     public JsonObject oneTalkAsJson(String talkid) {
+        return oneTalkStripped(talkid);
+    }
+
+    private JsonObject oneTalkStripped(String talkid) {
         String talkurl = Configuration.sleepingPillBaseLocation() + "/data/session/" + talkid;
         URLConnection urlConnection = openConnection(talkurl);
         try (InputStream inputStream = urlConnection.getInputStream()) {
@@ -112,10 +125,10 @@ public class SleepingpillCommunicator {
         }
     }
 
-    private URLConnection openConnection(String urlpath) {
+    private HttpURLConnection openConnection(String urlpath) {
         try {
             URL url = new URL(urlpath);
-            URLConnection urlConnection = url.openConnection();
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             String sleepingpillUser = Configuration.sleepingpillUser();
             if (sleepingpillUser != null) {
                 String authString = sleepingpillUser + ":" + Configuration.sleepingpillPassword();
@@ -127,4 +140,61 @@ public class SleepingpillCommunicator {
             throw new RuntimeException(e);
         }
     }
+
+    private void checkWriteAccess(UserAccessType userAccessType) {
+        if (Configuration.noAuthMode()) {
+            return;
+        }
+        switch (userAccessType) {
+            case FULL:
+            case OPENSERVLET:
+                return;
+            default:
+                throw new NoUserAceessException();
+        }
+    }
+
+    public String update(String ref, List<String> taglist, String state, String lastModified, UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
+        JsonObject jsonObject = oneTalkStripped(ref);
+        JsonArray currenttags = jsonObject.requiredArray("tags");
+        String currentstate = jsonObject.requiredString("state");
+
+        JsonObject input = JsonFactory.jsonObject();
+        JsonArray newtags = JsonArray.fromStringList(taglist);
+
+        if (!newtags.equals(currenttags)) {
+            input.put("tags", jsonObject().put("value", newtags).put("privateData", true));
+        }
+        if (!currentstate.equals(state)) {
+            input.put("status", jsonObject().put("value", state).put("privateData", false));
+        }
+
+        if (input.isEmpty()) {
+            return fetchOneTalk(ref);
+
+        }
+
+        String url = Configuration.sleepingPillBaseLocation() + "/data/session/" + ref;
+        JsonObject payload = jsonObject().put("data", input);
+
+        HttpURLConnection conn = openConnection(url);
+
+        try {
+            conn.setRequestMethod("PUT");
+            conn.setDoOutput(true);
+            try (PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(),"utf-8"))) {
+                payload.toJson(printWriter);
+            }
+            try (InputStream is = conn.getInputStream()) {
+                JsonParser.parseToObject(is);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return fetchOneTalk(ref);
+    }
+
+
 }
