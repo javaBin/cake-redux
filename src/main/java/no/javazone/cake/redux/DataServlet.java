@@ -208,7 +208,11 @@ public class DataServlet extends HttpServlet {
             writer.append(sleepingpillCommunicator.allEvents());
         } else if ("/roomsSlots".equals(pathInfo)) {
             String encEvent = request.getParameter("eventId");
-            writer.append(emsCommunicator.allRoomsAndSlots(encEvent));
+            JsonFactory.jsonObject()
+                    .put("rooms",JsonFactory.jsonArray())
+                    .put("slots",JsonFactory.jsonArray())
+                    .toJson(writer);
+            //writer.append(emsCommunicator.allRoomsAndSlots(encEvent));
         }
     }
 
