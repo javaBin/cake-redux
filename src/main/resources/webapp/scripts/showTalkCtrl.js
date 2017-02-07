@@ -22,7 +22,7 @@ angular.module('cakeReduxModule')
                 }
                 var talkSpeakers = $scope.aTalk.speakers;
 
-                talkManagerService.talkList($scope.aTalk.eventSlug);
+                //talkManagerService.talkList($scope.aTalk.eventSlug);
                 if ($scope.aTalk) {
                     document.title = $scope.aTalk.title;
                     roomSlotFactory.roomsSlotsForEvent($scope.aTalk.eventId).then(function(rs) {

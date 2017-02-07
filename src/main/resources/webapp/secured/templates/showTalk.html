@@ -19,8 +19,16 @@
         <div class="col-md-10 preserve-newlines">{{aTalk.outline}}</div>
     </div>
     <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Info to program committee</strong></div>
+        <div class="col-md-10 preserve-newlines">{{aTalk.infoToProgramCommittee}}</div>
+    </div>
+    <div class="row cake-row">
         <div class="col-md-1 cake-margin"><strong>Keywords</strong></div>
         <div class="col-md-10">{{joinArr(aTalk.keywords)}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Suggested keywords</strong></div>
+        <div class="col-md-10">{{aTalk.suggestedKeywords}}</div>
     </div>
     <div class="row cake-row">
         <div class="col-md-1 cake-margin"><strong>Expected audience</strong></div>
@@ -41,6 +49,10 @@
     <div class="row cake-row">
         <div class="col-md-1 cake-margin"><strong>Format</strong></div>
         <div class="col-md-10">{{aTalk.format}}</div>
+    </div>
+    <div class="row cake-row">
+        <div class="col-md-1 cake-margin"><strong>Length</strong></div>
+        <div class="col-md-10">{{aTalk.length}}</div>
     </div>
     <div class="row cake-row">
         <div class="col-md-1 cake-margin"><strong>Level</strong></div>
