@@ -114,11 +114,14 @@ public class SleepingpillCommunicator {
         talkob.put("format",readValueFromProp(jsonObject,"format"));
         talkob.put("lang",readValueFromProp(jsonObject,"language"));
         talkob.put("keywords",readValueFromProp(jsonObject,"keywords",JsonFactory.jsonArray()));
+        talkob.put("suggestedKeywords",readValueFromProp(jsonObject,"suggestedKeywords"));
         talkob.put("audience",readValueFromProp(jsonObject,"intendedAudience"));
         talkob.put("equipment",readValueFromProp(jsonObject,"equipment"));
         talkob.put("outline",readValueFromProp(jsonObject,"outline"));
+        talkob.put("infoToProgramCommittee",readValueFromProp(jsonObject,"infoToProgramCommittee"));
+        talkob.put("length",readValueFromProp(jsonObject,"length"));
         talkob.put("summary","");
-        talkob.put("level","beginner");
+        talkob.put("level",readValueFromProp(jsonObject,"level"));
         talkob.put("tags",readValueFromProp(jsonObject,"tags",JsonFactory.jsonArray()));
         talkob.put("published",new Boolean(Arrays.asList("APPROVED","HISTORIC").contains(jsonObject.requiredString("status"))).toString());
         talkob.put("body",readValueFromProp(jsonObject,"abstract"));
@@ -132,6 +135,7 @@ public class SleepingpillCommunicator {
                                 .put("email",ob.stringValue("email").orElse(""))
                                 .put("bio",readValueFromProp(ob,"bio"))
                                 .put("zip-code",readValueFromProp(ob,"zip-code"))
+                                .put("twitter",readValueFromProp(ob,"twitter"))
                         )));
 
         return talkob;
