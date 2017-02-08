@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
@@ -45,7 +44,7 @@ public class SleepingpillCommunicator {
 
 
     public String talkShortVersion(String conferenceid) {
-        JsonArray result = JsonArray.fromNodeStream(allTalksFromConference(conferenceid)
+        JsonArray result = JsonArray.fromNodeStream(allSubmittedTalksFromConference(conferenceid)
                 .objectStream()
                 .map(SleepingpillCommunicator::talkObj));
         return result.toJson();
@@ -155,16 +154,20 @@ public class SleepingpillCommunicator {
     }
 
 
-    private JsonArray allTalksFromConference(String conferenceid) {
+    private JsonArray allSubmittedTalksFromConference(String conferenceid) {
         String url = Configuration.sleepingPillBaseLocation() + "/data/conference/" +conferenceid + "/session";
         URLConnection urlConnection = openConnection(url);
+        JsonObject jsonObject;
         try (InputStream inputStream = urlConnection.getInputStream()) {
-            JsonObject jsonObject = JsonParser.parseToObject(inputStream);
-            JsonArray conferences = jsonObject.requiredArray("sessions");
-            return conferences;
+            jsonObject = JsonParser.parseToObject(inputStream);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        JsonArray conferences = jsonObject.requiredArray("sessions");
+        JsonArray withoutDraft = JsonArray.fromNodeStream(conferences.objectStream().filter(ob -> !"DRAFT".equals(ob.requiredString("status"))));
+
+        return withoutDraft;
     }
 
     private HttpURLConnection openConnection(String urlpath) {
