@@ -17,12 +17,11 @@
 
         var self = this;
 
-        /*
         this.talkList = function (eventSlug) {
             return self.eventMap.then(function(eventList) {
                 return _.findWhere(eventList,{slug: eventSlug}).talkList();
             })
-        }*/
+        }
     }
 
     angular.module('cakeReduxModule')
