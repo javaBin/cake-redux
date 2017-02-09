@@ -152,11 +152,13 @@ public class DataServlet extends HttpServlet {
 
     private void acceptTalks(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
+            JsonObject obj = JsonParser.parseToObject(inputStream);
+            JsonArray talks = obj.requiredArray("talks");
             String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonObject = objectMapper.readTree(inputStr);
 
-            ArrayNode talks = (ArrayNode) jsonObject.get("talks");
+            //ArrayNode talks = (ArrayNode) jsonObject.get("talks");
             String statusJson = acceptorSetter.accept(talks,computeAccessType(req));
             resp.getWriter().append(statusJson);
         }
@@ -164,10 +166,8 @@ public class DataServlet extends HttpServlet {
 
     private void massUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = CommunicatorHelper.toString(inputStream);
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonObject = objectMapper.readTree(inputStr);
-            String statusJson = acceptorSetter.massUpdate((ObjectNode) jsonObject,computeAccessType(req));
+            JsonObject input = JsonParser.parseToObject(inputStream);
+            String statusJson = acceptorSetter.massUpdate(input,computeAccessType(req));
             resp.getWriter().append(statusJson);
 
         }
@@ -248,7 +248,7 @@ public class DataServlet extends HttpServlet {
         emsCommunicator = new EmsCommunicator();
         sleepingpillCommunicator = new SleepingpillCommunicator();
         userFeedbackCommunicator = new UserFeedbackCommunicator();
-        acceptorSetter = new AcceptorSetter(emsCommunicator);
+        acceptorSetter = new AcceptorSetter(sleepingpillCommunicator);
     }
 
     public void setEmsCommunicator(EmsCommunicator emsCommunicator) {

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.javazone.cake.redux.mail.MailSenderService;
 import no.javazone.cake.redux.mail.SmtpMailSender;
+import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.jsonbuddy.JsonArray;
@@ -21,14 +22,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class AcceptorSetter {
-    private EmsCommunicator emsCommunicator;
+    //private EmsCommunicator emsCommunicator;
+    private SleepingpillCommunicator sleepingpillCommunicator;
 
-
-    public AcceptorSetter(EmsCommunicator emsCommunicator) {
-        this.emsCommunicator = emsCommunicator;
+    public AcceptorSetter(SleepingpillCommunicator sleepingpillCommunicator) {
+        this.sleepingpillCommunicator = sleepingpillCommunicator;
+        //this.emsCommunicator = emsCommunicator;
     }
 
-    public String accept(ArrayNode talks,UserAccessType userAccessType) {
+    public String accept(JsonArray talks,UserAccessType userAccessType) {
         String template = loadTemplate();
         String tagToAdd = "accepted";
         String tagExistsErrormessage = "Talk is already accepted";
@@ -37,33 +39,33 @@ public class AcceptorSetter {
         return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType);
     }
 
-    public String massUpdate(ObjectNode jsonObject,UserAccessType userAccessType) {
-        ArrayNode talks = (ArrayNode) jsonObject.get("talks");
+    public String massUpdate(JsonObject jsonObject,UserAccessType userAccessType) {
+        JsonArray talks = jsonObject.requiredArray("talks");
 
         String template = null;
         String subjectTemplate = null;
-        if ("true".equals(jsonObject.get("doSendMail").asText())) {
-            template = jsonObject.get("message").asText();
-            subjectTemplate = jsonObject.get("subject").asText();
+        if ("true".equals(jsonObject.requiredString("doSendMail"))) {
+            template = jsonObject.requiredString("message");
+            subjectTemplate = jsonObject.requiredString("subject");
         };
 
         String tagToAdd = null;
-        if ("true".equals(jsonObject.get("doTag").asText())) {
-            tagToAdd = jsonObject.get("newtag").asText();
+        if ("true".equals(jsonObject.requiredString("doTag"))) {
+            tagToAdd = jsonObject.requiredString("newtag");
         }
         String tagExistsErrormessage = "Tag already exsists";
 
         return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType);
     }
 
-    private String doUpdates(ArrayNode talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage,UserAccessType userAccessType) {
+    private String doUpdates(JsonArray talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage,UserAccessType userAccessType) {
         List<JsonNode> statusAllTalks = new ArrayList<>();
         for (int i=0;i<talks.size();i++) {
             ObjectNode accept = JsonNodeFactory.instance.objectNode();
             statusAllTalks.add(accept);
             try {
-                String encodedTalkRef = talks.get(i).get("ref").asText();
-                JsonObject jsonTalk = emsCommunicator.oneTalkAsJson(encodedTalkRef);
+                String encodedTalkRef = talks.get(i,JsonObject.class).requiredString("ref");
+                JsonObject jsonTalk = sleepingpillCommunicator.oneTalkStripped(encodedTalkRef);
 
                 accept.put("title",jsonTalk.requiredString("title"));
 
@@ -82,7 +84,7 @@ public class AcceptorSetter {
                 if (tagToAdd != null) {
                     tags.add(tagToAdd);
                     String lastModified = jsonTalk.requiredString("lastModified");
-                    emsCommunicator.updateTags(encodedTalkRef, tags, lastModified,userAccessType);
+                    sleepingpillCommunicator.updateTags(encodedTalkRef, tags, userAccessType);
                 }
                 accept.put("status","ok");
                 accept.put("message","ok");

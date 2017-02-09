@@ -87,7 +87,7 @@ public class SleepingpillCommunicator {
 
     }
 
-    private JsonObject oneTalkStripped(String talkid) {
+    public JsonObject oneTalkStripped(String talkid) {
         String talkurl = Configuration.sleepingPillBaseLocation() + "/data/session/" + talkid;
         URLConnection urlConnection = openConnection(talkurl);
         return talkObj(parseJsonFromConnection(urlConnection));
@@ -160,7 +160,6 @@ public class SleepingpillCommunicator {
         JsonObject jsonObject;
         try (InputStream inputStream = urlConnection.getInputStream()) {
             jsonObject = JsonParser.parseToObject(inputStream);
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -199,6 +198,13 @@ public class SleepingpillCommunicator {
         }
     }
 
+    public void updateTags(String ref,List<String> tags,UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
+        JsonObject input = JsonFactory.jsonObject()
+                .put("tags", jsonObject().put("value", JsonArray.fromStringList(tags)).put("privateData", true));
+        sendTalkUpdate(ref,input);
+    }
+
     public String update(String ref, List<String> taglist, String state, String lastModified, UserAccessType userAccessType) {
         checkWriteAccess(userAccessType);
         JsonObject jsonObject = oneTalkStripped(ref);
@@ -220,6 +226,11 @@ public class SleepingpillCommunicator {
 
         }
 
+        sendTalkUpdate(ref, input);
+        return fetchOneTalk(ref);
+    }
+
+    private void sendTalkUpdate(String ref, JsonObject input) {
         String url = Configuration.sleepingPillBaseLocation() + "/data/session/" + ref;
         JsonObject payload = jsonObject().put("data", input);
 
@@ -238,7 +249,6 @@ public class SleepingpillCommunicator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return fetchOneTalk(ref);
     }
 
 
