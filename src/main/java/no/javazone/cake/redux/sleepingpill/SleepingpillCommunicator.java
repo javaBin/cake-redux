@@ -202,7 +202,7 @@ public class SleepingpillCommunicator {
         checkWriteAccess(userAccessType);
         JsonObject input = JsonFactory.jsonObject()
                 .put("tags", jsonObject().put("value", JsonArray.fromStringList(tags)).put("privateData", true));
-        sendTalkUpdate(ref,input);
+        sendTalkUpdate(ref,jsonObject().put("data",input));
     }
 
     public String update(String ref, List<String> taglist, String state, String lastModified, UserAccessType userAccessType) {
@@ -226,13 +226,14 @@ public class SleepingpillCommunicator {
 
         }
 
-        sendTalkUpdate(ref, input);
+        JsonObject payload = jsonObject().put("data", input);
+        sendTalkUpdate(ref, payload);
         return fetchOneTalk(ref);
     }
 
-    private void sendTalkUpdate(String ref, JsonObject input) {
+    public void sendTalkUpdate(String ref, JsonObject payload) {
         String url = Configuration.sleepingPillBaseLocation() + "/data/session/" + ref;
-        JsonObject payload = jsonObject().put("data", input);
+
 
         HttpURLConnection conn = openConnection(url);
 
@@ -252,4 +253,9 @@ public class SleepingpillCommunicator {
     }
 
 
+    public void approveTalk(String ref, UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
+        JsonObject payload = jsonObject().put("status", "APPROVED");
+        sendTalkUpdate(ref,payload);
+    }
 }

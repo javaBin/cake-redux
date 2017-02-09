@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DataServlet extends HttpServlet {
-    private EmsCommunicator emsCommunicator;
     private SleepingpillCommunicator sleepingpillCommunicator;
     private AcceptorSetter acceptorSetter;
     private UserFeedbackCommunicator userFeedbackCommunicator;
@@ -35,7 +34,7 @@ public class DataServlet extends HttpServlet {
         if ("/editTalk".equals(pathInfo)) {
             updateTalk(req, resp);
         } else if ("/publishTalk".equals(pathInfo)) {
-            publishTalk(req, resp);
+            throw new NotImplementedException();
         } else if ("/acceptTalks".equals(pathInfo)) {
             acceptTalks(req,resp);
         } else if ("/massUpdate".equals(pathInfo)) {
@@ -73,7 +72,6 @@ public class DataServlet extends HttpServlet {
             JsonNode update = objectMapper.readTree(inputStr);
             String ref = update.get("ref").asText();
             approveTalk(ref,computeAccessType(req));
-            publishTheTalk(ref,computeAccessType(req));
         }
         ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
         objectNode.put("status","ok");
@@ -82,22 +80,14 @@ public class DataServlet extends HttpServlet {
     }
 
     private void approveTalk(String ref,UserAccessType userAccessType) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonTalk = objectMapper.readTree(emsCommunicator.fetchOneTalk(ref));
-        List<String> tags = AcceptorSetter.toCollection((ArrayNode) jsonTalk.get("tags"));
-        String lastModified = jsonTalk.get("lastModified").asText();
-        emsCommunicator.update(ref,tags,"approved",lastModified,userAccessType);
+        sleepingpillCommunicator.approveTalk(ref,userAccessType);
     }
 
-    private void publishTheTalk(String ref,UserAccessType userAccessType) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonTalk = objectMapper.readTree(emsCommunicator.fetchOneTalk(ref));
-        String lastModified = jsonTalk.get("lastModified").asText();
-        emsCommunicator.publishTalk(ref,lastModified,userAccessType);
-    }
 
 
     private void assignRoom(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        throw new NotImplementedException();
+        /*
         try (InputStream inputStream = req.getInputStream()) {
             String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
@@ -107,13 +97,15 @@ public class DataServlet extends HttpServlet {
 
             String lastModified = update.get("lastModified").asText();
 
-            String newTalk = emsCommunicator.assignRoom(ref,roomRef,lastModified,computeAccessType(req));
-            resp.getWriter().append(newTalk);
-        }
+            //String newTalk = xemsCommunicator.assignRoom(ref,roomRef,lastModified,computeAccessType(req));
+            //resp.getWriter().append(newTalk);
+        }*/
 
     }
 
     private void assignSlot(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        throw new NotImplementedException();
+        /*
         try (InputStream inputStream = req.getInputStream()) {
             String inputStr = CommunicatorHelper.toString(inputStream);
             ObjectMapper objectMapper = new ObjectMapper();
@@ -126,25 +118,12 @@ public class DataServlet extends HttpServlet {
 
             String newTalk = emsCommunicator.assignSlot(ref, slotRef, lastModified,computeAccessType(req));
             resp.getWriter().append(newTalk);
-        }
+        }*/
 
     }
 
 
-    private void publishTalk(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try (InputStream inputStream = req.getInputStream()) {
-            JsonObject update = JsonParser.parseToObject(inputStream);
 
-
-            String ref = update.requiredString("ref");
-
-            String lastModified = update.requiredString("lastModified");
-
-            String newTalk = emsCommunicator.publishTalk(ref, lastModified,computeAccessType(req));
-            resp.getWriter().append(newTalk);
-        }
-
-    }
 
     private static UserAccessType computeAccessType(HttpServletRequest request) {
         return UserAccessType.READ_ONLY;
@@ -245,14 +224,13 @@ public class DataServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        emsCommunicator = new EmsCommunicator();
         sleepingpillCommunicator = new SleepingpillCommunicator();
         userFeedbackCommunicator = new UserFeedbackCommunicator();
         acceptorSetter = new AcceptorSetter(sleepingpillCommunicator);
     }
 
     public void setEmsCommunicator(EmsCommunicator emsCommunicator) {
-        this.emsCommunicator = emsCommunicator;
+
     }
 
     public void setUserFeedbackCommunicator(UserFeedbackCommunicator userFeedbackCommunicator) {
