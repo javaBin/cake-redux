@@ -1,13 +1,12 @@
 package no.javazone.cake.redux;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.javazone.cake.redux.comments.Contact;
 import no.javazone.cake.redux.comments.Feedback;
 import no.javazone.cake.redux.comments.FeedbackDao;
+import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
+import org.jsonbuddy.JsonArray;
+import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonObject;
 import org.jsonbuddy.parse.JsonParser;
 
@@ -19,51 +18,44 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class OpenDataServlet extends HttpServlet {
-    private EmsCommunicator emsCommunicator;
+    private SleepingpillCommunicator sleepingpillCommunicator;
 
     @Override
     public void init() throws ServletException {
-        emsCommunicator = new EmsCommunicator();
+        sleepingpillCommunicator = new SleepingpillCommunicator();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/json");
         PrintWriter writer = resp.getWriter();
-        String talkJson = emsCommunicator.fetchOneTalk(req.getParameter("talkId"));
-        ObjectNode talkInfo = shortTalkVersion(talkJson);
+        JsonObject talkJson = sleepingpillCommunicator.oneTalkStripped(req.getParameter("talkId"));
+        JsonObject talkInfo = shortTalkVersion(talkJson);
 
-        writer.append(talkInfo.toString());
+        talkInfo.toJson(writer);
     }
 
-    private ObjectNode shortTalkVersion(String talkJson) {
-        ObjectNode talkInfo = JsonNodeFactory.instance.objectNode();
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            ObjectNode jsonObject = (ObjectNode) objectMapper.readTree(talkJson);
-            ArrayNode tags = (ArrayNode) jsonObject.get("tags");
-            String error = checkTags(tags);
-            if (error != null) {
-                jsonObject.put("status","error");
-                jsonObject.put("message",error);
-                return  jsonObject;
-            }
-            jsonObject.put("status","ok");
-            ObjectNode talkData = JsonNodeFactory.instance.objectNode();
-            talkData.put("title",jsonObject.get("title").asText());
-            talkData.put("tags",tags);
-            talkData.put("lastModified",jsonObject.get("lastModified").asText());
-            jsonObject.put("talk",talkData);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private JsonObject shortTalkVersion(JsonObject jsonObject) {
+        JsonObject talkInfo = JsonFactory.jsonObject();
+
+        JsonArray tags = jsonObject.requiredArray("tags");
+        String error = checkTags(tags);
+        if (error != null) {
+            talkInfo.put("status","error");
+            talkInfo.put("message",error);
+            return  talkInfo;
         }
+        talkInfo.put("status","ok");
+        JsonObject talkData = JsonFactory.jsonObject();
+        talkData.put("title",jsonObject.requiredString("title"));
+        talkData.put("tags",tags);
+        talkInfo.put("talk",talkData);
         return talkInfo;
     }
 
-    private String checkTags(ArrayNode tags)  {
+    private String checkTags(JsonArray tags)  {
         boolean foundAccepted = false;
-        for (int i=0;i<tags.size();i++) {
-            String tag = tags.get(i).asText();
+        for (String tag : tags.strings()) {
             if ("confirmed".equals(tag)) {
                 return "Talk is already confirmed";
             }
@@ -97,7 +89,7 @@ public class OpenDataServlet extends HttpServlet {
         FeedbackDao feedbackDao = FeedbackDao.instance();
         feedbackDao.addFeedback(contact);
 
-        String status = emsCommunicator.confirmTalk(encodedTalkUrl,dinner,UserAccessType.OPENSERVLET);
+        String status = sleepingpillCommunicator.confirmTalk(encodedTalkUrl,dinner,UserAccessType.OPENSERVLET);
         resp.setContentType("text/json");
         resp.getWriter().append(status);
     }

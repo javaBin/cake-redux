@@ -1,10 +1,15 @@
 package no.javazone.cake.redux.sleepingpill;
 
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.javazone.cake.redux.Base64Util;
 import no.javazone.cake.redux.Configuration;
 import no.javazone.cake.redux.NoUserAceessException;
 import no.javazone.cake.redux.UserAccessType;
 import org.jsonbuddy.*;
+import org.jsonbuddy.JsonNode;
 import org.jsonbuddy.parse.JsonParser;
 
 import java.io.IOException;
@@ -14,6 +19,7 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -257,5 +263,38 @@ public class SleepingpillCommunicator {
         checkWriteAccess(userAccessType);
         JsonObject payload = jsonObject().put("status", "APPROVED");
         sendTalkUpdate(ref,payload);
+    }
+
+    private String confirmTalkMessage(String status, String message) {
+        JsonObject jsonObject = JsonFactory.jsonObject();
+
+        jsonObject.put("status",status);
+        jsonObject.put("message",message);
+        return jsonObject.toString();
+    }
+
+    public String confirmTalk(String ref, String dinner,UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
+        JsonObject jsonTalk = oneTalkStripped(ref);
+
+        JsonArray tagsarr = jsonTalk.requiredArray("tags");
+        List<String> tags = new ArrayList<>();
+        for (String atag : tagsarr.strings()) {
+            tags.add(atag);
+        }
+        if (tags.contains("confirmed")) {
+            return confirmTalkMessage("error","Talk has already been confirmed");
+        }
+        if (!tags.contains("accepted")) {
+            return confirmTalkMessage("error","Talk is not accepted");
+        }
+        if ("yes".equals(dinner)) {
+            tags.add("dinner");
+        }
+        tags.add("confirmed");
+
+        updateTags(ref,tags,userAccessType);
+
+        return confirmTalkMessage("ok", "ok");
     }
 }

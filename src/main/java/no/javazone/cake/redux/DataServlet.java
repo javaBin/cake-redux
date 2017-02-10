@@ -229,9 +229,6 @@ public class DataServlet extends HttpServlet {
         acceptorSetter = new AcceptorSetter(sleepingpillCommunicator);
     }
 
-    public void setEmsCommunicator(EmsCommunicator emsCommunicator) {
-
-    }
 
     public void setUserFeedbackCommunicator(UserFeedbackCommunicator userFeedbackCommunicator) {
         this.userFeedbackCommunicator = userFeedbackCommunicator;

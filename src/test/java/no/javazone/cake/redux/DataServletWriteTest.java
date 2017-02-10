@@ -19,7 +19,6 @@ public class DataServletWriteTest {
     private final HttpServletRequest req = mock(HttpServletRequest.class);
     private final HttpServletResponse resp = mock(HttpServletResponse.class);
     private final StringWriter jsonResult = new StringWriter();
-    private final EmsCommunicator emsCommunicator = mock(EmsCommunicator.class);
     private final SleepingpillCommunicator sleepingpillCommunicator = mock(SleepingpillCommunicator.class);
 
 
@@ -27,7 +26,6 @@ public class DataServletWriteTest {
     public void setUp() throws Exception {
         when(req.getMethod()).thenReturn("POST");
         when(resp.getWriter()).thenReturn(new PrintWriter(jsonResult));
-        servlet.setEmsCommunicator(emsCommunicator);
         servlet.setSleepingpillCommunicator(sleepingpillCommunicator);
     }
 
@@ -58,16 +56,4 @@ public class DataServletWriteTest {
         });
     }
 
-    @Test
-    public void shouldPublishTalk() throws Exception {
-        when(req.getPathInfo()).thenReturn("/publishTalk");
-        String inputjson = "{\"ref\":\"abra\",\"lastModified\":\"Tue, 04 Feb 2014 23:55:06 GMT\"}";
-        mockInputStream(inputjson);
-
-        servlet.service(req,resp);
-
-        verify(emsCommunicator).publishTalk("abra","Tue, 04 Feb 2014 23:55:06 GMT",UserAccessType.READ_ONLY);
-
-
-    }
 }
