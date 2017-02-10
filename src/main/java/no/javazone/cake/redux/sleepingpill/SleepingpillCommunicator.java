@@ -1,9 +1,5 @@
 package no.javazone.cake.redux.sleepingpill;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.javazone.cake.redux.Base64Util;
 import no.javazone.cake.redux.Configuration;
 import no.javazone.cake.redux.NoUserAceessException;

@@ -57,11 +57,6 @@
 
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.4.4</version>
-        </dependency>
-        <dependency>
             <groupId>org.jsonbuddy</groupId>
             <artifactId>jsonbuddy</artifactId>
             <version>0.8.0</version>
@@ -72,11 +67,6 @@
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.hamnaberg.rest</groupId>
-            <artifactId>json-collection</artifactId>
-            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>

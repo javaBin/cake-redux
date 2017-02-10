@@ -1,16 +1,12 @@
 package no.javazone.cake.redux;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.javazone.cake.redux.mail.MailSenderService;
 import no.javazone.cake.redux.mail.SmtpMailSender;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.jsonbuddy.JsonArray;
+import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonObject;
 
 import java.io.IOException;
@@ -59,9 +55,9 @@ public class AcceptorSetter {
     }
 
     private String doUpdates(JsonArray talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage,UserAccessType userAccessType) {
-        List<JsonNode> statusAllTalks = new ArrayList<>();
+        JsonArray statusAllTalks = JsonFactory.jsonArray();
         for (int i=0;i<talks.size();i++) {
-            ObjectNode accept = JsonNodeFactory.instance.objectNode();
+            JsonObject accept = JsonFactory.jsonObject();
             statusAllTalks.add(accept);
             try {
                 String encodedTalkRef = talks.get(i,JsonObject.class).requiredString("ref");
@@ -94,9 +90,7 @@ public class AcceptorSetter {
                     accept.put("message","Error: " + e.getMessage());
             }
         }
-        ArrayNode res = JsonNodeFactory.instance.arrayNode();
-        res.addAll(statusAllTalks);
-        return res.toString();
+        return statusAllTalks.toJson();
     }
 
     private void generateAndSendMail(
@@ -120,16 +114,6 @@ public class AcceptorSetter {
         MailSenderService.get().sendMail(SmtpMailSender.create(mail));
     }
 
-    public static List<String> toCollection(ArrayNode tags) {
-        ArrayList<String> result = new ArrayList<>();
-        if (tags == null) {
-            return result;
-        }
-        for (int i=0;i<tags.size();i++) {
-            result.add(tags.get(i).asText());
-        }
-        return result;
-    }
 
 
 

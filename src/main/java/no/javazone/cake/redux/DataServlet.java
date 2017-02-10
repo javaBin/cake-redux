@@ -1,10 +1,5 @@
 package no.javazone.cake.redux;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.javazone.cake.redux.comments.FeedbackService;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
 import org.jsonbuddy.JsonArray;
@@ -67,16 +62,14 @@ public class DataServlet extends HttpServlet {
 
     private void massPublish(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
-            String inputStr = CommunicatorHelper.toString(inputStream);
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode update = objectMapper.readTree(inputStr);
-            String ref = update.get("ref").asText();
+            JsonObject update = JsonParser.parseToObject(inputStream);
+            String ref = update.requiredString("ref");
             approveTalk(ref,computeAccessType(req));
         }
-        ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
+        JsonObject objectNode = JsonFactory.jsonObject();
         objectNode.put("status","ok");
         resp.setContentType("text/json");
-        resp.getWriter().append(objectNode.toString());
+        objectNode.toJson(resp.getWriter());
     }
 
     private void approveTalk(String ref,UserAccessType userAccessType) throws IOException {
@@ -134,10 +127,7 @@ public class DataServlet extends HttpServlet {
             JsonObject obj = JsonParser.parseToObject(inputStream);
             JsonArray talks = obj.requiredArray("talks");
             String inputStr = CommunicatorHelper.toString(inputStream);
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonObject = objectMapper.readTree(inputStr);
 
-            //ArrayNode talks = (ArrayNode) jsonObject.get("talks");
             String statusJson = acceptorSetter.accept(talks,computeAccessType(req));
             resp.getWriter().append(statusJson);
         }
@@ -214,13 +204,7 @@ public class DataServlet extends HttpServlet {
         Optional<String> contact = FeedbackService.get().contactForTalk(encTalk);
         oneTalkAsJson.put("contactPhone",contact.orElse("Unknown"));
     }
-
-    private String config() {
-        ObjectNode conf = JsonNodeFactory.instance.objectNode();
-        conf.put("submititloc",Configuration.submititLocation());
-        return conf.toString();
-    }
-
+    
 
     @Override
     public void init() throws ServletException {

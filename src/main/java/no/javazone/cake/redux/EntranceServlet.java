@@ -1,8 +1,8 @@
 package no.javazone.cake.redux;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import org.jsonbuddy.JsonObject;
+import org.jsonbuddy.parse.JsonParser;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -55,10 +55,9 @@ public class EntranceServlet extends HttpServlet {
         }
 
         String accessToken;
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode jsonObject = (ObjectNode) objectMapper.readTree(googleresp);
+        JsonObject jsonObject = JsonParser.parseToObject(googleresp);
         // get the access token from json and request info from Google
-        accessToken = jsonObject.get("access_token").asText();
+        accessToken = jsonObject.requiredString("access_token");
 
         // get some info about the user with the access token
         String getStr = "https://www.googleapis.com/oauth2/v1/userinfo?" + para("access_token",accessToken);
@@ -71,9 +70,9 @@ public class EntranceServlet extends HttpServlet {
 
         String username = null;
         String userEmail = null;
-        JsonNode userInfo = objectMapper.readTree(json);
-        username = userInfo.get("name").asText();
-        userEmail = userInfo.get("email").asText();
+        JsonObject userInfo = JsonParser.parseToObject(json);
+        username = userInfo.requiredString("name");
+        userEmail = userInfo.requiredString("email");
 
         String userid = username + "<" + userEmail + ">";
         if (!haveAccess(userid)) {
