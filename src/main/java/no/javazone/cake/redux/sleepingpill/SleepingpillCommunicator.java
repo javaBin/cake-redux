@@ -90,9 +90,14 @@ public class SleepingpillCommunicator {
     }
 
     public JsonObject oneTalkStripped(String talkid) {
+        JsonObject jsonObject = oneTalkSleepingPillFormat(talkid);
+        return talkObj(jsonObject);
+    }
+
+    public JsonObject oneTalkSleepingPillFormat(String talkid) {
         String talkurl = Configuration.sleepingPillBaseLocation() + "/data/session/" + talkid;
         URLConnection urlConnection = openConnection(talkurl);
-        return talkObj(parseJsonFromConnection(urlConnection));
+        return parseJsonFromConnection(urlConnection);
     }
 
     private JsonObject parseJsonFromConnection(URLConnection urlConnection) {
@@ -293,4 +298,6 @@ public class SleepingpillCommunicator {
 
         return confirmTalkMessage("ok", "ok");
     }
+
+
 }

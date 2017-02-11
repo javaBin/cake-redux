@@ -171,4 +171,8 @@ public class Configuration {
     public static String sleepingpillPassword() {
         return readConf("sleepingpillPassword",null);
     }
+
+    public static String feedbackDaoImpl() {
+        return readConf("feedbackDaoImpl","sleepingpill");
+    }
 }

@@ -40,7 +40,7 @@ public class FeedbackService {
                 .filter(fb -> fb.feedbackType() == FeedbackType.TALK_RATING && fb.author.equals(username))
                 .findAny();
         if (oldFeedback.isPresent()) {
-            feedbackDao.deleteFeedback(oldFeedback.get().id);
+            feedbackDao.deleteFeedback(oldFeedback.get().talkid,oldFeedback.get().id);
         }
 
         Feedback feedback = TalkRating.builder()

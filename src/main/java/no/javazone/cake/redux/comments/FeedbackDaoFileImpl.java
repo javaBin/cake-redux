@@ -78,7 +78,7 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
     }
 
     @Override
-    public void deleteFeedback(String id) {
+    public void deleteFeedback(String talkRef, String id) {
         HashSet<Feedback> duplicate;
         synchronized (feedbacks) {
             Optional<Feedback> feedbackOptional = feedbacks.stream()
