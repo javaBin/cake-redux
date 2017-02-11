@@ -18,6 +18,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.jsonbuddy.JsonFactory.jsonObject;
 
@@ -132,6 +133,10 @@ public class SleepingpillCommunicator {
         talkob.put("published",new Boolean(Arrays.asList("APPROVED","HISTORIC").contains(jsonObject.requiredString("status"))).toString());
         talkob.put("body",readValueFromProp(jsonObject,"abstract"));
         talkob.put("ref",jsonObject.requiredString("id"));
+        Optional.of(readValueFromProp(jsonObject,"emslocation"))
+                .filter(s -> !s.stringValue().isEmpty())
+                .ifPresent(v -> talkob.put("emslocation",v));
+
         talkob.put("state",jsonObject.requiredString("status"));
 
         talkob.put("speakers",JsonArray.fromNodeStream(
@@ -156,7 +161,7 @@ public class SleepingpillCommunicator {
     private static JsonNode readValueFromProp(JsonObject talkObj,String key,JsonNode defaultValue) {
         return talkObj.requiredObject("data")
                 .objectValue(key).orElse(JsonFactory.jsonObject().put("value",defaultValue))
-                .value("value").orElseThrow(() -> new RuntimeException("Ubknown property " + key));
+                .value("value").orElseThrow(() -> new RuntimeException("Unknown property " + key));
 
     }
 

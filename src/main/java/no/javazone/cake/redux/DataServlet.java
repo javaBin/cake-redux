@@ -170,8 +170,7 @@ public class DataServlet extends HttpServlet {
             JsonObject oneTalkAsJson = sleepingpillCommunicator.oneTalkAsJson(encTalk);
             appendFeedbacks(oneTalkAsJson,encTalk);
             // TODO Fix feedbacks
-            //appendUserFeedback(oneTalkAsJson, userFeedbackCommunicator.feedback(encTalk));
-            appendUserFeedback(oneTalkAsJson, null);
+            appendUserFeedback(oneTalkAsJson, userFeedbackCommunicator.feedback(oneTalkAsJson.stringValue("emslocation")));
             oneTalkAsJson.toJson(writer);
         } else if ("/events".equals(pathInfo)) {
             writer.append(sleepingpillCommunicator.allEvents());
@@ -185,9 +184,9 @@ public class DataServlet extends HttpServlet {
         }
     }
 
-    private void appendUserFeedback(JsonObject oneTalkAsJson, String feedback) {
-        if (feedback != null) {
-            JsonObject feedbackAsJson = JsonParser.parseToObject(feedback);
+    private void appendUserFeedback(JsonObject oneTalkAsJson, Optional<String> feedback) {
+        if (feedback.isPresent()) {
+            JsonObject feedbackAsJson = JsonParser.parseToObject(feedback.get());
             oneTalkAsJson.put("userFeedback", feedbackAsJson);
         } else {
             oneTalkAsJson.put("userFeedback", new JsonNull());
