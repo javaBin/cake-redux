@@ -96,8 +96,8 @@ public class EntranceServlet extends HttpServlet {
             return false;
         }
         String authUsers;
-        try {
-            authUsers = CommunicatorHelper.toString(new FileInputStream(autorizedUserFile));
+        try (FileInputStream inputStream = new FileInputStream(autorizedUserFile)) {
+            authUsers = CommunicatorHelper.toString(inputStream);
         } catch (IOException e) {
             return false;
         }
