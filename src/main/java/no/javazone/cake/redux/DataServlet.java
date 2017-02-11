@@ -28,8 +28,6 @@ public class DataServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         if ("/editTalk".equals(pathInfo)) {
             updateTalk(req, resp);
-        } else if ("/publishTalk".equals(pathInfo)) {
-            throw new NotImplementedException();
         } else if ("/acceptTalks".equals(pathInfo)) {
             acceptTalks(req,resp);
         } else if ("/massUpdate".equals(pathInfo)) {
