@@ -7,6 +7,7 @@ import org.junit.Test;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.Arrays;
 
@@ -26,6 +27,9 @@ public class DataServletWriteTest {
     public void setUp() throws Exception {
         when(req.getMethod()).thenReturn("POST");
         when(resp.getWriter()).thenReturn(new PrintWriter(jsonResult));
+
+        HttpSession mockSession = mock(HttpSession.class);
+        when(req.getSession()).thenReturn(mockSession);
         servlet.setSleepingpillCommunicator(sleepingpillCommunicator);
     }
 
@@ -37,7 +41,7 @@ public class DataServletWriteTest {
 
         servlet.service(req,resp);
 
-        verify(sleepingpillCommunicator).update("abra", Arrays.asList("test"),"pending","Tue, 04 Feb 2014 23:55:06 GMT",UserAccessType.READ_ONLY);
+        verify(sleepingpillCommunicator).update("abra", Arrays.asList("test"),"pending","Tue, 04 Feb 2014 23:55:06 GMT",UserAccessType.WRITE);
 
     }
 

@@ -16,6 +16,9 @@ public class Configuration {
     }
 
     private static String readConfigFile(String filename) {
+        if (filename == null) {
+            return "#xx";
+        }
         try (FileInputStream inputStream = new FileInputStream(filename)) {
             return CommunicatorHelper.toString(inputStream);
         } catch (IOException e) {
@@ -80,6 +83,10 @@ public class Configuration {
 
     public static String autorizedUserFile() {
         return getProperty("autorizedUserFile");
+    }
+
+    public static String fullUsers() {
+        return getProperty("fullUsers");
     }
 
     public static boolean noAuthMode() {

@@ -203,12 +203,15 @@ public class SleepingpillCommunicator {
         }
         switch (userAccessType) {
             case FULL:
+            case WRITE:
             case OPENSERVLET:
                 return;
             default:
                 throw new NoUserAceessException();
         }
     }
+
+
 
     public void updateTags(String ref,List<String> tags,UserAccessType userAccessType) {
         checkWriteAccess(userAccessType);
@@ -223,22 +226,23 @@ public class SleepingpillCommunicator {
         JsonArray currenttags = jsonObject.requiredArray("tags");
         String currentstate = jsonObject.requiredString("state");
 
-        JsonObject input = JsonFactory.jsonObject();
         JsonArray newtags = JsonArray.fromStringList(taglist);
 
+        JsonObject payload = jsonObject();
         if (!newtags.equals(currenttags)) {
+            JsonObject input = JsonFactory.jsonObject();
             input.put("tags", jsonObject().put("value", newtags).put("privateData", true));
+            payload.put("data", input);
         }
-        if (!currentstate.equals(state)) {
-            input.put("status", jsonObject().put("value", state).put("privateData", false));
+        if ((!currentstate.equals(state)) && (Configuration.noAuthMode() || userAccessType == UserAccessType.FULL)) {
+            payload.put("status", state);
         }
 
-        if (input.isEmpty()) {
+        if (payload.isEmpty()) {
             return fetchOneTalk(ref);
 
         }
 
-        JsonObject payload = jsonObject().put("data", input);
         sendTalkUpdate(ref, payload);
         return fetchOneTalk(ref);
     }

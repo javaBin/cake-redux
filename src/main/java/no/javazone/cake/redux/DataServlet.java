@@ -117,7 +117,13 @@ public class DataServlet extends HttpServlet {
 
 
     private static UserAccessType computeAccessType(HttpServletRequest request) {
-        return UserAccessType.READ_ONLY;
+        String fullusers = Optional.ofNullable(Configuration.fullUsers()).orElse("");
+        if (Optional.ofNullable(request.getSession().getAttribute("username"))
+            .filter(un -> fullusers.contains((String) un))
+            .isPresent()) {
+            return UserAccessType.FULL;
+        }
+        return UserAccessType.WRITE;
     }
 
     private void acceptTalks(HttpServletRequest req, HttpServletResponse resp) throws IOException {
