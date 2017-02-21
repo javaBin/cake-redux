@@ -220,13 +220,15 @@ public class SleepingpillCommunicator {
         sendTalkUpdate(ref,jsonObject().put("data",input));
     }
 
-    public String update(String ref, List<String> taglist, String state, String lastModified, UserAccessType userAccessType) {
+    public String update(String ref, List<String> taglist, List<String> keywords,String state, String lastModified, UserAccessType userAccessType) {
         checkWriteAccess(userAccessType);
         JsonObject jsonObject = oneTalkStripped(ref);
         JsonArray currenttags = jsonObject.requiredArray("tags");
         String currentstate = jsonObject.requiredString("state");
+        JsonArray currentKeywords = jsonObject.requiredArray("keywords");
 
         JsonArray newtags = JsonArray.fromStringList(taglist);
+        JsonArray newkeywords = JsonArray.fromStringList(keywords);
 
         JsonObject payload = jsonObject();
         if (!newtags.equals(currenttags)) {
@@ -234,6 +236,13 @@ public class SleepingpillCommunicator {
             input.put("tags", jsonObject().put("value", newtags).put("privateData", true));
             payload.put("data", input);
         }
+
+        if (!newkeywords.equals(currentKeywords)) {
+            JsonObject input = JsonFactory.jsonObject();
+            input.put("keywords", jsonObject().put("value", newkeywords).put("privateData", true));
+            payload.put("data", input);
+        }
+
         if ((!currentstate.equals(state)) && (Configuration.noAuthMode() || userAccessType == UserAccessType.FULL)) {
             payload.put("status", state);
         }

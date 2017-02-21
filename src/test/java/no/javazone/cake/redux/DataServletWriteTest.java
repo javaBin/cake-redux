@@ -1,6 +1,7 @@
 package no.javazone.cake.redux;
 
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
+import org.jsonbuddy.JsonFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,12 +37,19 @@ public class DataServletWriteTest {
     @Test
     public void shouldSaveTags() throws Exception {
         when(req.getPathInfo()).thenReturn("/editTalk");
-        String inputjson = "{\"ref\":\"abra\",\"lastModified\":\"Tue, 04 Feb 2014 23:55:06 GMT\",\"tags\":[\"test\"],\"state\":\"pending\"}";
+        String inputjson = JsonFactory.jsonObject()
+                .put("ref","abra")
+                .put("lastModified","Tue, 04 Feb 2014 23:55:06 GMT")
+                .put("state","pending")
+                .put("tags",JsonFactory.jsonArray().add("test"))
+                .put("keywords",JsonFactory.jsonArray().add("keyone"))
+                .toJson();
+        //String inputjson = "{\"ref\":\"abra\",\"lastModified\":\"Tue, 04 Feb 2014 23:55:06 GMT\",\"tags\":[\"test\"],\"state\":\"pending\"}";
         mockInputStream(inputjson);
 
         servlet.service(req,resp);
 
-        verify(sleepingpillCommunicator).update("abra", Arrays.asList("test"),"pending","Tue, 04 Feb 2014 23:55:06 GMT",UserAccessType.WRITE);
+        verify(sleepingpillCommunicator).update("abra", Arrays.asList("test"),Arrays.asList("keyone"),"pending","Tue, 04 Feb 2014 23:55:06 GMT",UserAccessType.WRITE);
 
     }
 

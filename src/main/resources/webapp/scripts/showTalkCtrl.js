@@ -56,12 +56,17 @@ angular.module('cakeReduxModule')
             $scope.reloadTalk = function() {
                 $http({method: "GET", url: "data/atalk?talkId=" + talkRef})
                     .success(updateFromServer);
-            }
+            };
 
             $scope.newTagTyped = function() {
                 var n = $scope.newTag;
                 $scope.aTalk.tags.push(n);
-            }
+            };
+
+            $scope.newKeywordTyped = function() {
+                var n = $scope.newKeyword;
+                $scope.aTalk.keywords.push(n);
+            };
 
 
 
@@ -70,7 +75,16 @@ angular.module('cakeReduxModule')
                 if (index > -1) {
                     $scope.aTalk.tags.splice(index,1);
                 }
-            }
+            };
+
+            $scope.removeKeyword = function(keyword) {
+                var index = $scope.aTalk.keywords.indexOf(keyword);
+                if (index > -1) {
+                    $scope.aTalk.keywords.splice(index,1);
+                }
+            };
+
+
 
             $scope.saveTalk = function() {
                 $scope.showError = false;
@@ -78,10 +92,11 @@ angular.module('cakeReduxModule')
                 savebtn.button("loading");
                 var t = $scope.aTalk;
                 var postData = {
-                  ref: t.ref,
-                  lastModified: t.lastModified,
-                  tags : t.tags,
-                  state: t.state
+                    ref: t.ref,
+                    lastModified: t.lastModified,
+                    tags : t.tags,
+                    state: t.state,
+                    keywords: t.keywords
                 };
                 $http({
                     method: "POST",

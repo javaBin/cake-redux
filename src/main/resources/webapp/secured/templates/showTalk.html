@@ -164,7 +164,18 @@
         </table>
     </div>
 
-    <h2>Update</h2>
+    <h2>Keywords</h2>
+    <div class="well" class="cake-margin-well">
+        <p>
+            <input ng-model="newKeyword" type="text" placeholder="New keyword"/>
+            <button class="btn" ng-click="newKeywordTyped()">Add keyword</button>
+        </p>
+        <h3>
+            <span ng-repeat="keyword in aTalk.keywords" class="label label-info" style="margin-right: 0.2em">{{keyword}} <a ng-click="removeKeyword(keyword)">(x)</a></span>
+        </h3>
+    </div>
+
+    <h2>Tags</h2>
     <div class="well" class="cake-margin-well">
         <p>
         <input ng-model="newTag" type="text" placeholder="New tag"/>
@@ -174,6 +185,7 @@
             <span ng-repeat="tag in aTalk.tags" class="label label-info" style="margin-right: 0.2em">{{tag}} <a ng-click="removeTag(tag)">(x)</a></span>
         </h3>
     </div>
+
     <div class="row">
         <div class="cake-margin col-md-3">
 
