@@ -44,6 +44,7 @@ public class WebServer {
 
         if (isDevEnviroment()) {
             // Development ie running in ide
+            System.out.println("Running in IDE mode");
             webAppContext.setResourceBase("src/main/resources/webapp");
         } else {
             // Prod ie running from jar

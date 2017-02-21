@@ -1,105 +1,77 @@
 <div>
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Cake-redux</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown">Year <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li ng-repeat="event in events"><a ng-href="#/talks/{{event.slug}}">{{event.name}}</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown"role="button" aria-haspopup="true" aria-expanded="false">
-                            Actions <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li ><a ng-href="#/accept">Accept talks...</a></li>
-                            <li ><a ng-href="#/publish">Publish talks...</a></li>
-                            <li ><a ng-href="#/massUpdate">Send mail and/or tag ...</a></li>
-                            <li ><a ng-href="#/showSchedule">Show schedule ...</a></li>
-                            <li ><a ng-href="#/report">Report</a></li>
-                        </ul>
-                    </li>
-                </ul>
-
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
-    <div class="row">
-        <div class="col-md-8" ng-show="showFilters">
-            <button class="btn btn-default btn-sm" ng-click="addFilter()">Add filter</button>
-            <button class="btn btn-default btn-sm" ng-click="addOpAnd()">And (</button>
-            <button class="btn btn-default btn-sm" ng-click="addOpOr()">Or (</button>
-            <button class="btn btn-default btn-sm" ng-click="addOpNot()">Not (</button>
-            <button class="btn btn-default btn-sm" ng-click="addOpEnd()">)</button>
-            <button class="btn btn-danger btn-sm" ng-click="clearAllFilters()">Clear filters</button>
-            <button class="btn btn-info btn-sm" ng-click="doHideFilters()">Hide filters</button>
+    <div class="menu">
+        <div class="years">
+            <a class="year" ng-repeat="event in events" ng-href="#/talks/{{event.slug}}">{{event.name}}</a>
         </div>
-        <div class="col-md-8" ng-show="!showFilters">
-            <button class="btn btn-info btn-sm" ng-click="doShowFilters()">Show filters</button>
+        <div class="actions">
+            <a class="action" ng-href="#/accept">Accept talks</a>
+            <a class="action" ng-href="#/pubdivsh">Publish talks</a>
+            <a class="action" ng-href="#/massUpdate">Send mail and/or tag</a>
+            <a class="action" ng-href="#/showSchedule">Show schedule</a>
+            <a class="action" ng-href="#/report">Report</a>
         </div>
-        <div class="col-sm-1">
-            <button class="btn btn-info btn-sm" ng-click="reloadTalks()">Refresh</button>
-        </div>
-        <div class="col-md-1">
-            <button class="btn btn-info btn-sm" ng-click="saveFilter()">Save filter</button>
-        </div>
-        <div class="col-md-2 small">Showing {{talks.length}} of {{allTalks.length}}</div>
     </div>
-    <table class="table table-bordered table-hoover">
-        <thead>
-        <tr>
-            <th>Title</th>
-            <th>Speaker</th>
-            <th>Format</th>
-            <th>Lang</th>
-            <th>Tags</th>
-            <th>Keywords</th>
-            <th>State</th>
-            <th>Room</th>
-            <th>Slot</th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="filter in filters" ng-show="showFilters">
-                <td ng-show="!isFilterLine(filter)">{{operatorText(filter)}}</td>
-                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.title" ng-change="filterUpdated()"/></td>
-                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.speaker" ng-change="filterUpdated()"/></td>
-                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.format" ng-change="filterUpdated()"/></td>
-                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.language" ng-change="filterUpdated()"/></td>
-                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.tag" ng-change="filterUpdated()"/></td>
-                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.keyword" ng-change="filterUpdated()"/></td>
-                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.state" ng-change="filterUpdated()"/></td>
-                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.room" ng-change="filterUpdated()"/></td>
-                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.slot" ng-change="filterUpdated()"/></td>
-            </tr>
-            <tr ng-repeat="talk in talks" ng-class="talkRowClass(talk)">
-                <td><a ng-href="#/showTalk/{{talk.ref}}" ng-click="talkSelected(talk)">{{talk.title}}</a></td>
-                <td>{{speakerList(talk.speakers)}}</td>
-                <td>{{talk.format}}</td>
-                <td>{{talk.lang}}</td>
-                <td>{{joinArrs(talk.tags)}}</td>
-                <td>{{joinArrs(talk.keywords)}}</td>
-                <td>{{talk.state}}</td>
-                <td>{{talk.room.name}}</td>
-                <td>{{talk.slot.start}}-{{talk.slot.end}}</td>
-            </tr>
-        </tbody>
-    </table>
-    <h3>Used tags</h3>
-    <ul>
-        <li ng-repeat="ut in usedTags">{{ut.tagname}} : {{ut.count}}</li>
-    </ul>
+    <div class="content">
+        <div class="filter-options">
+            <div ng-show="showFilters">
+                <button class="btn btn-default btn-sm" ng-click="addFilter()">Add filter</button>
+                <button class="btn btn-default btn-sm" ng-click="addOpAnd()">And (</button>
+                <button class="btn btn-default btn-sm" ng-click="addOpOr()">Or (</button>
+                <button class="btn btn-default btn-sm" ng-click="addOpNot()">Not (</button>
+                <button class="btn btn-default btn-sm" ng-click="addOpEnd()">)</button>
+                <button class="btn btn-danger btn-sm" ng-click="clearAllFilters()">Clear filters</button>
+                <button class="btn btn-info btn-sm" ng-click="doHideFilters()">Hide filters</button>
+            </div>
+            <div ng-show="!showFilters">
+                <button class="btn btn-info btn-sm" ng-click="doShowFilters()">Show filters</button>
+            </div>
+            <div>
+                <button class="btn btn-info btn-sm" ng-click="reloadTalks()">Refresh</button>
+            </div>
+            <div>
+                <button class="btn btn-info btn-sm" ng-click="saveFilter()">Save filter</button>
+            </div>
+            <div><p>Showing {{talks.length}} of {{allTalks.length}}</p></div>
+        </div>
+        <div class="talk-list">
+            <div class="talk-list-row talk-list-row-header">
+                <div>Title</div>
+                <div>Speaker</div>
+                <div>Format</div>
+                <div>Lang</div>
+                <div>Tags</div>
+                <div>Keywords</div>
+                <div>State</div>
+                <div>Room</div>
+                <div>Slot</div>
+            </div>
+            <div class="talk-list-row" ng-repeat="filter in filters" ng-show="showFilters">
+                <div ng-show="!isFilterLine(filter)">{{operatorText(filter)}}</div>
+                <div ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.title" ng-change="filterUpdated()"/></div>
+                <div ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.speaker" ng-change="filterUpdated()"/></div>
+                <div ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.format" ng-change="filterUpdated()"/></div>
+                <div ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.language" ng-change="filterUpdated()"/></div>
+                <div ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.tag" ng-change="filterUpdated()"/></div>
+                <div ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.keyword" ng-change="filterUpdated()"/></div>
+                <div ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.state" ng-change="filterUpdated()"/></div>
+                <div ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.room" ng-change="filterUpdated()"/></div>
+                <div ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.slot" ng-change="filterUpdated()"/></div>
+            </div>
+            <a class="talk-list-row" ng-repeat="talk in talks" ng-class="talkRowClass(talk)" ng-href="#/showTalk/{{talk.ref}}" ng-click="talkSelected(talk)">
+                <div>>{{talk.title}}</div>
+                <div>{{speakerList(talk.speakers)}}</div>
+                <div>{{talk.format}}</div>
+                <div>{{talk.lang}}</div>
+                <div>{{joinArrs(talk.tags)}}</div>
+                <div>{{joinArrs(talk.keywords)}}</div>
+                <div>{{talk.state}}</div>
+                <div>{{talk.room.name}}</div>
+                <div>{{talk.slot.start}}-{{talk.slot.end}}</div>
+            </a>
+        </div>
+        <h3>Tags used in talks returned from filter:</h3>
+        <ul>
+            <li ng-repeat="ut in usedTags">{{ut.tagname}} : {{ut.count}}</li>
+        </ul>
+    </div>
 </div>

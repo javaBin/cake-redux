@@ -1,11 +1,86 @@
-.cake-margin-well {
-    margin-left: 3%;
-    margin-right: 10%;
+body {
+    background: #010101
 }
-.cake-margin {
-    margin-left: 1%;
+
+button {
+    background-color: #3abae9;
+    letter-spacing: 1px;
+    border: none;
+    color: #fff;
+    padding: 5px 15px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
 }
-.cake-row {
-    margin-bottom: 1%;
+button:hover {
+    background-color: #379fce;
 }
+
+
+.logo {
+    width: 15em;
+    margin: 2em auto;
+    display: block;
+}
+.wrapper {
+    margin: 2em;
+}
+.wrapper-inner {
+    background: #fafafa;
+    margin: 2em auto;
+}
+.menu {
+    background: #eee;
+    padding: 2em;
+}
+.content {
+    padding: 2em;
+}
+.years {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 2em 0
+}
+.year {
+    text-decoration: none;
+    color: #30a74d;
+    cursor: pointer;
+    padding-bottom:.2em;
+    border-bottom: 3px solid #30a74d;
+}
+.actions {
+    display: flex;
+    justify-content: flex-end;
+}
+.action {
+    text-decoration: none;
+    margin-left: 1em;
+    padding: .2em 1em;
+    color: #3abae9;
+    border: 1px solid #3abae9;
+}
+.filter-options {
+    display: flex;
+    justify-content: space-between;
+    margin: 2em 0;
+}
+.talk-list {
+    width: 100%;
+}
+
+.talk-list-row {
+    display: flex;
+    justify-content: space-between;
+}
+.talk-list-row-header {
+    text-transform: uppercase;
+    color: #3abae9;
+    font-weight: bold;
+}
+
+
+
 .preserve-newlines { white-space: pre-wrap; }

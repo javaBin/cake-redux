@@ -4,7 +4,6 @@
 	<title>Cake redux - it is the truth</title>
     <script src="../scripts/ext/jquery-2.1.0.min.js"></script>
     <script src="../scripts/ext/underscore-min.js"></script>
-    <link rel="stylesheet" href="../scripts/ext/bootstrap.min.css">
     <link rel="stylesheet" href="../css/style.css">
 
     <!-- Latest compiled and minified JavaScript -->
@@ -27,6 +26,7 @@
 
 </head>
 <body>
-	<div ng-view></div>
+    <div class="logo-wrapper"><a href="/secured"><img src="../images/logo.svg" class="logo" /></a></div>
+    <div class="wrapper"><div class="wrapper-inner" ng-view></div></div>
 </body>
 </html>
