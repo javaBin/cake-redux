@@ -153,13 +153,16 @@ public class DataServlet extends HttpServlet {
 
         String ref = update.requiredString("ref");
         JsonArray tags = (JsonArray) update.value("tags").orElse(JsonFactory.jsonArray());
+        JsonArray keywords = (JsonArray) update.value("keywords").orElse(JsonFactory.jsonArray());
+
         String state = update.requiredString("state");
         String lastModified = update.stringValue("lastModified").orElse("xx");
 
-        List<String> taglist = tags.nodeStream().map(org.jsonbuddy.JsonNode::stringValue).collect(Collectors.toList());
+        List<String> taglist = tags.strings();
+        List<String> keywordlist = keywords.strings();
 
         //String newTalk = emsCommunicator.update(ref, taglist, state, lastModified,computeAccessType(req));
-        String newTalk = sleepingpillCommunicator.update(ref, taglist, state, lastModified,computeAccessType(req));
+        String newTalk = sleepingpillCommunicator.update(ref, taglist, keywordlist,state, lastModified,computeAccessType(req));
         resp.getWriter().append(newTalk);
 
     }
