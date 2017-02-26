@@ -86,8 +86,10 @@ public class OpenDataServlet extends HttpServlet {
                 .setAuthor("SpeakerFromSystem")
                 .create();
 
+        String lastModified = sleepingpillCommunicator.oneTalkStripped(encodedTalkUrl).requiredString("lastModified");
+
         FeedbackDao feedbackDao = FeedbackDao.instance();
-        feedbackDao.addFeedback(contact);
+        feedbackDao.addFeedback(contact,lastModified);
 
         String status = sleepingpillCommunicator.confirmTalk(encodedTalkUrl,dinner,UserAccessType.OPENSERVLET);
         resp.setContentType("text/json");

@@ -80,7 +80,7 @@ public class AcceptorSetter {
                 if (tagToAdd != null) {
                     tags.add(tagToAdd);
                     String lastModified = jsonTalk.requiredString("lastModified");
-                    sleepingpillCommunicator.updateTags(encodedTalkRef, tags, userAccessType);
+                    sleepingpillCommunicator.updateTags(encodedTalkRef, tags, userAccessType,lastModified);
                 }
                 accept.put("status","ok");
                 accept.put("message","ok");

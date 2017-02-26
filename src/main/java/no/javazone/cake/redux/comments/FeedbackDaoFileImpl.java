@@ -57,7 +57,7 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
 
 
     @Override
-    public void addFeedback(Feedback feedback) {
+    public void addFeedback(Feedback feedback,String talkLastModified) {
         synchronized (feedbacks) {
             feedbacks.add(feedback);
         }
@@ -78,7 +78,7 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
     }
 
     @Override
-    public void deleteFeedback(String talkRef, String id) {
+    public String deleteFeedback(String talkRef, String id,String lastModified) {
         HashSet<Feedback> duplicate;
         synchronized (feedbacks) {
             Optional<Feedback> feedbackOptional = feedbacks.stream()
@@ -91,7 +91,7 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
         }
         String filename = Configuration.feedbackStoreFilename();
         if (filename == null) {
-            return;
+            return "xx";
         }
         executorService.submit(() -> {
             try(FileWriter fw = new FileWriter(filename, false);
@@ -106,6 +106,7 @@ public class FeedbackDaoFileImpl implements FeedbackDao {
             }
 
         });
+        return "xx";
     }
 
     @Override

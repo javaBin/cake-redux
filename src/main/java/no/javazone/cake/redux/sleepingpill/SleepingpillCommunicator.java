@@ -133,6 +133,7 @@ public class SleepingpillCommunicator {
         talkob.put("published",new Boolean(Arrays.asList("APPROVED","HISTORIC").contains(jsonObject.requiredString("status"))).toString());
         talkob.put("body",readValueFromProp(jsonObject,"abstract"));
         talkob.put("ref",jsonObject.requiredString("id"));
+        jsonObject.stringValue("lastUpdated").ifPresent(lu -> talkob.put("lastModified",lu));
         Optional.of(readValueFromProp(jsonObject,"emslocation"))
                 .filter(s -> !s.stringValue().isEmpty())
                 .ifPresent(v -> talkob.put("emslocation",v));
@@ -213,11 +214,11 @@ public class SleepingpillCommunicator {
 
 
 
-    public void updateTags(String ref,List<String> tags,UserAccessType userAccessType) {
+    public void updateTags(String ref,List<String> tags,UserAccessType userAccessType, String lastModified) {
         checkWriteAccess(userAccessType);
         JsonObject input = JsonFactory.jsonObject()
                 .put("tags", jsonObject().put("value", JsonArray.fromStringList(tags)).put("privateData", true));
-        sendTalkUpdate(ref,jsonObject().put("data",input));
+        sendTalkUpdate(ref,jsonObject().put("data",input).put("lastUpdated",lastModified));
     }
 
     public String update(String ref, List<String> taglist, List<String> keywords,String state, String lastModified, UserAccessType userAccessType) {
@@ -251,12 +252,12 @@ public class SleepingpillCommunicator {
             return fetchOneTalk(ref);
 
         }
-
+        payload.put("lastUpdated",lastModified);
         sendTalkUpdate(ref, payload);
         return fetchOneTalk(ref);
     }
 
-    public void sendTalkUpdate(String ref, JsonObject payload) {
+    public JsonObject sendTalkUpdate(String ref, JsonObject payload) {
         String url = Configuration.sleepingPillBaseLocation() + "/data/session/" + ref;
 
 
@@ -269,7 +270,7 @@ public class SleepingpillCommunicator {
                 payload.toJson(printWriter);
             }
             try (InputStream is = conn.getInputStream()) {
-                JsonParser.parseToObject(is);
+                return JsonParser.parseToObject(is);
             }
 
         } catch (IOException e) {
@@ -312,7 +313,7 @@ public class SleepingpillCommunicator {
         }
         tags.add("confirmed");
 
-        updateTags(ref,tags,userAccessType);
+        updateTags(ref,tags,userAccessType,jsonTalk.requiredString("lastModified"));
 
         return confirmTalkMessage("ok", "ok");
     }

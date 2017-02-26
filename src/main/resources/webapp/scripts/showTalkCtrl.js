@@ -181,7 +181,8 @@ angular.module('cakeReduxModule')
                     url: "data/addComment",
                     data: {
                         talkref: talkRef,
-                        comment: $scope.newCommentText
+                        comment: $scope.newCommentText,
+                        lastModified: $scope.aTalk.lastModified
                     }
                 }).success(function (data) {
                     $scope.comments = data;
@@ -195,7 +196,8 @@ angular.module('cakeReduxModule')
                     url: "data/giveRating",
                     data: {
                         talkref: talkRef,
-                        rating: givenRating
+                        rating: givenRating,
+                        lastModified: $scope.aTalk.lastModified
                     }
                 }).success(function (data) {
                     $scope.ratings = data;

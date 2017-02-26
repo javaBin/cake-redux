@@ -5,8 +5,8 @@ import no.javazone.cake.redux.Configuration;
 import java.util.stream.Stream;
 
 public interface FeedbackDao {
-    void addFeedback(Feedback feedback);
-    void deleteFeedback(String talkRef,String id);
+    void addFeedback(Feedback feedback,String talkLastModified);
+    String deleteFeedback(String talkRef,String id,String talkLastModified);
     Stream<Feedback> feedbacksForTalk(String talkid);
 
     static FeedbackDao instance() {

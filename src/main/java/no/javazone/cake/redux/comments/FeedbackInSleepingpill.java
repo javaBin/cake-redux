@@ -22,19 +22,19 @@ public class FeedbackInSleepingpill implements FeedbackDao {
     private SleepingpillCommunicator sleepingpillCommunicator = new SleepingpillCommunicator();
 
     @Override
-    public void addFeedback(Feedback feedback) {
+    public void addFeedback(Feedback feedback,String talkLastModified) {
         String talkid = feedback.talkid;
         JsonArray talkFeedbacks = fetchCurrentFeedbacks(talkid);
 
         talkFeedbacks.add(feedback.asStoreJson());
 
-        sendUpdatedFeedback(talkid, talkFeedbacks);
+        sendUpdatedFeedback(talkid, talkFeedbacks,talkLastModified);
     }
 
-    private void sendUpdatedFeedback(String talkid, JsonArray talkFeedbacks) {
+    private JsonObject sendUpdatedFeedback(String talkid, JsonArray talkFeedbacks,String talkLastModified) {
         JsonObject input = JsonFactory.jsonObject()
                 .put("pkomfeedbacks", jsonObject().put("value", talkFeedbacks).put("privateData", true));
-        sleepingpillCommunicator.sendTalkUpdate(talkid,jsonObject().put("data",input));
+        return sleepingpillCommunicator.sendTalkUpdate(talkid,jsonObject().put("data",input).put("lastUpdated",talkLastModified));
     }
 
     private JsonArray fetchCurrentFeedbacks(String talkid) {
@@ -45,11 +45,12 @@ public class FeedbackInSleepingpill implements FeedbackDao {
     }
 
     @Override
-    public void deleteFeedback(String talkRef, String id) {
+    public String deleteFeedback(String talkRef, String id,String talkLastModified) {
         JsonArray currentFeedbacks = fetchCurrentFeedbacks(talkRef);
         JsonArray updated = JsonArray.fromNodeStream(currentFeedbacks.objectStream()
                 .filter(feedback -> !Feedback.fromStoreJson(feedback).equals(id)));
-        sendUpdatedFeedback(talkRef,updated);
+        JsonObject jsonObject = sendUpdatedFeedback(talkRef, updated, talkLastModified);
+        return jsonObject.requiredString("lastUpdated");
 
     }
 

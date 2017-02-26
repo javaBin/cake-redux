@@ -21,7 +21,7 @@ public class FeedbackService {
                 .setAuthor(username)
                 .create();
         FeedbackDao feedbackDao = FeedbackDao.instance();
-        feedbackDao.addFeedback(feedback);
+        feedbackDao.addFeedback(feedback,payload.requiredString("lastModified"));
         return commentsForTalk(talkref);
     }
 
@@ -35,20 +35,23 @@ public class FeedbackService {
 
     public JsonArray giveRating(JsonObject payload,String username) {
         String talkref = payload.requiredString("talkref");
+        String lastModified = payload.requiredString("lastModified");
         FeedbackDao feedbackDao = FeedbackDao.instance();
         Optional<Feedback> oldFeedback = feedbackDao.feedbacksForTalk(talkref)
                 .filter(fb -> fb.feedbackType() == FeedbackType.TALK_RATING && fb.author.equals(username))
                 .findAny();
         if (oldFeedback.isPresent()) {
-            feedbackDao.deleteFeedback(oldFeedback.get().talkid,oldFeedback.get().id);
+            lastModified = feedbackDao.deleteFeedback(oldFeedback.get().talkid,oldFeedback.get().id,lastModified);
         }
+
+
 
         Feedback feedback = TalkRating.builder()
                 .setRating(Rating.fromText(payload.requiredString("rating")))
                 .setTalkid(talkref)
                 .setAuthor(username)
                 .create();
-        feedbackDao.addFeedback(feedback);
+        feedbackDao.addFeedback(feedback, lastModified);
         return ratingsForTalk(talkref);
     }
 
