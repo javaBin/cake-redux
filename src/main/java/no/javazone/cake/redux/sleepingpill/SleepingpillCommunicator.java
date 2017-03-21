@@ -60,7 +60,9 @@ public class SleepingpillCommunicator {
             String url = Configuration.sleepingPillBaseLocation() + "/data/submitter/" + speaker.requiredString("email") + "/session";
             JsonObject speakerTalks = parseJsonFromConnection(openConnection(url));
             JsonArray otherTalks = JsonArray.fromNodeStream(
-                    speakerTalks.requiredArray("sessions").objectStream().map(obj -> buildSimularTalk(obj,allConferences))
+                    speakerTalks.requiredArray("sessions").objectStream()
+                            .filter(obj -> !(obj.stringValue("id").equals(Optional.of(talkid)) || obj.stringValue("status").equals(Optional.of("DRAFT"))))
+                            .map(obj -> buildSimularTalk(obj,allConferences))
             );
             speaker.put("spOtherTalks",otherTalks);
         });
