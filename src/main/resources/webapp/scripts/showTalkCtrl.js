@@ -204,5 +204,21 @@ angular.module('cakeReduxModule')
                 });
             }
 
+            $scope.addPubComment = function () {
+                $http({
+                    method: "POST",
+                    url: "data/addPubComment",
+                    data: {
+                        talkref: talkRef,
+                        comment: $scope.newPubCommentText,
+                        lastModified: $scope.aTalk.lastModified
+                    }
+                }).success(function (data) {
+                    $scope.aTalk.pubcomments = data;
+                    $scope.newPubCommentText = "";
+                });
+
+            }
+
         }]);
 

@@ -44,7 +44,24 @@ public class DataServlet extends HttpServlet {
         } else if ("/giveRating".equals(pathInfo)) {
             giveRating(req, resp);
             resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/addPubComment".equals(pathInfo)) {
+            addPublicComment(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
         }
+
+    }
+
+    private void addPublicComment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject update;
+        try (InputStream inputStream = req.getInputStream()) {
+            update = JsonParser.parseToObject(inputStream);
+        }
+        String ref = update.requiredString("talkref");
+        String comment = update.requiredString("comment");
+        String lastModified = update.requiredString("lastModified");
+        JsonArray updatedComments = sleepingpillCommunicator.addPublicComment(ref, comment, lastModified);
+        updatedComments.toJson(resp.getWriter());
+
 
     }
 

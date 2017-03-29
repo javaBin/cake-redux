@@ -151,6 +151,7 @@ public class SleepingpillCommunicator {
                                 .put("zip-code",readValueFromProp(ob,"zip-code"))
                                 .put("twitter",readValueFromProp(ob,"twitter"))
                         )));
+        talkob.put("pubcomments",jsonObject.arrayValue("comments").orElse(JsonFactory.jsonArray()));
 
         return talkob;
 
@@ -321,4 +322,15 @@ public class SleepingpillCommunicator {
     }
 
 
+    public JsonArray addPublicComment(String ref, String comment, String lastModified) {
+        JsonObject payload = JsonFactory.jsonObject();
+        payload.put("lastUpdated",lastModified);
+
+        JsonObject commentobj = JsonFactory.jsonObject().put("email", "program@java.no").put("from", "JavaZone program commitee").put("comment", comment);
+
+        payload.put("comments",JsonFactory.jsonArray().add(commentobj));
+
+        JsonObject jsonObject = sendTalkUpdate(ref, payload);
+        return jsonObject.requiredArray("comments");
+    }
 }
