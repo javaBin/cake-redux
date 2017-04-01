@@ -1,7 +1,11 @@
 package no.javazone.cake.redux;
 
 import no.javazone.cake.redux.comments.FeedbackService;
+import no.javazone.cake.redux.mail.MailSenderImplementation;
+import no.javazone.cake.redux.mail.MailSenderService;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonNull;
@@ -59,10 +63,41 @@ public class DataServlet extends HttpServlet {
         String ref = update.requiredString("talkref");
         String comment = update.requiredString("comment");
         String lastModified = update.requiredString("lastModified");
-        JsonArray updatedComments = sleepingpillCommunicator.addPublicComment(ref, comment, lastModified);
+        JsonObject jsonObject = sleepingpillCommunicator.addPublicComment(ref, comment, lastModified);
+
+        SimpleEmail simpleEmail = generateCommentEmail(jsonObject);
+        MailSenderService.get().sendMail(MailSenderImplementation.create(simpleEmail));
+
+
+        JsonArray updatedComments = jsonObject.requiredArray("comments");
         updatedComments.toJson(resp.getWriter());
 
 
+
+
+    }
+
+    private SimpleEmail generateCommentEmail(JsonObject jsonObject) {
+        SimpleEmail simpleEmail = new SimpleEmail();
+        try {
+            jsonObject.requiredArray("speakers").objectStream()
+                    .map(ob -> ob.requiredString("email"))
+                    .forEach(to -> {
+                        try {
+                            simpleEmail.addTo(to);
+                        } catch (EmailException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+            AcceptorSetter.setupMailHeader(simpleEmail,"Regarding your JavaZone submission");
+            simpleEmail.setMsg("Hello,\n\n" +
+                    "The program committee has added a comment to your submisston that requires your attention. " +
+                    "Please head to https://submit.javazone.no to see the comment.\n" +
+                    "\nRegards\nThe JavaZone program comittee");
+        } catch (EmailException e) {
+            throw new RuntimeException(e);
+        }
+        return simpleEmail;
     }
 
     private void giveRating(HttpServletRequest req, HttpServletResponse resp) throws IOException {

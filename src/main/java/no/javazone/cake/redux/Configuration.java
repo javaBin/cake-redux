@@ -109,6 +109,10 @@ public class Configuration {
         return Integer.parseInt(serverPortStr);
     }
 
+    public static String mailSenderImplementation() {
+        return readConf("mailSenderImplementation","smtp");
+    }
+
     public static String smtpServer() {
         return getProperty("smthost");
     }

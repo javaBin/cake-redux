@@ -1,5 +1,6 @@
 package no.javazone.cake.redux;
 
+import no.javazone.cake.redux.mail.MailSenderImplementation;
 import no.javazone.cake.redux.mail.MailSenderService;
 import no.javazone.cake.redux.mail.SmtpMailSender;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
@@ -98,7 +99,7 @@ public class SpeakerMailSender {
         mail = setupMailHeader(mail,"JavaZone 2016 Call for Speaker");
         mail.addTo(email);
         mail.setMsg(msg);
-        MailSenderService.get().sendMail(SmtpMailSender.create(mail));
+        MailSenderService.get().sendMail(MailSenderImplementation.create(mail));
     }
 
     private Set<String> readSpeakerList() {

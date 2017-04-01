@@ -322,7 +322,7 @@ public class SleepingpillCommunicator {
     }
 
 
-    public JsonArray addPublicComment(String ref, String comment, String lastModified) {
+    public JsonObject addPublicComment(String ref, String comment, String lastModified) {
         JsonObject payload = JsonFactory.jsonObject();
         payload.put("lastUpdated",lastModified);
 
@@ -331,6 +331,6 @@ public class SleepingpillCommunicator {
         payload.put("comments",JsonFactory.jsonArray().add(commentobj));
 
         JsonObject jsonObject = sendTalkUpdate(ref, payload);
-        return jsonObject.requiredArray("comments");
+        return jsonObject;
     }
 }

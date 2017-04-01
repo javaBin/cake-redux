@@ -7,13 +7,9 @@ public class SmtpMailSender implements MailSenderImplementation {
     private final SimpleEmail simpleEmail;
 
     public SmtpMailSender(SimpleEmail simpleEmail) {
-
         this.simpleEmail = simpleEmail;
     }
 
-    public static SmtpMailSender create(SimpleEmail simpleEmail) {
-        return new SmtpMailSender(simpleEmail);
-    }
     @Override
     public void send() {
         try {

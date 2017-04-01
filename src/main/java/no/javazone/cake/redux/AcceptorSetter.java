@@ -1,5 +1,6 @@
 package no.javazone.cake.redux;
 
+import no.javazone.cake.redux.mail.MailSenderImplementation;
 import no.javazone.cake.redux.mail.MailSenderService;
 import no.javazone.cake.redux.mail.SmtpMailSender;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
@@ -111,13 +112,13 @@ public class AcceptorSetter {
 
         String message = generateMessage(template,title, talkType, speakerName, submitLink, confirmLocation,jsonTalk);
         mail.setMsg(message);
-        MailSenderService.get().sendMail(SmtpMailSender.create(mail));
+        MailSenderService.get().sendMail(MailSenderImplementation.create(mail));
     }
 
 
 
 
-    private SimpleEmail setupMailHeader(SimpleEmail mail,String subject) throws EmailException {
+    public static SimpleEmail setupMailHeader(SimpleEmail mail,String subject) throws EmailException {
         mail.setHostName(Configuration.smtpServer());
         mail.setFrom("program@java.no", "Javazone program commitee");
         mail.addBcc("program-auto@java.no");
