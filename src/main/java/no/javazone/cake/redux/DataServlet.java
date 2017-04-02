@@ -91,7 +91,7 @@ public class DataServlet extends HttpServlet {
                     });
             AcceptorSetter.setupMailHeader(simpleEmail,"Regarding your JavaZone submission");
             simpleEmail.setMsg("Hello,\n\n" +
-                    "The program committee has added a comment to your submisston that requires your attention. " +
+                    "The program committee has added a comment to your submission that requires your attention. " +
                     "Please head to https://submit.javazone.no to see the comment.\n" +
                     "\nRegards\nThe JavaZone program comittee");
         } catch (EmailException e) {
