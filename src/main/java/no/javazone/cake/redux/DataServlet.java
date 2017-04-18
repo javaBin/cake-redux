@@ -225,14 +225,17 @@ public class DataServlet extends HttpServlet {
         String pathInfo = request.getPathInfo();
         if ("/talks".equals(pathInfo)) {
             String encEvent = request.getParameter("eventId");
-            writer.append(sleepingpillCommunicator.talkShortVersion(encEvent));
+            String json = sleepingpillCommunicator.talkShortVersion(encEvent);
+
+            writer.append(json);
+
         } else if ("/atalk".equals(pathInfo)) {
             String encTalk = request.getParameter("talkId");
             JsonObject oneTalkAsJson = sleepingpillCommunicator.oneTalkAsJson(encTalk);
             appendFeedbacks(oneTalkAsJson,encTalk);
             // TODO Fix feedbacks
             appendUserFeedback(oneTalkAsJson, userFeedbackCommunicator.feedback(oneTalkAsJson.stringValue("emslocation")));
-            oneTalkAsJson.toJson(writer);
+            writer.append(SleepingpillCommunicator.jsonHackFix(oneTalkAsJson.toJson()));
         } else if ("/events".equals(pathInfo)) {
             writer.append(sleepingpillCommunicator.allEvents());
         } else if ("/roomsSlots".equals(pathInfo)) {

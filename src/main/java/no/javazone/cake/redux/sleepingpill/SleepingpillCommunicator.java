@@ -50,7 +50,18 @@ public class SleepingpillCommunicator {
         JsonArray result = JsonArray.fromNodeStream(allSubmittedTalksFromConference(conferenceid)
                 .objectStream()
                 .map(SleepingpillCommunicator::talkObj));
-        return result.toJson();
+
+        return jsonHackFix(result.toJson());
+    }
+
+    public static String jsonHackFix(String jsonstr) {
+        StringBuilder fixed = new StringBuilder(jsonstr);
+        for (int i=0;i<fixed.length();i++) {
+            if (fixed.charAt(i) == '\u000B') {
+                fixed.replace(i,i+1," ");
+            }
+        }
+        return fixed.toString();
     }
 
     public JsonObject oneTalkAsJson(String talkid) {
