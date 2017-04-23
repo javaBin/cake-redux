@@ -182,6 +182,13 @@ public class SleepingpillCommunicator {
 
 
     private JsonArray allSubmittedTalksFromConference(String conferenceid) {
+        JsonArray conferences = allTalkFromConferenceSleepingPillFormat(conferenceid);
+        JsonArray withoutDraft = JsonArray.fromNodeStream(conferences.objectStream().filter(ob -> !"DRAFT".equals(ob.requiredString("status"))));
+
+        return withoutDraft;
+    }
+
+    public JsonArray allTalkFromConferenceSleepingPillFormat(String conferenceid) {
         String url = Configuration.sleepingPillBaseLocation() + "/data/conference/" +conferenceid + "/session";
         URLConnection urlConnection = openConnection(url);
         JsonObject jsonObject;
@@ -190,10 +197,7 @@ public class SleepingpillCommunicator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        JsonArray conferences = jsonObject.requiredArray("sessions");
-        JsonArray withoutDraft = JsonArray.fromNodeStream(conferences.objectStream().filter(ob -> !"DRAFT".equals(ob.requiredString("status"))));
-
-        return withoutDraft;
+        return jsonObject.requiredArray("sessions");
     }
 
     private HttpURLConnection openConnection(String urlpath) {
