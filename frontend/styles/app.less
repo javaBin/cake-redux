@@ -2,7 +2,16 @@
     display: flex;
     height: 100%;
 
+    &__events {
+        overflow-y: scroll;
+    }
+
+    &__talks {
+        overflow-y: scroll;
+    }
+
     &__talk {
         flex-grow: 1;
+        overflow-y: auto;
     }
 }
