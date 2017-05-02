@@ -1,5 +1,9 @@
 module Messages exposing (Msg(..))
 
+import Model.Event exposing (Event)
+import Http
+
 
 type Msg
-    = Placeholder
+    = GetEvents
+    | GotEvents (Result Http.Error (List Event))
