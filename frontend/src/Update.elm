@@ -1,4 +1,4 @@
-module Update exposing (update)
+module Update exposing (update, updatePage)
 
 import Model exposing (Model)
 import Model.Page exposing (Page(..))
@@ -10,7 +10,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChangePage page ->
-            updatePage page model
+            ( model, updatePage page )
 
         GetEvents ->
             ( model, getEvents )
@@ -31,14 +31,14 @@ update msg model =
             ( model, Cmd.none )
 
 
-updatePage : Page -> Model -> ( Model, Cmd Msg )
-updatePage page model =
+updatePage : Page -> Cmd Msg
+updatePage page =
     case page of
         EventsPage ->
-            ( model, Cmd.none )
+            getEvents
 
         EventPage id ->
-            ( model, getTalks id )
+            getTalks id
 
         TalkPage _ _ ->
-            ( model, Cmd.none )
+            Cmd.none
