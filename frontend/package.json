@@ -1,0 +1,27 @@
+{
+  "name": "cake-redux",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+      "clean": "rm -rf dist && mkdir -p dist",
+      "copy": "cp -a static/. dist/",
+      "watch:static": "onchange 'static/**' -- npm run copy",
+      "build:elm": "elm-make Main.elm --output=dist/app.js",
+      "watch:elm": "elm-live Main.elm --output=dist/app.js --dir=dist -- --debug",
+      "build:less": "lessc styles/main.less > dist/cake.css",
+      "watch:less": "onchange 'styles/**/*.less' -- npm run build:less",
+      "build": "npm-run-all clean copy build:elm build:less",
+      "watch": "npm-run-all clean copy build:less --parallel watch:elm watch:less watch:static",
+      "start": "npm run watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+      "elm-live": "^2.4.1",
+      "less": "^2.7.1",
+      "npm-run-all": "^3.1.2",
+      "onchange": "^3.2.1"
+  }
+}
