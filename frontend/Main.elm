@@ -1,22 +1,23 @@
 module Main exposing (main)
 
 import Model exposing (Model)
-import Messages exposing (Msg)
+import Messages exposing (Msg(..))
 import Update exposing (update)
 import View exposing (view)
 import Subscriptions exposing (subscriptions)
 import Requests exposing (getEvents)
-import Html exposing (Html, program, text, div)
+import Navigation exposing (Location, program)
+import Nav exposing (hashParser)
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( Model [], getEvents )
+init : Location -> ( Model, Cmd Msg )
+init location =
+    ( Model [] [], getEvents )
 
 
 main : Program Never Model Msg
 main =
-    program
+    program (ChangePage << hashParser)
         { init = init
         , update = update
         , view = view
