@@ -6,7 +6,7 @@ import Messages exposing (Msg(..))
 import Update exposing (update, updatePage)
 import View exposing (view)
 import Subscriptions exposing (subscriptions)
-import Requests exposing (getEvents, getTalks)
+import Requests exposing (getEvents, getTalks, getTalk)
 import Navigation exposing (Location, program)
 import Nav exposing (hashParser)
 
@@ -21,16 +21,25 @@ initialRequests page =
             [ getEvents, getTalks eventId ]
 
         TalkPage eventId talkId ->
-            [ getEvents, getTalks eventId, Cmd.none ]
+            [ getEvents, getTalks eventId, getTalk talkId ]
 
 
 init : Location -> ( Model, Cmd Msg )
 init location =
     let
+        model =
+            Model [] Nothing [] Nothing
+
+        page =
+            hashParser location
+
+        ( updatedModel, _ ) =
+            updatePage page model
+
         requests =
-            initialRequests <| hashParser location
+            initialRequests page
     in
-        ( Model [] [], Cmd.batch requests )
+        ( updatedModel, Cmd.batch requests )
 
 
 main : Program Never Model Msg

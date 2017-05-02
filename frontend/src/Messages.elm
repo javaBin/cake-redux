@@ -12,3 +12,5 @@ type Msg
     | GotEvents (Result Http.Error (List Event))
     | GetTalks String
     | GotTalks (Result Http.Error (List Talk))
+    | GetTalk String
+    | GotTalk (Result Http.Error Talk)

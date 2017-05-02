@@ -14,7 +14,8 @@ view : Model -> Html Msg
 view model =
     div [ class "app" ] <|
         [ div [ class "app__events" ] [ viewEvents model.events ]
-        , div [ class "app__talks" ] [ viewTalks model.talks ]
+        , div [ class "app__talks" ] [ viewTalks model ]
+        , div [ class "app__talk" ] [ viewFullTalk model.talk ]
         ]
 
 
@@ -29,12 +30,22 @@ viewEvent event =
         [ a [ href <| toHash <| EventPage event.ref ] [ text event.name ] ]
 
 
-viewTalks : List Talk -> Html Msg
-viewTalks talks =
-    ul [ class "talks" ] <| List.map viewTalk talks
+viewTalks : Model -> Html Msg
+viewTalks model =
+    ul [ class "talks" ] <| List.map (viewTalk <| Maybe.withDefault "" model.eventId) model.talks
 
 
-viewTalk : Talk -> Html Msg
-viewTalk talk =
+viewTalk : String -> Talk -> Html Msg
+viewTalk eventId talk =
     li [ class "talks__talk" ]
-        [ text talk.title ]
+        [ a [ href <| toHash <| TalkPage eventId talk.ref ] [ text talk.title ] ]
+
+
+viewFullTalk : Maybe Talk -> Html Msg
+viewFullTalk maybeTalk =
+    case maybeTalk of
+        Nothing ->
+            div [] []
+
+        Just talk ->
+            div [ class "talk" ] [ text talk.title ]

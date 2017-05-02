@@ -3,14 +3,14 @@ module Update exposing (update, updatePage)
 import Model exposing (Model)
 import Model.Page exposing (Page(..))
 import Messages exposing (Msg(..))
-import Requests exposing (getEvents, getTalks)
+import Requests exposing (getEvents, getTalks, getTalk)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChangePage page ->
-            ( model, updatePage page )
+            updatePage page model
 
         GetEvents ->
             ( model, getEvents )
@@ -30,15 +30,24 @@ update msg model =
         GotTalks _ ->
             ( model, Cmd.none )
 
+        GetTalk id ->
+            ( model, getTalk id )
 
-updatePage : Page -> Cmd Msg
-updatePage page =
+        GotTalk (Ok talk) ->
+            ( { model | talk = Just talk }, Cmd.none )
+
+        GotTalk _ ->
+            ( model, Cmd.none )
+
+
+updatePage : Page -> Model -> ( Model, Cmd Msg )
+updatePage page model =
     case page of
         EventsPage ->
-            getEvents
+            ( model, getEvents )
 
         EventPage id ->
-            getTalks id
+            ( { model | eventId = Just id }, getTalks id )
 
-        TalkPage _ _ ->
-            Cmd.none
+        TalkPage eventId talkId ->
+            ( { model | eventId = Just eventId }, getTalk talkId )

@@ -1,4 +1,4 @@
-module Model.Talk exposing (Talk, talksDecoder)
+module Model.Talk exposing (Talk, talkDecoder, talksDecoder)
 
 import Json.Decode exposing (Decoder, string, list)
 import Json.Decode.Pipeline exposing (decode, required)
