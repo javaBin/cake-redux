@@ -11,7 +11,7 @@ import Html exposing (Html, program, text, div)
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model "Hello, world", getEvents )
+    ( Model [], getEvents )
 
 
 main : Program Never Model Msg
