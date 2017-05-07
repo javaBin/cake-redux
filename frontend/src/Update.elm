@@ -2,6 +2,7 @@ module Update exposing (update, updatePage)
 
 import Model exposing (Model)
 import Model.Page exposing (Page(..))
+import Model.Event exposing (sortEvents)
 import Messages exposing (Msg(..))
 import Requests exposing (getEvents, getTalks, getTalk)
 
@@ -16,7 +17,7 @@ update msg model =
             ( model, getEvents )
 
         GotEvents (Ok events) ->
-            ( { model | events = events }, Cmd.none )
+            ( { model | events = sortEvents events }, Cmd.none )
 
         GotEvents _ ->
             ( model, Cmd.none )
