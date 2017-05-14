@@ -5,16 +5,13 @@ import no.javazone.cake.redux.Configuration;
 import no.javazone.cake.redux.NoUserAceessException;
 import no.javazone.cake.redux.UserAccessType;
 import org.jsonbuddy.*;
-import org.jsonbuddy.JsonNode;
 import org.jsonbuddy.parse.JsonParser;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,8 +64,18 @@ public class SleepingpillCommunicator {
     public JsonObject oneTalkAsJson(String talkid) {
         JsonObject talk = oneTalkStripped(talkid);
         JsonArray allConferences = parseJsonFromConnection(openConnection(Configuration.sleepingPillBaseLocation() + "/data/conference")).requiredArray("conferences");
-        talk.requiredArray("speakers").objectStream().forEach(speaker -> {
-            String url = Configuration.sleepingPillBaseLocation() + "/data/submitter/" + speaker.requiredString("email") + "/session";
+
+        JsonArray speakersArr = talk.requiredArray("speakers");
+        for (JsonNode part : speakersArr) {
+            if (!(part instanceof JsonObject)) {
+                continue;
+            }
+            JsonObject speaker = (JsonObject) part;
+            String speakerEmail = speaker.requiredString("email");
+            try {
+                speakerEmail = URLEncoder.encode(speakerEmail,"UTF-8");
+            } catch (UnsupportedEncodingException ignored) {}
+            String url = Configuration.sleepingPillBaseLocation() + "/data/submitter/" + speakerEmail + "/session";
             JsonObject speakerTalks = parseJsonFromConnection(openConnection(url));
             JsonArray otherTalks = JsonArray.fromNodeStream(
                     speakerTalks.requiredArray("sessions").objectStream()
@@ -76,7 +83,7 @@ public class SleepingpillCommunicator {
                             .map(obj -> buildSimularTalk(obj,allConferences))
             );
             speaker.put("spOtherTalks",otherTalks);
-        });
+        }
 
         return talk;
     }
