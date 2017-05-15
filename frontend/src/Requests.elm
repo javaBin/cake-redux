@@ -15,7 +15,7 @@ getEvents =
 getTalks : String -> Cmd Msg
 getTalks id =
     Http.send GotTalks <|
-        Http.get (url <| "talks?evendId=" ++ id) talksDecoder
+        Http.get (url <| "talks?eventId=" ++ id) talksDecoder
 
 
 getTalk : String -> Cmd Msg
