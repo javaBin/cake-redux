@@ -4,7 +4,7 @@ import Model exposing (Model)
 import Model.Page exposing (Page(..))
 import Model.Event exposing (sortEvents)
 import Messages exposing (Msg(..))
-import Requests exposing (getEvents, getTalks, getTalk)
+import Requests exposing (getEvents, getTalks, getTalk, updateTalk)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -38,6 +38,18 @@ update msg model =
             ( { model | talk = Just talk }, Cmd.none )
 
         GotTalk _ ->
+            ( model, Cmd.none )
+
+        UpdateTalkField talk ->
+            ( { model | talk = Just talk }, Cmd.none )
+
+        UpdateTalk talk ->
+            ( model, updateTalk talk )
+
+        TalkUpdated (Ok talk) ->
+            ( { model | talk = Just talk }, Cmd.none )
+
+        TalkUpdated (Err talk) ->
             ( model, Cmd.none )
 
 

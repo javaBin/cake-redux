@@ -5,6 +5,7 @@ import Messages exposing (Msg)
 import Model.Event exposing (Event)
 import Model.Talk exposing (Talk)
 import Model.Page exposing (Page(..))
+import View.Talk
 import Nav exposing (toHash)
 import Html exposing (Html, div, text, ul, li, a, h2, h3, p)
 import Html.Attributes exposing (class, href)
@@ -48,18 +49,4 @@ viewFullTalk maybeTalk =
             div [] []
 
         Just talk ->
-            div [ class "talk" ] 
-            [ h2 [] [text talk.title] 
-            , div [ class "talk__metadata" ] [text <| talk.format ++ " / " ++ talk.length ++ " minutes / " ++ talk.lang]
-            , p [] [text talk.body]
-            , div []
-                [ h3 [] [ text "Expected audience" ]
-                , p [] [ text talk.audience]
-                , h3 [] [ text "Equipment" ]
-                , p [] [ text talk.equipment ]
-                , h3 [] [ text "Outline" ]
-                , p [] [ text talk.outline ]
-                , h3 [] [ text "Info to the program committee" ]
-                , p [] [ text talk.infoToProgramCommittee ]
-                ]
-            ]
+            View.Talk.view talk
