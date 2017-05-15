@@ -1,6 +1,7 @@
-module Model.Talk exposing (Talk, talkDecoder, talksDecoder)
+module Model.Talk exposing (Talk, talkDecoder, talksDecoder, talkEncoder)
 
 import Json.Decode exposing (Decoder, string, list)
+import Json.Encode as Encode
 import Json.Decode.Pipeline exposing (decode, required)
 
 
@@ -50,3 +51,13 @@ talkDecoder =
         |> required "summary" string
         |> required "tags" (list string)
         |> required "title" string
+
+
+talkEncoder : Talk -> Encode.Value
+talkEncoder talk =
+    Encode.object
+        [ ( "ref", Encode.string talk.ref )
+        , ( "state", Encode.string talk.state )
+        , ( "tags", Encode.list <| List.map Encode.string talk.tags )
+        , ( "keywords", Encode.list <| List.map Encode.string talk.keywords )
+        ]
