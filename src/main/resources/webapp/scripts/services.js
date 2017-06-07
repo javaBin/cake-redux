@@ -195,6 +195,9 @@ angular.module('cakeReduxModule')
             if (!isMatch(filter.format,talk.format)) {
                 return false;
             }
+            if (filter["length"] && filter["length"] !== talk["length"]) {
+                return false;
+            }
             if (!isMatch(filter.language,talk.lang)) {
                 return false;
             }
