@@ -54,13 +54,13 @@ public class WebServer {
             webAppContext.setBaseResource(Resource.newClassPathResource("webapp", true, false));
         }
 
-        webAppContext.addServlet(new ServletHolder(new DataServlet()),"/secured/data/*");
-        webAppContext.addServlet(new ServletHolder(new OpenDataServlet()),"/data/*");
-        webAppContext.addServlet(new ServletHolder(new SigninServlet()), "/signin/");
-        webAppContext.addServlet(new ServletHolder(new EntranceServlet()), "/entrance");
-        webAppContext.addServlet(new ServletHolder(new WhydaServlet()),"/whydalogin");
+        webAppContext.addServlet(new ServletHolder(new DataServlet()),"/api/secured/data/*");
+        webAppContext.addServlet(new ServletHolder(new OpenDataServlet()),"/api/data/*");
+        webAppContext.addServlet(new ServletHolder(new SigninServlet()), "/api/signin/");
+        webAppContext.addServlet(new ServletHolder(new EntranceServlet()), "/api/entrance");
+        webAppContext.addServlet(new ServletHolder(new WhydaServlet()),"/api/whydalogin");
 
-        webAppContext.addFilter(new FilterHolder(new SecurityFilter()), "/secured/*", EnumSet.of(REQUEST));
+        webAppContext.addFilter(new FilterHolder(new SecurityFilter()), "/api/secured/*", EnumSet.of(REQUEST));
 
         webAppContext.addFilter(new FilterHolder(new VideoAdminFilter()), "/videoadmin/*", EnumSet.of(REQUEST));
         webAppContext.addServlet(new ServletHolder(new VideoAdminServlet()),"/videoadmin/api/*");
