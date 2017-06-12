@@ -64,7 +64,7 @@ updateTalk talk token =
 
 postRequest : Decoder a -> Http.Body -> String -> String -> Http.Request a
 postRequest decoder body =
-    request "GET" (Http.expectJson decoder) body
+    request "POST" (Http.expectJson decoder) body
 
 
 getRequest : Decoder a -> String -> String -> Http.Request a
