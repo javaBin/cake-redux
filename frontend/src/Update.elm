@@ -5,6 +5,7 @@ import Model.Page exposing (Page(..))
 import Model.Event exposing (sortEvents)
 import Messages exposing (Msg(..))
 import Requests exposing (getEvents, getTalks, getTalk, updateTalk)
+import Auth exposing (reauthenticate)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -51,6 +52,9 @@ update msg model =
 
         TalkUpdated (Err talk) ->
             ( model, Cmd.none )
+
+        Reauthenticate ->
+            ( model, reauthenticate () )
 
 
 updatePage : Page -> Model -> ( Model, Cmd Msg )

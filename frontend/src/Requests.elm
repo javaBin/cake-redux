@@ -3,7 +3,38 @@ module Requests exposing (..)
 import Messages exposing (Msg(..))
 import Model.Event exposing (eventsDecoder)
 import Model.Talk exposing (Talk, talkDecoder, talksDecoder, talkEncoder)
-import Http
+import Http exposing (Error, Request)
+
+
+send : (Result Error a -> Messages.Msg) -> Request a -> Cmd Messages.Msg
+send msg request =
+    Http.send msg request
+        |> Cmd.map
+            (\m ->
+                case m of
+                    GotEvents (Err (Http.BadStatus res)) ->
+                        checkStatus res m
+
+                    GotTalks (Err (Http.BadStatus res)) ->
+                        checkStatus res m
+
+                    GotTalk (Err (Http.BadStatus res)) ->
+                        checkStatus res m
+
+                    TalkUpdated (Err (Http.BadStatus res)) ->
+                        checkStatus res m
+
+                    _ ->
+                        m
+            )
+
+
+checkStatus : Http.Response body -> Messages.Msg -> Messages.Msg
+checkStatus res msg =
+    if res.status.code == 403 then
+        Reauthenticate
+    else
+        msg
 
 
 getEvents : Cmd Msg

@@ -1,13 +1,13 @@
 module Main exposing (main)
 
-import Model exposing (Model)
+import Model exposing (Model, Flags, AppConfig, initAppConfig)
 import Model.Page exposing (Page(..))
 import Messages exposing (Msg(..))
 import Update exposing (update, updatePage)
 import View exposing (view)
 import Subscriptions exposing (subscriptions)
 import Requests exposing (getEvents, getTalks, getTalk)
-import Navigation exposing (Location, program)
+import Navigation exposing (Location, programWithFlags)
 import Nav exposing (hashParser)
 
 
@@ -24,8 +24,8 @@ initialRequests page =
             [ getEvents, getTalks eventId, getTalk talkId ]
 
 
-init : Location -> ( Model, Cmd Msg )
-init location =
+init : Flags -> Location -> ( Model, Cmd Msg )
+init flags location =
     let
         model =
             Model [] Nothing [] Nothing
@@ -42,9 +42,9 @@ init location =
         ( updatedModel, Cmd.batch requests )
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    program (ChangePage << hashParser)
+    programWithFlags (ChangePage << hashParser)
         { init = init
         , update = update
         , view = view

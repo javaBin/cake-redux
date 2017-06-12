@@ -17,3 +17,4 @@ type Msg
     | UpdateTalkField Talk
     | UpdateTalk Talk
     | TalkUpdated (Result Http.Error Talk)
+    | Reauthenticate
