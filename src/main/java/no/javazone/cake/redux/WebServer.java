@@ -61,6 +61,7 @@ public class WebServer {
         webAppContext.addServlet(new ServletHolder(new WhydaServlet()),"/api/whydalogin");
 
         webAppContext.addFilter(new FilterHolder(new SecurityFilter()), "/api/secured/*", EnumSet.of(REQUEST));
+	webAppContext.addFilter(new FilterHolder(new CorsFilter()), "/api/*", EnumSet.of(REQUEST));
 
         webAppContext.addFilter(new FilterHolder(new VideoAdminFilter()), "/videoadmin/*", EnumSet.of(REQUEST));
         webAppContext.addServlet(new ServletHolder(new VideoAdminServlet()),"/videoadmin/api/*");
