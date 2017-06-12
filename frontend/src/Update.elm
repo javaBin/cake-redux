@@ -15,7 +15,7 @@ update msg model =
             updatePage page model
 
         GetEvents ->
-            ( model, getEvents )
+            ( model, getEvents model.appConfig.token )
 
         GotEvents (Ok events) ->
             ( { model | events = sortEvents events }, Cmd.none )
@@ -24,7 +24,7 @@ update msg model =
             ( model, Cmd.none )
 
         GetTalks id ->
-            ( model, getTalks id )
+            ( model, getTalks id model.appConfig.token )
 
         GotTalks (Ok talks) ->
             ( { model | talks = talks }, Cmd.none )
@@ -33,7 +33,7 @@ update msg model =
             ( model, Cmd.none )
 
         GetTalk id ->
-            ( model, getTalk id )
+            ( model, getTalk id model.appConfig.token )
 
         GotTalk (Ok talk) ->
             ( { model | talk = Just talk }, Cmd.none )
@@ -45,7 +45,7 @@ update msg model =
             ( { model | talk = Just talk }, Cmd.none )
 
         UpdateTalk talk ->
-            ( model, updateTalk talk )
+            ( model, updateTalk talk model.appConfig.token )
 
         TalkUpdated (Ok talk) ->
             ( { model | talk = Just talk }, Cmd.none )
@@ -61,10 +61,10 @@ updatePage : Page -> Model -> ( Model, Cmd Msg )
 updatePage page model =
     case page of
         EventsPage ->
-            ( model, getEvents )
+            ( model, getEvents model.appConfig.token )
 
         EventPage id ->
-            ( { model | eventId = Just id }, getTalks id )
+            ( { model | eventId = Just id }, getTalks id model.appConfig.token )
 
         TalkPage eventId talkId ->
-            ( { model | eventId = Just eventId }, getTalk talkId )
+            ( { model | eventId = Just eventId }, getTalk talkId model.appConfig.token )

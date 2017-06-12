@@ -11,17 +11,17 @@ import Navigation exposing (Location, programWithFlags)
 import Nav exposing (hashParser)
 
 
-initialRequests : Page -> List (Cmd Msg)
-initialRequests page =
+initialRequests : Page -> String -> List (Cmd Msg)
+initialRequests page token =
     case page of
         EventsPage ->
-            [ getEvents ]
+            [ getEvents token ]
 
         EventPage eventId ->
-            [ getEvents, getTalks eventId ]
+            [ getEvents token, getTalks eventId token ]
 
         TalkPage eventId talkId ->
-            [ getEvents, getTalks eventId, getTalk talkId ]
+            [ getEvents token, getTalks eventId token, getTalk talkId token ]
 
 
 init : Flags -> Location -> ( Model, Cmd Msg )
@@ -37,7 +37,7 @@ init flags location =
             updatePage page model
 
         requests =
-            initialRequests page
+            initialRequests page model.appConfig.token
     in
         ( updatedModel, Cmd.batch requests )
 

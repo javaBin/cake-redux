@@ -3,6 +3,7 @@ module Requests exposing (..)
 import Messages exposing (Msg(..))
 import Model.Event exposing (eventsDecoder)
 import Model.Talk exposing (Talk, talkDecoder, talksDecoder, talkEncoder)
+import Json.Decode exposing (Decoder)
 import Http exposing (Error, Request)
 
 
@@ -37,30 +38,58 @@ checkStatus res msg =
         msg
 
 
-getEvents : Cmd Msg
-getEvents =
-    Http.send GotEvents <|
-        Http.get (url "events") eventsDecoder
+getEvents : String -> Cmd Msg
+getEvents token =
+    send GotEvents <|
+        getRequest eventsDecoder token (url "events")
 
 
-getTalks : String -> Cmd Msg
-getTalks id =
-    Http.send GotTalks <|
-        Http.get (url <| "talks?eventId=" ++ id) talksDecoder
+getTalks : String -> String -> Cmd Msg
+getTalks id token =
+    send GotTalks <|
+        getRequest talksDecoder token (url <| "talks?evendId=" ++ id)
 
 
-getTalk : String -> Cmd Msg
-getTalk id =
-    Http.send GotTalk <|
-        Http.get (url <| "atalk?talkId=" ++ id) talkDecoder
+getTalk : String -> String -> Cmd Msg
+getTalk id token =
+    send GotTalk <|
+        getRequest talkDecoder token (url <| "atalk?talkId=" ++ id)
 
 
-updateTalk : Talk -> Cmd Msg
-updateTalk talk =
-    Http.send TalkUpdated <|
-        Http.post (url "editTalk") (Http.jsonBody <| talkEncoder talk) talkDecoder
+updateTalk : Talk -> String -> Cmd Msg
+updateTalk talk token =
+    send TalkUpdated <|
+        postRequest talkDecoder (Http.jsonBody <| talkEncoder talk) token (url "editTalk")
+
+
+postRequest : Decoder a -> Http.Body -> String -> String -> Http.Request a
+postRequest decoder body =
+    request "GET" (Http.expectJson decoder) body
+
+
+getRequest : Decoder a -> String -> String -> Http.Request a
+getRequest decoder =
+    request "GET" (Http.expectJson decoder) Http.emptyBody
+
+
+request : String -> Http.Expect a -> Http.Body -> String -> String -> Http.Request a
+request method expect body token url =
+    Http.request
+        { method = method
+        , headers = [ Http.header "Accept" "application/json", authHeader token ]
+        , url = url
+        , body = body
+        , expect = expect
+        , timeout = Nothing
+        , withCredentials = False
+        }
 
 
 url : String -> String
 url path =
-    "http://localhost:8081/secured/data/" ++ path
+    "https://cake.javazone.no/api/secured/data/" ++ path
+
+
+authHeader : String -> Http.Header
+authHeader token =
+    Http.header "Authorization" <| "Bearer " ++ token
