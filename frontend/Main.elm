@@ -28,7 +28,7 @@ init : Flags -> Location -> ( Model, Cmd Msg )
 init flags location =
     let
         model =
-            Model [] Nothing [] Nothing
+            Model [] Nothing [] Nothing <| initAppConfig flags
 
         page =
             hashParser location

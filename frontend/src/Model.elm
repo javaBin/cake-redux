@@ -9,6 +9,7 @@ type alias Model =
     , eventId : Maybe String
     , talks : List Talk
     , talk : Maybe Talk
+    , appConfig : AppConfig
     }
 
 
