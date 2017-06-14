@@ -277,7 +277,7 @@ public class SleepingpillCommunicator {
             return fetchOneTalk(ref);
 
         }
-        payload.put("lastUpdated",lastModified);
+        //payload.put("lastUpdated",lastModified);
         sendTalkUpdate(ref, payload);
         return fetchOneTalk(ref);
     }

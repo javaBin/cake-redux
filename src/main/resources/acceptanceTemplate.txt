@@ -1,6 +1,6 @@
 Dear #speakername#,
 
-We are pleased to inform you that your #talkType#, "#title#", has been accepted for JavaZone 2016!
+We are pleased to inform you that your #talkType#, "#title#", has been accepted for JavaZone 2017!
 
 
 CONFIRM YOUR TALK
@@ -18,7 +18,7 @@ Note that this #talkType# is accepted based upon both content and presenter. We 
 UPDATING YOUR TALK
 -----------------------------------
 
-Once you have confirmed that you are attending, we will publish your #talkType# in the agenda at http://2016.javazone.no. You can continue to edit your abstract and should therefore make sure that the following parts are updated via the below link:
+Once you have confirmed that you are attending, we will publish your #talkType# in the agenda at http://2017.javazone.no. You can continue to edit your abstract and should therefore make sure that the following parts are updated:
 
 1) Be sure to upload a good quality picture or portrait so that people know what you look like!
 2) Tag your abstract with the relevant tags - this will make it easier for our attendees to find your #talkType#.
@@ -26,28 +26,28 @@ Once you have confirmed that you are attending, we will publish your #talkType# 
 
 You can update your talk here: 
 
-#submititLink#
+https://submit.javazone.no
 
 
 OTHER PRACTICAL INFORMATION
 -----------------------------------
 
 1) Reimbursements:
-There is a limited budget for reimbursing travelling costs. This e-mail does not automatically make you eligible for reimbursements. Please see https://2016.javazone.no/monetary-policy for information about how you can apply for these.
+There is a limited budget for reimbursing travelling costs. This e-mail does not automatically make you eligible for reimbursements. Please see https://2017.javazone.no/monetary-policy for information about how you can apply for these.
 
 2) Tickets:
-As stated at http://2016.javazone.no/speakers speakers of lightning talks will have to provide for their own admission to JavaZone.
+As stated at http://2017.javazone.no/speakers speakers of lightning talks will have to provide for their own admission to JavaZone.
 
 3) JourneyZone:
-JourneyZone is open to all speakers and is a fantastic chance to experience the nature of Norway and make new friends! Read more and apply for a spot at JourneyZone here: http://2016.javazone.no/journeyzone
+JourneyZone is open to all speakers and is a fantastic chance to experience the nature of Norway and make new friends! Read more and apply for a spot at JourneyZone here: http://2017.javazone.no/journeyzone
 
 4) Speakers Workshop and Presentation Technique Course:
-Here you'll get a free Presentation Technique Course with Vibeke Holtskog, in addition to all you need to know about speaking at JavaZone! Places are limited, so visit http://www.meetup.com/javaBin/events/228729018 and register today! 
+Here you'll get a free Presentation Technique Course with Vibeke Holtskog, in addition to all you need to know about speaking at JavaZone! Places are limited, so visit https://www.meetup.com/javaBin/events/237343752/ and register today!
 
 5) Speakers dinner:
-As always we'll be hosting a speakers dinner the evening before JavaZone.  This year we will be eating at Grilleriet, just a short walk from Oslo Spektrum. You can expect more information about this in August.
+As always we'll be hosting a speakers dinner the evening before JavaZone.  This year we will be eating at Paleet, just a short walk from Oslo Spektrum. You can expect more information about this in August.
 
-For more information see: http://2016.javazone.no/speakers
+For more information see: http://2017.javazone.no/speakers
 
 
 If you have any more questions, reply to this email. Please be aware that the response time on emails during the summer holidays (in July) will be longer than normal.
@@ -56,4 +56,4 @@ If you have any questions regarding the conference, please feel free to contact 
 
 
 Best regards,
-The JavaZone 2016 Program Committee
+The JavaZone 2017 Program Committee
