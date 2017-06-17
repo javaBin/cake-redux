@@ -18,11 +18,11 @@ Note that this #talkType# is accepted based upon both content and presenter desc
 UPDATING YOUR TALK
 -----------------------------------
 
-Once you have confirmed that you are attending, we will publish your #talkType# in the agenda at http://2017.javazone.no. You can continue to edit your abstract and should therefore make sure that the following parts are updated:
+Once you have confirmed that you are attending, we will publish your #talkType# in the agenda at http://2017.javazone.no. You can continue to edit your abstract during the summer and should ensure that the following are updated:
 
 1) Be sure to upload a good quality picture or portrait so that people know what you look like!
 2) Tag your abstract with the relevant tags - this will make it easier for our attendees to find your #talkType#.
-3) Remember that your abstract, title, bio and photo will be published when you confirm this email, and that any changes you make will also be available right away.
+3) Remember that your abstract, title, bio and photo will be published when you confirm.
 
 You can update your talk here: 
 
