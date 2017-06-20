@@ -40,7 +40,7 @@ There is a limited budget for reimbursing travelling costs. This e-mail does not
 As stated at http://2017.javazone.no/speakers speakers of lightning talks will have to provide for their own admission to JavaZone.
 
 3) JourneyZone:
-JourneyZone is open to all speakers and is a fantastic chance to experience the nature of Norway and make new friends! Read more and apply for a spot at JourneyZone here: http://2017.javazone.no/journeyzone
+JourneyZone is open to all speakers and is a fantastic chance to experience the nature of Norway and make new friends! Read more and apply for a spot at JourneyZone here: http://2017.javazone.no/journeyzone. We'll start allocating JourneyZone places at the start of August.
 
 4) Speakers Workshop and Presentation Technique Course:
 Here you'll get a free Presentation Technique Course with Vibeke Holtskog, in addition to all you need to know about speaking at JavaZone! Places are limited, so visit https://www.meetup.com/javaBin/events/237343752/ and register today!
