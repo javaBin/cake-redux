@@ -1,4 +1,4 @@
-Dear #speakername#,
+Dear #speakername#
 
 We are pleased to inform you that your #talkType#, "#title#", has been accepted for JavaZone 2017!
 
