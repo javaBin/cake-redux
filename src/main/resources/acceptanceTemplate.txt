@@ -10,9 +10,9 @@ Please use the link below to confirm that you will be attending JavaZone and giv
 
 #confirmLink#
 
-Please confirm as soon as possible! If you know that you unable to attend, please inform us by sending a reply to this email.
+Please confirm as soon as possible! If you know that you're unable to attend, please inform us by sending a reply to this email.
 
-Note that this #talkType# is accepted based upon both content and presenter described in the original submission. We do not accept substitute speakers.
+Note that this #talkType# is accepted based upon both content and presenter as described in the original submission. We do not accept substitute speakers.
 
 
 UPDATING YOUR TALK
@@ -53,7 +53,7 @@ For more information see: http://2017.javazone.no/speakers
 
 If you have any more questions, reply to this email. Please be aware that the response time on emails during the summer holidays (in July) will be longer than normal.
 
-If you have any questions regarding the conference, please feel free to contact the Programme Committee at program@java.no.
+If you have any questions regarding the conference, please feel free to contact the Program Committee at program@java.no.
 
 
 Best regards,
