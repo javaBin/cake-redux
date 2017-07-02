@@ -42,6 +42,7 @@
         $scope.filterUpdated = function() {
             filterService.doFilter($scope.talks,$scope.allTalks);
             $scope.usedTags = filterService.usedTags;
+            $scope.usedKeywords = filterService.usedKeywords;
         }
         $scope.addFilter = function() {
             $scope.filters.push({title: ""})
