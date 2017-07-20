@@ -71,6 +71,7 @@
             <th>State</th>
             <th>Room</th>
             <th>Slot</th>
+            <th>Changes?</th>
         </tr>
         </thead>
         <tbody>
@@ -86,6 +87,7 @@
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.state" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.room" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.slot" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.hasUnpublishedValues" ng-change="filterUpdated()"/></td>
             </tr>
             <tr ng-repeat="talk in talks" ng-class="talkRowClass(talk)">
                 <td><a ng-href="#/showTalk/{{talk.ref}}" ng-click="talkSelected(talk)">{{talk.title}}</a></td>
@@ -98,6 +100,7 @@
                 <td>{{talk.state}}</td>
                 <td>{{talk.room.name}}</td>
                 <td>{{talk.slot.start}}-{{talk.slot.end}}</td>
+                <td>{{talk.hasUnpublishedValues}}</td>
             </tr>
         </tbody>
     </table>

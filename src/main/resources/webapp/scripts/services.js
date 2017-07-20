@@ -204,6 +204,9 @@ angular.module('cakeReduxModule')
             if (!findInArray(filter.tag,talk.tags,true)) {
                 return false;
             }
+            if (!isMatch(filter.hasUnpublishedValues,talk.hasUnpublishedValues)) {
+                return false;
+            }
             if (!findInArray(filter.keyword,talk.keywords)) {
                 return false;
             }
