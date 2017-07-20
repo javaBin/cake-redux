@@ -156,6 +156,7 @@ public class SleepingpillCommunicator {
         talkob.put("hasUnpublishedValues",jsonObject.requiredObject("sessionUpdates")
                 .requiredBoolean("hasUnpublishedChanges")
                 ? "Yes" : "No");
+        talkob.put("sessionUpdates",jsonObject.requiredObject("sessionUpdates"));
         jsonObject.stringValue("lastUpdated").ifPresent(lu -> talkob.put("lastModified",lu));
         Optional.of(readValueFromProp(jsonObject,"emslocation"))
                 .filter(s -> !s.stringValue().isEmpty())

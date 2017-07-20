@@ -265,5 +265,17 @@
             <button class="btn btn-primary" ng-click="addPubComment()">Add</button>
         </p>
     </div>
+    <h2>Unpublished changes:</h2>
+    <p>Has unpublished changes: {{aTalk.hasUnpublishedValues}}</p>
+    <ul>
+        <li ng-repeat="propchange in aTalk.sessionUpdates.oldValues"><b>{{propchange.key}}</b> : {{propchange.value}}</li>
+    </ul>
+    <h3>Speaker update</h3>
+    <span ng-repeat="speakchange in aTalk.sessionUpdates.speakerUpdates">
+        <h4>{{speakchange.updateType}}</h4>
+        <ul>
+            <li ng-repeat="propchange in speakchange.publicValues"><b>{{propchange.key}}</b> : {{propchange.value}}</li>
+        </ul>
+    </span>
     <h6>Last modified: {{aTalk.lastModified}}</h6>
 </div>
