@@ -202,7 +202,7 @@ angular.module('cakeReduxModule')
                 }).success(function (data) {
                     $scope.ratings = data;
                 });
-            }
+            };
 
             $scope.addPubComment = function () {
                 $http({
@@ -218,7 +218,19 @@ angular.module('cakeReduxModule')
                     $scope.newPubCommentText = "";
                 });
 
-            }
+            };
+
+            $scope.publishChanges = function () {
+                $http({
+                    method: "POST",
+                    url: "data/publishChanges",
+                    data: {
+                        talkref: talkRef
+                    }
+                }).success(function (data) {
+                    window.location.reload();
+                });
+            };
 
         }]);
 

@@ -51,8 +51,20 @@ public class DataServlet extends HttpServlet {
         } else if ("/addPubComment".equals(pathInfo)) {
             addPublicComment(req,resp);
             resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/publishChanges".equals(pathInfo)) {
+            publishChanges(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
         }
 
+    }
+
+    private void publishChanges(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject update;
+        try (InputStream inputStream = req.getInputStream()) {
+            update = JsonParser.parseToObject(inputStream);
+        }
+        sleepingpillCommunicator.pubishChanges(update.requiredString("talkref"),computeAccessType(req));
+        JsonFactory.jsonObject().toJson(resp.getWriter());
     }
 
     private void addPublicComment(HttpServletRequest req, HttpServletResponse resp) throws IOException {

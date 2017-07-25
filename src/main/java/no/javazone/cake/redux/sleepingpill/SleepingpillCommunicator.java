@@ -359,4 +359,26 @@ public class SleepingpillCommunicator {
         JsonObject jsonObject = sendTalkUpdate(ref, payload);
         return jsonObject;
     }
+
+    public void pubishChanges(String talkref, UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
+        String url = Configuration.sleepingPillBaseLocation() + "/data/session/" + talkref + "/publish";
+
+
+        HttpURLConnection conn = openConnection(url);
+
+        try {
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            try (PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(),"utf-8"))) {
+                JsonFactory.jsonObject().toJson(printWriter);
+            }
+            try (InputStream is = conn.getInputStream()) {
+                JsonParser.parseToObject(is);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
