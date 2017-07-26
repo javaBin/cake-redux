@@ -84,7 +84,12 @@
                 default:
                     return "XXX";
             }
-        }
+        };
+
+        $scope.setupSchedule = function () {
+            sessionStorage.setItem("selectedTalks",$scope.talks);
+            window.location = "/secured/setupSchedule.html";
+        };
 
 
     }
