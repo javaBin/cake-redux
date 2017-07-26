@@ -156,6 +156,14 @@ public class SleepingpillCommunicator {
         talkob.put("hasUnpublishedValues",jsonObject.requiredObject("sessionUpdates")
                 .requiredBoolean("hasUnpublishedChanges")
                 ? "Yes" : "No");
+
+        jsonObject.requiredObject("data")
+                .objectValue("room")
+                .map(ob -> ob.requiredString("value"))
+                .ifPresent(roomname -> talkob.put("room",JsonFactory.jsonObject().put("name",roomname)));
+        readSlotFromSleepingPill(jsonObject).ifPresent(slotobj -> talkob.put("slot",slotobj));
+
+
         talkob.put("sessionUpdates",jsonObject.requiredObject("sessionUpdates"));
         jsonObject.stringValue("lastUpdated").ifPresent(lu -> talkob.put("lastModified",lu));
         Optional.of(readValueFromProp(jsonObject,"emslocation"))
@@ -178,6 +186,15 @@ public class SleepingpillCommunicator {
         return talkob;
 
 
+    }
+
+    private static Optional<JsonObject> readSlotFromSleepingPill(JsonObject talkObj) {
+        Optional<String> start = talkObj.requiredObject("data").objectValue("startTime").map(jo -> jo.requiredString("value"));
+        Optional<String> end = talkObj.requiredObject("data").objectValue("endTime").map(jo -> jo.requiredString("value"));
+        if (!(start.isPresent() && end.isPresent())) {
+            return Optional.empty();
+        }
+        return Optional.of(JsonFactory.jsonObject().put("start",start.get()).put("end",end.get()));
     }
 
     private static JsonNode readValueFromProp(JsonObject talkObj,String key) {
@@ -374,7 +391,7 @@ public class SleepingpillCommunicator {
                 JsonFactory.jsonObject().toJson(printWriter);
             }
             try (InputStream is = conn.getInputStream()) {
-                JsonParser.parseToObject(is);
+                 JsonParser.parseToObject(is);
             }
 
         } catch (IOException e) {
