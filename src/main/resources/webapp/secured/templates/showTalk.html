@@ -67,6 +67,15 @@
         <div class="col-md-1 cake-margin"><strong>Slot</strong></div>
         <div class="col-md-10">{{aTalk.slot.start}} - {{aTalk.slot.end}} <small>(yymmdd hhmm-yymmdd hhmm)</small></div>
     </div>
+    <div class="row cake-row">
+        <input class="col-md-4" type="text" ng-model="newroom"/>
+        <button class="btn" ng-click="newRoom()">Update room</button>
+    </div>
+    <div class="row cake-row">
+        <input type="datetime-local" ng-model="newstarttime"/>
+        <button class="btn" ng-click="newStarttime()">Update startime</button>
+    </div>
+
     <div ng-repeat="speaker in aTalk.speakers">
         <h3>{{speaker.name}}</h3>
         <div class="row cake-row">

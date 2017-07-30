@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class DataServlet extends HttpServlet {
     private SleepingpillCommunicator sleepingpillCommunicator;
@@ -54,8 +53,27 @@ public class DataServlet extends HttpServlet {
         } else if ("/publishChanges".equals(pathInfo)) {
             publishChanges(req,resp);
             resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/updateroomslot".equals(pathInfo)) {
+            updateRoomSlot(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
         }
 
+    }
+
+    private void updateRoomSlot(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject update;
+        try (InputStream inputStream = req.getInputStream()) {
+            update = JsonParser.parseToObject(inputStream);
+        }
+        String talkref = update.requiredString("talkref");
+        UserAccessType userAccessType = computeAccessType(req);
+        Optional<String> startTime = update.stringValue("starttime");
+        if (startTime.isPresent()) {
+            sleepingpillCommunicator.updateSlotTime(talkref,startTime.get(), userAccessType);
+        }
+        Optional<String> room = update.stringValue("room");
+
+        JsonFactory.jsonObject().toJson(resp.getWriter());
     }
 
     private void publishChanges(HttpServletRequest req, HttpServletResponse resp) throws IOException {

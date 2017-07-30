@@ -232,5 +232,18 @@ angular.module('cakeReduxModule')
                 });
             };
 
+            $scope.newStarttime = function () {
+                $http({
+                    method: "POST",
+                    url: "data/updateroomslot",
+                    data: {
+                        talkref: talkRef,
+                        starttime: $scope.newstarttime
+                    }
+                }).success(function (data) {
+                    window.location.reload();
+                });
+            };
+
         }]);
 

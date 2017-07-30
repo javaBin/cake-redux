@@ -12,6 +12,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -397,5 +401,20 @@ public class SleepingpillCommunicator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void updateSlotTime(String talkref, String startTimeStr, UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(startTimeStr);
+        LocalDateTime startTime = zonedDateTime.withZoneSameInstant(ZoneId.of("Europe/Oslo")).toLocalDateTime();
+
+        JsonObject jsonObject = oneTalkSleepingPillFormat(talkref);
+        int length = Integer.parseInt(readValueFromProp(jsonObject, "length").stringValue());
+        LocalDateTime endTime = startTime.plusMinutes(length);
+
+        JsonObject payload = JsonFactory.jsonObject()
+                .put("startTime", JsonFactory.jsonObject().put("value", startTime.toString()).put("privateData", false))
+                .put("endTime", JsonFactory.jsonObject().put("value", endTime.toString()).put("privateData", false));
+        sendTalkUpdate(talkref,JsonFactory.jsonObject().put("data",payload));
     }
 }
