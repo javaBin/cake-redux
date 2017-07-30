@@ -69,11 +69,11 @@
     </div>
     <div class="row cake-row">
         <input class="col-md-4" type="text" ng-model="newroom"/>
-        <button class="btn" ng-click="newRoom()">Update room</button>
+        <button class="btn btn-danger btn-lg" ng-click="newRoom()">Update room</button>
     </div>
     <div class="row cake-row">
         <input type="datetime-local" ng-model="newstarttime"/>
-        <button class="btn" ng-click="newStarttime()">Update startime</button>
+        <button class="btn btn-danger btn-lg" ng-click="newStarttime()">Update startime</button>
     </div>
 
     <div ng-repeat="speaker in aTalk.speakers">
@@ -210,37 +210,7 @@
     </div>
     <div class="alert alert-danger" ng-show="showError"><strong>Error saving: {{errormessage}}</strong></div>
     <p><button id="saveButton" class="btn btn-danger btn-lg cake-margin" ng-click="saveTalk()">Save</button></p>
-    <h2>Update room</h2>
-    <div class="cake-margin col-md-4 row">
-        <select class="form-control" ng-model="selectedRoom">
-            <option ng-repeat="room in roomsSlots.rooms" value="{{room.ref}}">{{room.name}}</option>
-        </select>
-    </div>
-    <p><button class="btn btn-danger btn-lg cake-margin" ng-click="updateRoom()">Update room</button></p>
-    <h2>Update slot</h2>
-    <form>
-    <div class="checkbox-inline">
-        <label>
-            <input type="checkbox" ng-model="filterSlot.ten" ng-change="slotFilterUpdated()"> 10 mins
-        </label>
-    </div>
-    <div class="checkbox-inline">
-        <label>
-            <input type="checkbox" ng-model="filterSlot.sixty" ng-change="slotFilterUpdated()"> 60 mins
-        </label>
-    </div>
-    <div class="checkbox-inline">
-        <label>
-            <input type="checkbox" ng-model="filterSlot.others" ng-change="slotFilterUpdated()"> Others
-        </label>
-    </div>
-    </form>
-    <div class="cake-margin col-md-4 row">
-        <select class="form-control" ng-model="selectedSlot">
-            <option ng-repeat="slot in roomsSlots.slots" value="{{slot.ref}}">{{slot.start}}-{{slot.end}}</option>
-        </select>
-    </div>
-    <p><button class="btn btn-danger btn-lg cake-margin" ng-click="updateSlot()">Update slot</button></p>
+
     <h2>Add comment</h2>
     <div class="well">
         <p>
