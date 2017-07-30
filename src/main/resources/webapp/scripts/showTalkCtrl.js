@@ -245,5 +245,19 @@ angular.module('cakeReduxModule')
                 });
             };
 
+            $scope.newRoom = function () {
+                $http({
+                    method: "POST",
+                    url: "data/updateroomslot",
+                    data: {
+                        talkref: talkRef,
+                        room: $scope.newroom
+                    }
+                }).success(function (data) {
+                    window.location.reload();
+                });
+            };
+
+
         }]);
 

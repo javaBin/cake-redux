@@ -72,6 +72,9 @@ public class DataServlet extends HttpServlet {
             sleepingpillCommunicator.updateSlotTime(talkref,startTime.get(), userAccessType);
         }
         Optional<String> room = update.stringValue("room");
+        if (room.isPresent()) {
+            sleepingpillCommunicator.updateRoom(talkref,room.get(),userAccessType);
+        }
 
         JsonFactory.jsonObject().toJson(resp.getWriter());
     }

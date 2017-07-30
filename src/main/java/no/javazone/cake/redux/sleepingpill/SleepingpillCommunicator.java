@@ -417,4 +417,11 @@ public class SleepingpillCommunicator {
                 .put("endTime", JsonFactory.jsonObject().put("value", endTime.toString()).put("privateData", false));
         sendTalkUpdate(talkref,JsonFactory.jsonObject().put("data",payload));
     }
+
+    public void updateRoom(String talkref, String room, UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
+        JsonObject payload = JsonFactory.jsonObject()
+                .put("room", JsonFactory.jsonObject().put("value", room).put("privateData", false));
+        sendTalkUpdate(talkref,JsonFactory.jsonObject().put("data",payload));
+    }
 }
