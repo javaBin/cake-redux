@@ -60,8 +60,20 @@ public class DataServlet extends HttpServlet {
         } else if ("/readSlotForUpdate".equals(pathInfo)) {
             readSlotForUpdate(req,resp);
             resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/sendForRoomSlotUpdate".equals(pathInfo)) {
+            roomSlotUpdate(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
         }
 
+    }
+
+    private void roomSlotUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject update;
+        try (InputStream inputStream = req.getInputStream()) {
+            update = JsonParser.parseToObject(inputStream);
+        }
+        SlotUpdaterService.get().updateRoomSlot(update,computeAccessType(req));
+        JsonFactory.jsonObject().toJson(resp.getWriter());
     }
 
     private void readSlotForUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -69,7 +81,7 @@ public class DataServlet extends HttpServlet {
         try (InputStream inputStream = req.getInputStream()) {
             update = JsonParser.parseToObject(inputStream);
         }
-        JsonObject result = SlotUpdaterService.get().readDataOnTalks(update);
+        JsonObject result = SlotUpdaterService.get().readDataOnTalks(update,computeAccessType(req));
         result.toJson(resp.getWriter());
     }
 

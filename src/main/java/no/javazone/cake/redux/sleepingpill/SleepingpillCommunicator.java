@@ -248,7 +248,7 @@ public class SleepingpillCommunicator {
         }
     }
 
-    private void checkWriteAccess(UserAccessType userAccessType) {
+    public static void checkWriteAccess(UserAccessType userAccessType) {
         if (Configuration.noAuthMode()) {
             return;
         }
