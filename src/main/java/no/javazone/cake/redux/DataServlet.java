@@ -4,6 +4,7 @@ import no.javazone.cake.redux.comments.FeedbackService;
 import no.javazone.cake.redux.mail.MailSenderImplementation;
 import no.javazone.cake.redux.mail.MailSenderService;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
+import no.javazone.cake.redux.sleepingpill.SlotUpdaterService;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.jsonbuddy.JsonArray;
@@ -56,8 +57,20 @@ public class DataServlet extends HttpServlet {
         } else if ("/updateroomslot".equals(pathInfo)) {
             updateRoomSlot(req,resp);
             resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/readSlotForUpdate".equals(pathInfo)) {
+            readSlotForUpdate(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
         }
 
+    }
+
+    private void readSlotForUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject update;
+        try (InputStream inputStream = req.getInputStream()) {
+            update = JsonParser.parseToObject(inputStream);
+        }
+        JsonObject result = SlotUpdaterService.get().readDataOnTalks(update);
+        result.toJson(resp.getWriter());
     }
 
     private void updateRoomSlot(HttpServletRequest req, HttpServletResponse resp) throws IOException {

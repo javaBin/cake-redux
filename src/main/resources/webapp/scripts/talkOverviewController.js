@@ -87,7 +87,8 @@
         };
 
         $scope.setupSchedule = function () {
-            sessionStorage.setItem("selectedTalks",$scope.talks);
+            var selectedTalkRefs = _.pluck($scope.talks,"ref");
+            sessionStorage.setItem("selectedTalks",JSON.stringify(selectedTalkRefs));
             window.location = "/secured/setupSchedule.html";
         };
 
