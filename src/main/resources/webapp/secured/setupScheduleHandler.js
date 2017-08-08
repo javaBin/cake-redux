@@ -51,10 +51,11 @@ function buildTable(tabledata) {
 
 
             if (onecell.room !== "No room" && onecell.slot !== "No slot") {
-                $droptarget = $('<p>Add to slot...</p>');
+                $droptarget = $('<p class="slotupd">Add to slot...</p>');
                 $droptarget.droppable({
                     drop: dropTarget(onecell.room, onecell.slot),
-                    hoverClass: "drop-hover"
+                    activeClass: "ui-state-hover"
+                    //classes: {'ui-droppable-hover': 'highlight'}
                 });
                 $onecell.append($droptarget);
             }
