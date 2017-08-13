@@ -33,7 +33,7 @@ public class AcceptorSetter {
         String tagExistsErrormessage = "Talk is already accepted";
         String subjectTemplate = "Javazone 2017 #talkType# accepted";
 
-        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType);
+        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType,false);
     }
 
     public String massUpdate(JsonObject jsonObject,UserAccessType userAccessType) {
@@ -52,10 +52,12 @@ public class AcceptorSetter {
         }
         String tagExistsErrormessage = "Tag already exsists";
 
-        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType);
+        boolean publishUpdates = "true".equals(jsonObject.requiredString("publishUpdates"));
+
+        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType,publishUpdates);
     }
 
-    private String doUpdates(JsonArray talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage,UserAccessType userAccessType) {
+    private String doUpdates(JsonArray talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage,UserAccessType userAccessType,boolean publishUpdates) {
         JsonArray statusAllTalks = JsonFactory.jsonArray();
         for (int i=0;i<talks.size();i++) {
             JsonObject accept = JsonFactory.jsonObject();
@@ -82,6 +84,9 @@ public class AcceptorSetter {
                     tags.add(tagToAdd);
                     String lastModified = jsonTalk.requiredString("lastModified");
                     sleepingpillCommunicator.updateTags(encodedTalkRef, tags, userAccessType,lastModified);
+                }
+                if (publishUpdates) {
+                    sleepingpillCommunicator.pubishChanges(encodedTalkRef,userAccessType);
                 }
                 accept.put("status","ok");
                 accept.put("message","ok");

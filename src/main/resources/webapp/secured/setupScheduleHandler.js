@@ -15,7 +15,7 @@ function dropTarget(room,slot) {
             slot: slot
         };
         $.ajax({
-            url: "/secured/data/sendForRoomSlotUpdate",
+            url: "data/sendForRoomSlotUpdate",
             method: "POST",
             data:JSON.stringify(payload),
             success: function( fromServer ) {
@@ -70,7 +70,7 @@ function buildTable(tabledata) {
 $(function () {
 
     $.ajax({
-        url: "/secured/data/readSlotForUpdate",
+        url: "data/readSlotForUpdate",
         method: "POST",
         data:JSON.stringify({talks:selectedTalks}),
         success: function( fromServer ) {

@@ -89,7 +89,7 @@
         $scope.setupSchedule = function () {
             var selectedTalkRefs = _.pluck($scope.talks,"ref");
             sessionStorage.setItem("selectedTalks",JSON.stringify(selectedTalkRefs));
-            window.location = "/secured/setupSchedule.html";
+            window.location = "setupSchedule.html";
         };
 
 
