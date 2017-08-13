@@ -68,7 +68,21 @@
         <div class="col-md-10">{{aTalk.slot.start}} - {{aTalk.slot.end}} <small>(yymmdd hhmm-yymmdd hhmm)</small></div>
     </div>
     <div class="row cake-row">
-        <input class="col-md-4" type="text" ng-model="newroom"/>
+        <div class="input-group col-md-5">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Room <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li><a ng-click="selectRoom('Room 1')">Room 1</a></li>
+                    <li><a ng-click="selectRoom('Room 2')">Room 2</a></li>
+                    <li><a >Room 3</a></li>
+                    <li><a >Room 4</a></li>
+                    <li><a >Room 5</a></li>
+                    <li><a >Room 6</a></li>
+                    <li><a >Room 7</a></li>
+                </ul>
+            </div><!-- /btn-group -->
+            <input class="form-control" type="text" ng-model="newroom"/>
+        </div><!-- /input-group -->
         <button class="btn btn-danger btn-lg" ng-click="newRoom()">Update room</button>
     </div>
     <div class="row cake-row">

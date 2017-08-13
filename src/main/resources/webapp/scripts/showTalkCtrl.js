@@ -209,6 +209,10 @@ angular.module('cakeReduxModule')
                 });
             };
 
+            $scope.selectRoom = function (selroom) {
+                $scope.newroom = selroom;
+            }
+
 
         }]);
 
