@@ -52,7 +52,7 @@ public class AcceptorSetter {
         }
         String tagExistsErrormessage = "Tag already exsists";
 
-        boolean publishUpdates = "true".equals(jsonObject.requiredString("publishUpdates"));
+        boolean publishUpdates = "true".equals(jsonObject.stringValue("publishUpdates").orElse("false"));
 
         return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType,publishUpdates);
     }
@@ -225,7 +225,7 @@ public class AcceptorSetter {
         if (!startVal.isPresent()) {
             return Optional.of("No slot allocated");
         }
-        LocalDateTime parse = LocalDateTime.parse(startVal.get(), DateTimeFormatter.ofPattern("yyMMdd HH:mm"));
+        LocalDateTime parse = LocalDateTime.parse(startVal.get());
         String val = parse.format(DateTimeFormatter.ofPattern("MMMM d 'at' HH:mm"));
         return Optional.of(val);
     }
