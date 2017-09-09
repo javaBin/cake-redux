@@ -13,6 +13,7 @@ $(function () {
         url: "api/all",
         success: function( fromServer ) {
             $.each(fromServer,addOneTalk);
+            $("#waitimg").hide();
         },
         error: function( jqXHR, textStatus, errorThrown ){
             window.alert(jqXHR);
