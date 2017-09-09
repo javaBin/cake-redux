@@ -1,5 +1,7 @@
 package no.javazone.cake.redux;
 
+import no.javazone.cake.redux.videoadmin.VideoAdminFilter;
+import no.javazone.cake.redux.videoadmin.VideoAdminServlet;
 import no.javazone.cake.redux.whyda.WhydaServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -57,6 +59,9 @@ public class WebServer {
         webAppContext.addServlet(new ServletHolder(new WhydaServlet()),"/whydalogin");
 
         webAppContext.addFilter(new FilterHolder(new SecurityFilter()), "/secured/*", EnumSet.of(REQUEST));
+
+        webAppContext.addFilter(new FilterHolder(new VideoAdminFilter()), "/videoadmin/*", EnumSet.of(REQUEST));
+        webAppContext.addServlet(new ServletHolder(new VideoAdminServlet()),"/videoadmin/api/*");
 
 
         return webAppContext;
