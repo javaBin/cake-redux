@@ -37,6 +37,7 @@ $(function () {
         url: "api/one?id=" + talkid,
         success: function( fromServer ) {
             $("#header").append(fromServer.title);
+            $("#videoaddr").val(fromServer.video);
         },
         error: function( jqXHR, textStatus, errorThrown ){
             window.alert(jqXHR);
