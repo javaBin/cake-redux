@@ -194,4 +194,8 @@ public class Configuration {
     public static String videoAdminConference() {
         return readConf("videoAdminConference","30d5c2f1cb214fc8b0649a44fdf3b4bf");
     }
+
+    public static void setConfigFile(String[] args) {
+        System.setProperty("cake-redux-config-file",args[0]);
+    }
 }
