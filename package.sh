@@ -37,7 +37,7 @@ if [ ! -f ${secret_properties_file} ]; then
 fi
 
 
-cp ~/.m2/repository/no/java/${app}/${version}/${app}-${version}-jar-with-dependencies.jar ./app.jar
+cp ~/.m2/repository/no/javazone/${app}/${version}/${app}-${version}-jar-with-dependencies.jar ./app.jar
 if [ $? -ne 0 ]; then
   rm -f ${secret_properties_file}
   exit 1
@@ -51,5 +51,5 @@ if [ $? -ne 0 ]; then
   echo "> Package failed!"
   exit 1
 fi
-rm -f app.jar ${secret_properties_file}
+rm -f app.jar ${secret_properties_file} ${authorization_file}
 echo "> Done packaging app"
