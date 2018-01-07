@@ -11,7 +11,7 @@ done
 cd ${BASEDIR}
 
 beanstalk_env=${1}
-app=sleepingPillCore
+app=cake-redux
 envs=$(eb list | sed 's/^\* //')
 
 if [[ ${beanstalk_env} != ${app}-* ]]; then
@@ -35,7 +35,7 @@ read -p "Version? ${version_suggestion}" version
 
 env=$(echo ${beanstalk_env} | sed s/${app}-//g)
 
-trap "{ rm -f app.zip app.jar ${secret_properties_file} ; exit 255; }" EXIT
+trap "{ rm -f app.zip app.jar ${secret_properties_file} ${authorization_file} ; exit 255; }" EXIT
 
 ./package.sh ${env} ${version}
 if [ $? -ne 0 ]; then
