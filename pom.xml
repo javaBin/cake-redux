@@ -172,4 +172,8 @@
             <url>https://repository.jboss.org/nexus/content/repositories/public-jboss/</url>
         </repository>
     </repositories>
+    <scm>
+        <developerConnection>scm:git:git@github.com:javabin/cake-redux.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 </project>
