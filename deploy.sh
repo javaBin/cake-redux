@@ -11,7 +11,7 @@ done
 cd ${BASEDIR}
 
 beanstalk_env=${1}
-app=cake-redux
+app=cakeredux
 envs=$(eb list | sed 's/^\* //')
 
 if [[ ${beanstalk_env} != ${app}-* ]]; then
