@@ -88,7 +88,7 @@ public class EntranceServlet extends HttpServlet {
         writeLoginMessage(resp, writer, userid);
     }
 
-    private boolean haveAccess(String userid) {
+    public static boolean haveAccess(String userid) {
         if (Configuration.getAutorizedUsers().contains(userid)) {
             return true;
         }

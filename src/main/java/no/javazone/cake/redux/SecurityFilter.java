@@ -35,6 +35,12 @@ public class SecurityFilter implements Filter {
         Optional<DecodedJWT> jwt = new Auth0Service().verify(authorization);
         if (jwt.isPresent()) {
             String email = jwt.get().getClaim("email").asString();
+            if (!EntranceServlet.haveAccess(email)) {
+                response.setStatus(403);
+                resp.setContentType("text/html");
+                resp.getWriter().append("Not in user list. Blocked");
+                return;
+            }
             request.getSession().setAttribute("username", email);
             chain.doFilter(req, resp);
         } else {
@@ -45,6 +51,8 @@ public class SecurityFilter implements Filter {
 
 
     }
+
+
 
 
     @Override
