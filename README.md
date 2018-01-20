@@ -1,3 +1,35 @@
+# What is this?
+
+Admin application for the program committee to manage talks for JavaZone :)
+
+# How to get started?
+
+- Build backend: `mvn clean install`
+- Build frontend: `cd frontend && npm install`
+- Create a config file (see template below) for backend to point against sleepingpill backend (just use test or prod, or start locally)
+- Start backend: in IntelliJ, run WebServer.java with Program Argument in the run config set to the full path of the config file created above
+- Start frontend: `cd frontend && npm run watch`
+
+## Config file for backend
+
+```
+cakeLocation=http://localhost:8081/
+noAuthMode=true
+serverPort=8081
+sleepingPillBaseLocation=https://sleepingpill.javazone.no
+sleepingpillUser=fullaccess
+sleepingpillPassword=<ask someone>
+```
+
+
+----------------
+----------------
+----------------
+
+# OLD README – here be dragons ;)
+
+
+
 # Cake-redux
 
 Ems Administrative web application.
