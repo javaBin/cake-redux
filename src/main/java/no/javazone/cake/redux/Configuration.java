@@ -205,6 +205,6 @@ public class Configuration {
     }
 
     public static String auth0Issuer() {
-        return readConf("auth0Issuer","javabin.eu.auth0.com");
+        return readConf("auth0Issuer","https://javabin.eu.auth0.com/");
     }
 }

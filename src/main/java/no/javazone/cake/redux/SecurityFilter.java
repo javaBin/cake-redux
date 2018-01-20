@@ -24,6 +24,11 @@ public class SecurityFilter implements Filter {
             return;
         }
 
+        if(((HttpServletRequest) req).getMethod().equals("OPTIONS")) {
+            chain.doFilter(req,resp);
+            return;
+        }
+
         String authorization = request.getHeader("authorization");
         authorization = authorization != null ? authorization : "";
         authorization = authorization.replace("Bearer ", "");

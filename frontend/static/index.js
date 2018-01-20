@@ -30,7 +30,7 @@
             localStorage.setItem('login_token', token);
         } else {
             window.location =
-                'https://javabin.eu.auth0.com/authorize/?client_id=c1WPhgpXktLEVWj1j5HO7XpFezVqk1GB&scope=openid email&response_type=token&redirect_uri=' +
+                'https://javabin.eu.auth0.com/authorize/?client_id=c1WPhgpXktLEVWj1j5HO7XpFezVqk1GB&scope=openid%20email&response_type=token&connection=google-oauth2&redirect_uri=' +
                 redirectUrl();
             return;
         }
@@ -44,7 +44,7 @@
     app.ports.reauthenticate.subscribe(function() {
         localStorage.removeItem('login_token');
         window.location =
-            'https://javabin.eu.auth0.com/authorize/?client_id=c1WPhgpXktLEVWj1j5HO7XpFezVqk1GB&scope=openid email&response_type=token&redirect_uri=' +
+            'https://javabin.eu.auth0.com/authorize/?client_id=c1WPhgpXktLEVWj1j5HO7XpFezVqk1GB&scope=openid%20email&response_type=token&connection=google-oauth2&redirect_uri=' +
             redirectUrl();
     });
 })();

@@ -87,7 +87,7 @@ request method expect body token url =
 
 url : String -> String
 url path =
-    "http://localhost:8081/secured/data/" ++ path
+    "http://localhost:8081/api/secured/data/" ++ path
 
 
 authHeader : String -> Http.Header
