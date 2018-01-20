@@ -39,7 +39,13 @@ viewTalks model =
 viewTalk : String -> Talk -> Html Msg
 viewTalk eventId talk =
     li [ class "talks__talk" ]
-        [ a [ href <| toHash <| TalkPage eventId talk.ref ] [ text talk.title ] ]
+        [ a [ href <| toHash <| TalkPage eventId talk.ref ]
+            [ div [ class "talks__talk__title" ] [ text talk.title ]
+            , div [] [ text <| talk.format ++ " / " ++ talk.length ++ " minutes / " ++ talk.lang ]
+            , div [] [ text <| "speakers: " ++ (String.join ", " <| List.map (\s -> s.name) talk.speakers) ]
+            , div [] [ text <| "state: " ++ talk.state ]
+            ]
+        ]
 
 
 viewFullTalk : Maybe Talk -> Html Msg

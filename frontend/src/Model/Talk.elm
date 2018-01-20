@@ -5,6 +5,15 @@ import Json.Encode as Encode
 import Json.Decode.Pipeline exposing (decode, required)
 
 
+type alias Speaker =
+    { name : String
+    , email : String
+    , bio : String
+    , zipCode : String
+    , twitter : String
+    }
+
+
 type alias Talk =
     { audience : String
     , body : String
@@ -23,7 +32,23 @@ type alias Talk =
     , summary : String
     , tags : List String
     , title : String
+    , speakers : List Speaker
     }
+
+
+speakerDecoder : Decoder Speaker
+speakerDecoder =
+    decode Speaker
+        |> required "name" string
+        |> required "email" string
+        |> required "bio" string
+        |> required "zip-code" string
+        |> required "twitter" string
+
+
+speakersDecoder : Decoder (List Speaker)
+speakersDecoder =
+    list speakerDecoder
 
 
 talksDecoder : Decoder (List Talk)
@@ -51,6 +76,7 @@ talkDecoder =
         |> required "summary" string
         |> required "tags" (list string)
         |> required "title" string
+        |> required "speakers" (speakersDecoder)
 
 
 talkEncoder : Talk -> Encode.Value
