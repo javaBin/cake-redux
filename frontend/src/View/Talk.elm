@@ -22,6 +22,8 @@ view talk =
             , p [] [ text talk.outline ]
             , h3 [] [ text "Info to the program committee" ]
             , p [] [ text talk.infoToProgramCommittee ]
+            , h3 [] [ text "Tags" ]
+            , p [] [ text (String.join "," talk.tags) ]
             , h3 [] [ text "Talk status" ]
             , p [] [ viewTalkStatus talk ]
             , button [ onClick <| UpdateTalk talk ] [ text "Save" ]
