@@ -87,7 +87,7 @@ request method expect body token url =
 
 url : String -> String
 url path =
-    "https://cake.javazone.no/api/secured/data/" ++ path
+    "http://localhost:8081/secured/data/" ++ path
 
 
 authHeader : String -> Http.Header

@@ -3,7 +3,7 @@
         if (window.location.host.indexOf('localhost') >= 0) {
             return 'http://localhost:8000';
         } else {
-            return 'https://cfp.bekk.no';
+            return 'https://cake.javazone.no';
         }
     }
 
@@ -30,9 +30,8 @@
             localStorage.setItem('login_token', token);
         } else {
             window.location =
-                'https://bekk.eu.auth0.com/authorize/?client_id=o49bHOfUDukdCku6Ak4DngHc2wSwv3CT&scope=openid email&response_type=token&redirect_uri=' +
-                redirectUrl() +
-                '&connection=Bekk';
+                'https://javabin.eu.auth0.com/authorize/?client_id=c1WPhgpXktLEVWj1j5HO7XpFezVqk1GB&scope=openid email&response_type=token&redirect_uri=' +
+                redirectUrl();
             return;
         }
     }
@@ -45,8 +44,7 @@
     app.ports.reauthenticate.subscribe(function() {
         localStorage.removeItem('login_token');
         window.location =
-            'https://bekk.eu.auth0.com/authorize/?client_id=o49bHOfUDukdCku6Ak4DngHc2wSwv3CT&scope=openid email&response_type=token&redirect_uri=' +
-            redirectUrl() +
-            '&connection=Bekk';
+            'https://javabin.eu.auth0.com/authorize/?client_id=c1WPhgpXktLEVWj1j5HO7XpFezVqk1GB&scope=openid email&response_type=token&redirect_uri=' +
+            redirectUrl();
     });
 })();
