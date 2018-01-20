@@ -67,6 +67,29 @@
         <div class="col-md-1 cake-margin"><strong>Slot</strong></div>
         <div class="col-md-10">{{aTalk.slot.start}} - {{aTalk.slot.end}} <small>(yymmdd hhmm-yymmdd hhmm)</small></div>
     </div>
+    <div class="row cake-row">
+        <div class="input-group col-md-5">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Room <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li><a ng-click="selectRoom('Room 1')">Room 1</a></li>
+                    <li><a ng-click="selectRoom('Room 2')">Room 2</a></li>
+                    <li><a >Room 3</a></li>
+                    <li><a >Room 4</a></li>
+                    <li><a >Room 5</a></li>
+                    <li><a >Room 6</a></li>
+                    <li><a >Room 7</a></li>
+                </ul>
+            </div><!-- /btn-group -->
+            <input class="form-control" type="text" ng-model="newroom"/>
+        </div><!-- /input-group -->
+        <button class="btn btn-danger btn-lg" ng-click="newRoom()">Update room</button>
+    </div>
+    <div class="row cake-row">
+        <input type="datetime-local" ng-model="newstarttime"/>
+        <button class="btn btn-danger btn-lg" ng-click="newStarttime()">Update startime</button>
+    </div>
+
     <div ng-repeat="speaker in aTalk.speakers">
         <h3>{{speaker.name}}</h3>
         <div class="row cake-row">
@@ -201,37 +224,7 @@
     </div>
     <div class="alert alert-danger" ng-show="showError"><strong>Error saving: {{errormessage}}</strong></div>
     <p><button id="saveButton" class="btn btn-danger btn-lg cake-margin" ng-click="saveTalk()">Save</button></p>
-    <h2>Update room</h2>
-    <div class="cake-margin col-md-4 row">
-        <select class="form-control" ng-model="selectedRoom">
-            <option ng-repeat="room in roomsSlots.rooms" value="{{room.ref}}">{{room.name}}</option>
-        </select>
-    </div>
-    <p><button class="btn btn-danger btn-lg cake-margin" ng-click="updateRoom()">Update room</button></p>
-    <h2>Update slot</h2>
-    <form>
-    <div class="checkbox-inline">
-        <label>
-            <input type="checkbox" ng-model="filterSlot.ten" ng-change="slotFilterUpdated()"> 10 mins
-        </label>
-    </div>
-    <div class="checkbox-inline">
-        <label>
-            <input type="checkbox" ng-model="filterSlot.sixty" ng-change="slotFilterUpdated()"> 60 mins
-        </label>
-    </div>
-    <div class="checkbox-inline">
-        <label>
-            <input type="checkbox" ng-model="filterSlot.others" ng-change="slotFilterUpdated()"> Others
-        </label>
-    </div>
-    </form>
-    <div class="cake-margin col-md-4 row">
-        <select class="form-control" ng-model="selectedSlot">
-            <option ng-repeat="slot in roomsSlots.slots" value="{{slot.ref}}">{{slot.start}}-{{slot.end}}</option>
-        </select>
-    </div>
-    <p><button class="btn btn-danger btn-lg cake-margin" ng-click="updateSlot()">Update slot</button></p>
+
     <h2>Add comment</h2>
     <div class="well">
         <p>
@@ -265,5 +258,18 @@
             <button class="btn btn-primary" ng-click="addPubComment()">Add</button>
         </p>
     </div>
+    <h2>Unpublished changes:</h2>
+    <p>Has unpublished changes: {{aTalk.hasUnpublishedValues}}</p>
+    <button id="publishValues" class="btn btn-danger btn-lg cake-margin" ng-click="publishChanges()">Publish changes</button></p>
+    <ul>
+        <li ng-repeat="propchange in aTalk.sessionUpdates.oldValues"><b>{{propchange.key}}</b> : {{propchange.value}}</li>
+    </ul>
+    <h3>Speaker update</h3>
+    <span ng-repeat="speakchange in aTalk.sessionUpdates.speakerUpdates">
+        <h4>{{speakchange.updateType}}</h4>
+        <ul>
+            <li ng-repeat="propchange in speakchange.publicValues"><b>{{propchange.key}}</b> : {{propchange.value}}</li>
+        </ul>
+    </span>
     <h6>Last modified: {{aTalk.lastModified}}</h6>
 </div>

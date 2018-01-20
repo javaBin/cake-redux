@@ -5,16 +5,17 @@ import no.javazone.cake.redux.Configuration;
 import no.javazone.cake.redux.NoUserAceessException;
 import no.javazone.cake.redux.UserAccessType;
 import org.jsonbuddy.*;
-import org.jsonbuddy.JsonNode;
 import org.jsonbuddy.parse.JsonParser;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,8 +68,18 @@ public class SleepingpillCommunicator {
     public JsonObject oneTalkAsJson(String talkid) {
         JsonObject talk = oneTalkStripped(talkid);
         JsonArray allConferences = parseJsonFromConnection(openConnection(Configuration.sleepingPillBaseLocation() + "/data/conference")).requiredArray("conferences");
-        talk.requiredArray("speakers").objectStream().forEach(speaker -> {
-            String url = Configuration.sleepingPillBaseLocation() + "/data/submitter/" + speaker.requiredString("email") + "/session";
+
+        JsonArray speakersArr = talk.requiredArray("speakers");
+        for (JsonNode part : speakersArr) {
+            if (!(part instanceof JsonObject)) {
+                continue;
+            }
+            JsonObject speaker = (JsonObject) part;
+            String speakerEmail = speaker.requiredString("email");
+            try {
+                speakerEmail = URLEncoder.encode(speakerEmail,"UTF-8");
+            } catch (UnsupportedEncodingException ignored) {}
+            String url = Configuration.sleepingPillBaseLocation() + "/data/submitter/" + speakerEmail + "/session";
             JsonObject speakerTalks = parseJsonFromConnection(openConnection(url));
             JsonArray otherTalks = JsonArray.fromNodeStream(
                     speakerTalks.requiredArray("sessions").objectStream()
@@ -76,7 +87,7 @@ public class SleepingpillCommunicator {
                             .map(obj -> buildSimularTalk(obj,allConferences))
             );
             speaker.put("spOtherTalks",otherTalks);
-        });
+        }
 
         return talk;
     }
@@ -146,6 +157,18 @@ public class SleepingpillCommunicator {
         talkob.put("published",new Boolean(Arrays.asList("APPROVED","HISTORIC").contains(jsonObject.requiredString("status"))).toString());
         talkob.put("body",readValueFromProp(jsonObject,"abstract"));
         talkob.put("ref",jsonObject.requiredString("id"));
+        talkob.put("hasUnpublishedValues",jsonObject.requiredObject("sessionUpdates")
+                .requiredBoolean("hasUnpublishedChanges")
+                ? "Yes" : "No");
+
+        jsonObject.requiredObject("data")
+                .objectValue("room")
+                .map(ob -> ob.requiredString("value"))
+                .ifPresent(roomname -> talkob.put("room",JsonFactory.jsonObject().put("name",roomname)));
+        readSlotFromSleepingPill(jsonObject).ifPresent(slotobj -> talkob.put("slot",slotobj));
+
+
+        talkob.put("sessionUpdates",jsonObject.requiredObject("sessionUpdates"));
         jsonObject.stringValue("lastUpdated").ifPresent(lu -> talkob.put("lastModified",lu));
         Optional.of(readValueFromProp(jsonObject,"emslocation"))
                 .filter(s -> !s.stringValue().isEmpty())
@@ -167,6 +190,15 @@ public class SleepingpillCommunicator {
         return talkob;
 
 
+    }
+
+    private static Optional<JsonObject> readSlotFromSleepingPill(JsonObject talkObj) {
+        Optional<String> start = talkObj.requiredObject("data").objectValue("startTime").map(jo -> jo.requiredString("value"));
+        Optional<String> end = talkObj.requiredObject("data").objectValue("endTime").map(jo -> jo.requiredString("value"));
+        if (!(start.isPresent() && end.isPresent())) {
+            return Optional.empty();
+        }
+        return Optional.of(JsonFactory.jsonObject().put("start",start.get()).put("end",end.get()));
     }
 
     private static JsonNode readValueFromProp(JsonObject talkObj,String key) {
@@ -216,7 +248,7 @@ public class SleepingpillCommunicator {
         }
     }
 
-    private void checkWriteAccess(UserAccessType userAccessType) {
+    public static void checkWriteAccess(UserAccessType userAccessType) {
         if (Configuration.noAuthMode()) {
             return;
         }
@@ -270,7 +302,7 @@ public class SleepingpillCommunicator {
             return fetchOneTalk(ref);
 
         }
-        payload.put("lastUpdated",lastModified);
+        //payload.put("lastUpdated",lastModified);
         sendTalkUpdate(ref, payload);
         return fetchOneTalk(ref);
     }
@@ -347,5 +379,55 @@ public class SleepingpillCommunicator {
 
         JsonObject jsonObject = sendTalkUpdate(ref, payload);
         return jsonObject;
+    }
+
+    public void pubishChanges(String talkref, UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
+        String url = Configuration.sleepingPillBaseLocation() + "/data/session/" + talkref + "/publish";
+
+
+        HttpURLConnection conn = openConnection(url);
+
+        try {
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            try (PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(),"utf-8"))) {
+                JsonFactory.jsonObject().toJson(printWriter);
+            }
+            try (InputStream is = conn.getInputStream()) {
+                 JsonParser.parseToObject(is);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateSlotTime(String talkref, String startTimeStr, UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(startTimeStr);
+        LocalDateTime startTime = zonedDateTime.withZoneSameInstant(ZoneId.of("Europe/Oslo")).toLocalDateTime();
+
+        JsonObject jsonObject = oneTalkSleepingPillFormat(talkref);
+        int length = Integer.parseInt(readValueFromProp(jsonObject, "length").stringValue());
+        LocalDateTime endTime = startTime.plusMinutes(length);
+
+        JsonObject payload = JsonFactory.jsonObject()
+                .put("startTime", JsonFactory.jsonObject().put("value", startTime.toString()).put("privateData", false))
+                .put("endTime", JsonFactory.jsonObject().put("value", endTime.toString()).put("privateData", false));
+        sendTalkUpdate(talkref,JsonFactory.jsonObject().put("data",payload));
+    }
+
+    public void updateRoom(String talkref, String room, UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
+        JsonObject payload = JsonFactory.jsonObject()
+                .put("room", JsonFactory.jsonObject().put("value", room).put("privateData", false));
+        sendTalkUpdate(talkref,JsonFactory.jsonObject().put("data",payload));
+    }
+
+    public void updateVideo(String talkref,String video) {
+        JsonObject payload = JsonFactory.jsonObject()
+                .put("video", JsonFactory.jsonObject().put("value", video).put("privateData", false));
+        sendTalkUpdate(talkref,JsonFactory.jsonObject().put("data",payload));
     }
 }

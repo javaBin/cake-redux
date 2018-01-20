@@ -38,7 +38,8 @@ angular.module('cakeReduxModule')
                       subject: $scope.subject,
                       message: $scope.message,
                       doTag: $scope.doTag,
-                      newtag: $scope.newtag
+                      newtag: $scope.newtag,
+                      publishUpdates: $scope.publishUpdates
                     };
                     inputUrl = "data/massUpdate";
                 }

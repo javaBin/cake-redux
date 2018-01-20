@@ -4,6 +4,7 @@ import no.javazone.cake.redux.comments.FeedbackService;
 import no.javazone.cake.redux.mail.MailSenderImplementation;
 import no.javazone.cake.redux.mail.MailSenderService;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
+import no.javazone.cake.redux.sleepingpill.SlotUpdaterService;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.jsonbuddy.JsonArray;
@@ -21,7 +22,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class DataServlet extends HttpServlet {
     private SleepingpillCommunicator sleepingpillCommunicator;
@@ -51,8 +51,66 @@ public class DataServlet extends HttpServlet {
         } else if ("/addPubComment".equals(pathInfo)) {
             addPublicComment(req,resp);
             resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/publishChanges".equals(pathInfo)) {
+            publishChanges(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/updateroomslot".equals(pathInfo)) {
+            updateRoomSlot(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/readSlotForUpdate".equals(pathInfo)) {
+            readSlotForUpdate(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/sendForRoomSlotUpdate".equals(pathInfo)) {
+            roomSlotUpdate(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
         }
 
+    }
+
+    private void roomSlotUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject update;
+        try (InputStream inputStream = req.getInputStream()) {
+            update = JsonParser.parseToObject(inputStream);
+        }
+        SlotUpdaterService.get().updateRoomSlot(update,computeAccessType(req));
+        JsonFactory.jsonObject().toJson(resp.getWriter());
+    }
+
+    private void readSlotForUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject update;
+        try (InputStream inputStream = req.getInputStream()) {
+            update = JsonParser.parseToObject(inputStream);
+        }
+        JsonObject result = SlotUpdaterService.get().readDataOnTalks(update,computeAccessType(req));
+        result.toJson(resp.getWriter());
+    }
+
+    private void updateRoomSlot(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject update;
+        try (InputStream inputStream = req.getInputStream()) {
+            update = JsonParser.parseToObject(inputStream);
+        }
+        String talkref = update.requiredString("talkref");
+        UserAccessType userAccessType = computeAccessType(req);
+        Optional<String> startTime = update.stringValue("starttime");
+        if (startTime.isPresent()) {
+            sleepingpillCommunicator.updateSlotTime(talkref,startTime.get(), userAccessType);
+        }
+        Optional<String> room = update.stringValue("room");
+        if (room.isPresent()) {
+            sleepingpillCommunicator.updateRoom(talkref,room.get(),userAccessType);
+        }
+
+        JsonFactory.jsonObject().toJson(resp.getWriter());
+    }
+
+    private void publishChanges(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject update;
+        try (InputStream inputStream = req.getInputStream()) {
+            update = JsonParser.parseToObject(inputStream);
+        }
+        sleepingpillCommunicator.pubishChanges(update.requiredString("talkref"),computeAccessType(req));
+        JsonFactory.jsonObject().toJson(resp.getWriter());
     }
 
     private void addPublicComment(HttpServletRequest req, HttpServletResponse resp) throws IOException {

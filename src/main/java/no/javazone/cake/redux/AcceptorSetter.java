@@ -31,9 +31,9 @@ public class AcceptorSetter {
         String template = loadTemplate();
         String tagToAdd = "accepted";
         String tagExistsErrormessage = "Talk is already accepted";
-        String subjectTemplate = "Javazone 2016 #talkType# accepted";
+        String subjectTemplate = "Javazone 2017 #talkType# accepted";
 
-        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType);
+        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType,false);
     }
 
     public String massUpdate(JsonObject jsonObject,UserAccessType userAccessType) {
@@ -52,10 +52,12 @@ public class AcceptorSetter {
         }
         String tagExistsErrormessage = "Tag already exsists";
 
-        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType);
+        boolean publishUpdates = "true".equals(jsonObject.stringValue("publishUpdates").orElse("false"));
+
+        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType,publishUpdates);
     }
 
-    private String doUpdates(JsonArray talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage,UserAccessType userAccessType) {
+    private String doUpdates(JsonArray talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage,UserAccessType userAccessType,boolean publishUpdates) {
         JsonArray statusAllTalks = JsonFactory.jsonArray();
         for (int i=0;i<talks.size();i++) {
             JsonObject accept = JsonFactory.jsonObject();
@@ -82,6 +84,9 @@ public class AcceptorSetter {
                     tags.add(tagToAdd);
                     String lastModified = jsonTalk.requiredString("lastModified");
                     sleepingpillCommunicator.updateTags(encodedTalkRef, tags, userAccessType,lastModified);
+                }
+                if (publishUpdates) {
+                    sleepingpillCommunicator.pubishChanges(encodedTalkRef,userAccessType);
                 }
                 accept.put("status","ok");
                 accept.put("message","ok");
@@ -220,7 +225,7 @@ public class AcceptorSetter {
         if (!startVal.isPresent()) {
             return Optional.of("No slot allocated");
         }
-        LocalDateTime parse = LocalDateTime.parse(startVal.get(), DateTimeFormatter.ofPattern("yyMMdd HH:mm"));
+        LocalDateTime parse = LocalDateTime.parse(startVal.get());
         String val = parse.format(DateTimeFormatter.ofPattern("MMMM d 'at' HH:mm"));
         return Optional.of(val);
     }

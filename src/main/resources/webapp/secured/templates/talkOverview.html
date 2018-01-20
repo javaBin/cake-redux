@@ -25,11 +25,12 @@
                         <a class="dropdown-toggle" data-toggle="dropdown"role="button" aria-haspopup="true" aria-expanded="false">
                             Actions <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li ><a ng-href="#/accept">Accept talks...</a></li>
-                            <li ><a ng-href="#/publish">Publish talks...</a></li>
-                            <li ><a ng-href="#/massUpdate">Send mail and/or tag ...</a></li>
-                            <li ><a ng-href="#/showSchedule">Show schedule ...</a></li>
-                            <li ><a ng-href="#/report">Report</a></li>
+                            <li><a ng-href="#/accept">Accept talks...</a></li>
+                            <li><a ng-href="#/publish">Publish talks...</a></li>
+                            <li><a ng-href="#/massUpdate">Send mail and/or tag ...</a></li>
+                            <li><a ng-href="#/showSchedule">Show schedule ...</a></li>
+                            <li><a ng-href="#/report">Report</a></li>
+                            <li><a ng-click="setupSchedule()">Setup schedule ...</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -64,12 +65,14 @@
             <th>Title</th>
             <th>Speaker</th>
             <th>Format</th>
+            <th>Length</th>
             <th>Lang</th>
             <th>Tags</th>
             <th>Keywords</th>
             <th>State</th>
             <th>Room</th>
             <th>Slot</th>
+            <th>Changes?</th>
         </tr>
         </thead>
         <tbody>
@@ -78,28 +81,37 @@
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.title" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.speaker" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.format" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.length" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.language" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.tag" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.keyword" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.state" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.room" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.slot" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.hasUnpublishedValues" ng-change="filterUpdated()"/></td>
             </tr>
             <tr ng-repeat="talk in talks" ng-class="talkRowClass(talk)">
                 <td><a ng-href="#/showTalk/{{talk.ref}}" ng-click="talkSelected(talk)">{{talk.title}}</a></td>
                 <td>{{speakerList(talk.speakers)}}</td>
                 <td>{{talk.format}}</td>
+                <td>{{talk.length}}</td>
                 <td>{{talk.lang}}</td>
                 <td>{{joinArrs(talk.tags)}}</td>
                 <td>{{joinArrs(talk.keywords)}}</td>
                 <td>{{talk.state}}</td>
                 <td>{{talk.room.name}}</td>
                 <td>{{talk.slot.start}}-{{talk.slot.end}}</td>
+                <td>{{talk.hasUnpublishedValues}}</td>
             </tr>
         </tbody>
     </table>
     <h3>Used tags</h3>
     <ul>
         <li ng-repeat="ut in usedTags">{{ut.tagname}} : {{ut.count}}</li>
+    </ul>
+    <h3>Used keywords</h3>
+    <ul>
+        <li ng-repeat="uk in usedKeywords">{{uk.keywordname}} : {{uk.count}}</li>
+
     </ul>
 </div>

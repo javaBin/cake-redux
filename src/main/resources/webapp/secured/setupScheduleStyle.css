@@ -1,0 +1,13 @@
+.slotupd {
+    display: inline-block;
+    height: 50px; /*sets height of element*/
+    background: cornflowerblue; /*sets the background of this element (here a solid colour)*/
+    transition: all 0.6s; /*sets a transition (for hover effect)*/
+    padding-left: 20px; /*sets 'padding'*/
+    padding-right: 20px; /*sets 'padding'*/
+    line-height: 50px; /*for this, it sets vertical alignment*/
+}
+
+slotupd:hover {
+    background: tomato; /*sets background colour*/
+}

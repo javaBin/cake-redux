@@ -195,10 +195,16 @@ angular.module('cakeReduxModule')
             if (!isMatch(filter.format,talk.format)) {
                 return false;
             }
+            if (filter["length"] && filter["length"] !== talk["length"]) {
+                return false;
+            }
             if (!isMatch(filter.language,talk.lang)) {
                 return false;
             }
             if (!findInArray(filter.tag,talk.tags,true)) {
+                return false;
+            }
+            if (!isMatch(filter.hasUnpublishedValues,talk.hasUnpublishedValues)) {
                 return false;
             }
             if (!findInArray(filter.keyword,talk.keywords)) {
@@ -273,6 +279,7 @@ angular.module('cakeReduxModule')
                 cookieService.setCookie("cakeFilter",JSON.stringify(self.filters),1);
                 talks.splice(0,talks.length);
                 var allTags = [];
+                var allKeywords = [];
                 _.each(allTalks,function(talk) {
                     var res;
                     if (self.filters.length == 0) {
@@ -287,6 +294,11 @@ angular.module('cakeReduxModule')
                                 allTags.push(at);
                             });
                         }
+                        if (_.isArray(talk.keywords)) {
+                            talk.keywords.forEach(function(at) {
+                                allKeywords.push(at);
+                            });
+                        }
                     }
                 });
                 this.filteredTalks = talks;
@@ -297,6 +309,13 @@ angular.module('cakeReduxModule')
                         tagname: key,
                         count: countedTags[key]
                     }; 
+                });
+                var countedKeywords = _.countBy(allKeywords);
+                this.usedKeywords = _.map(_.keys(countedKeywords).sort(),function(key) {
+                    return {
+                        keywordname: key,
+                        count: countedKeywords[key]
+                    };
                 });
                 
 

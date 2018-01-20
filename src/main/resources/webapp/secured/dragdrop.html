@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cake redux</title>
+    <script>
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            ev.target.appendChild(document.getElementById(data));
+        }
+        sessionStorage.setItem("storeak","Jeg sa noe");
+    </script>
+</head>
+<body>
+    <h1>Hoi</h1>
+    <table border="1">
+        <tr>
+            <th>
+                <td>Kol 1</td>
+                <td>Kol 2</td>
+            </th>
+        </tr>
+        <tr>
+            <td></td>
+            <td id="cell1"><p draggable="true" ondragstart="drag(event)" id="par1">Her er teskst</p></td>
+            <td id="cell2" ondrop="drop(event)" ondragover="allowDrop(event)"></td>
+        </tr>
+    </table>
+<p><a href="setupSchedule.html">Gå dfi</a></p>
+</body>
+</html>

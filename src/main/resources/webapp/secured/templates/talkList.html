@@ -64,6 +64,7 @@
             <th>Title</th>
             <th>Speaker</th>
             <th>Format</th>
+            <th>Length</th>
             <th>Lang</th>
             <th>Tags</th>
             <th>Keywords</th>
@@ -78,6 +79,7 @@
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.title" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.speaker" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.format" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.length" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.language" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.tag" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.keyword" ng-change="filterUpdated()"/></td>
@@ -89,6 +91,7 @@
                 <td><a ng-href="#/showTalk/{{talk.ref}}" ng-click="talkSelected(talk)">{{talk.title}}</a></td>
                 <td>{{speakerList(talk.speakers)}}</td>
                 <td>{{talk.format}}</td>
+                <td>{{talk.length}}</td>
                 <td>{{talk.lang}}</td>
                 <td>{{joinArrs(talk.tags)}}</td>
                 <td>{{joinArrs(talk.keywords)}}</td>
