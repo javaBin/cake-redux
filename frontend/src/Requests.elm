@@ -47,7 +47,7 @@ getEvents token =
 getTalks : String -> String -> Cmd Msg
 getTalks id token =
     send GotTalks <|
-        getRequest talksDecoder token (url <| "talks?evendId=" ++ id)
+        getRequest talksDecoder token (url <| "talks?eventId=" ++ id)
 
 
 getTalk : String -> String -> Cmd Msg
