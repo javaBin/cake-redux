@@ -198,4 +198,13 @@ public class Configuration {
     public static void setConfigFile(String[] args) {
         System.setProperty("cake-redux-config-file",args[0]);
     }
+
+
+    public static String auth0Token() {
+        return readConf("auth0Token",null);
+    }
+
+    public static String auth0Issuer() {
+        return readConf("auth0Issuer","javabin.eu.auth0.com");
+    }
 }
