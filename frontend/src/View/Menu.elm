@@ -18,10 +18,14 @@ view model =
             , div [] [ select [ class "menu__selector", onInput (changePage) ] <| List.map createOption model.events ]
             ]
         , div [ class "menu__block" ]
-            [ div [ class "menu__header" ] [ text "Filters" ]
+            [ div [ class "menu__header" ] [ text "Filters (TODO)" ]
             , div []
-                [ div [ class "menu__filter" ] [ text "Format" ]
-                , div [] [ text "todo..." ]
+                [ filterHeader "Search"
+                , input [ value "search for anything here " ] []
+                , filterHeader "Format"
+                , formatFilter
+                , filterHeader "Length"
+                , lengthFilter
                 ]
             ]
         ]
@@ -35,3 +39,46 @@ changePage page =
 createOption : Event -> Html Msg
 createOption event =
     option [ value event.ref ] [ text event.name ]
+
+
+filterHeader : String -> Html Msg
+filterHeader header =
+    div [ class "menu__filter" ] [ text header ]
+
+
+formatFilter =
+    fieldset []
+        [ label []
+            [ input [ type_ "checkbox" ] []
+            , text "presentation"
+            ]
+        , label []
+            [ input [ type_ "checkbox" ] []
+            , text "workshop"
+            ]
+        , label []
+            [ input [ type_ "checkbox" ] []
+            , text "lightning-talk"
+            ]
+        ]
+
+
+lengthFilter =
+    fieldset []
+        [ label []
+            [ input [ type_ "checkbox" ] []
+            , text "60 min"
+            ]
+        , label []
+            [ input [ type_ "checkbox" ] []
+            , text "45 min"
+            ]
+        , label []
+            [ input [ type_ "checkbox" ] []
+            , text "20 min"
+            ]
+        , label []
+            [ input [ type_ "checkbox" ] []
+            , text "10 min"
+            ]
+        ]
