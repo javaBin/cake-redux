@@ -6,6 +6,7 @@ import Model.Event exposing (Event)
 import Model.Talk exposing (Talk)
 import Model.Page exposing (Page(..))
 import View.Talk
+import View.Menu
 import Nav exposing (toHash)
 import Html exposing (Html, div, text, ul, li, a, h2, h3, p)
 import Html.Attributes exposing (class, href)
@@ -14,21 +15,10 @@ import Html.Attributes exposing (class, href)
 view : Model -> Html Msg
 view model =
     div [ class "app" ] <|
-        [ div [ class "app__events" ] [ viewEvents model.events ]
+        [ div [ class "app__menu" ] [ View.Menu.view model ]
         , div [ class "app__talks" ] [ viewTalks model ]
         , div [ class "app__talk" ] [ viewFullTalk model.talk ]
         ]
-
-
-viewEvents : List Event -> Html Msg
-viewEvents events =
-    ul [ class "events" ] <| List.map viewEvent events
-
-
-viewEvent : Event -> Html Msg
-viewEvent event =
-    li [ class "events__event" ]
-        [ a [ href <| toHash <| EventPage event.ref ] [ text event.name ] ]
 
 
 viewTalks : Model -> Html Msg
