@@ -23,9 +23,9 @@ view model =
                 [ filterHeader "Search"
                 , input [ value "search for anything here " ] []
                 , filterHeader "Format"
-                , formatFilter
+                , formatFilter model.filterData.formats
                 , filterHeader "Length"
-                , lengthFilter
+                , lengthFilter model.filterData.lengths
                 ]
             ]
         ]
@@ -46,39 +46,18 @@ filterHeader header =
     div [ class "menu__filter" ] [ text header ]
 
 
-formatFilter =
-    fieldset []
-        [ label []
-            [ input [ type_ "checkbox" ] []
-            , text "presentation"
-            ]
-        , label []
-            [ input [ type_ "checkbox" ] []
-            , text "workshop"
-            ]
-        , label []
-            [ input [ type_ "checkbox" ] []
-            , text "lightning-talk"
-            ]
-        ]
+formatFilter : List String -> Html Msg
+formatFilter formats =
+    fieldset [] <| List.map checkbox formats
 
 
-lengthFilter =
-    fieldset []
-        [ label []
-            [ input [ type_ "checkbox" ] []
-            , text "60 min"
-            ]
-        , label []
-            [ input [ type_ "checkbox" ] []
-            , text "45 min"
-            ]
-        , label []
-            [ input [ type_ "checkbox" ] []
-            , text "20 min"
-            ]
-        , label []
-            [ input [ type_ "checkbox" ] []
-            , text "10 min"
-            ]
+lengthFilter : List String -> Html Msg
+lengthFilter lengths =
+    fieldset [] <| List.map checkbox lengths
+
+
+checkbox txt =
+    label []
+        [ input [ type_ "checkbox" ] []
+        , text txt
         ]

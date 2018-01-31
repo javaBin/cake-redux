@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import Model exposing (Model, Flags, AppConfig, initAppConfig)
+import Model exposing (Model, Flags, AppConfig, initAppConfig, initFilterData)
 import Model.Page exposing (Page(..))
 import Messages exposing (Msg(..))
 import Update exposing (update, updatePage)
@@ -28,7 +28,13 @@ init : Flags -> Location -> ( Model, Cmd Msg )
 init flags location =
     let
         model =
-            Model [] Nothing [] Nothing <| initAppConfig flags
+            { events = []
+            , eventId = Nothing
+            , talks = []
+            , talk = Nothing
+            , appConfig = initAppConfig flags
+            , filterData = initFilterData
+            }
 
         page =
             hashParser location
