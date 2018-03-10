@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.jsonbuddy.JsonFactory.jsonObject;
 
@@ -88,6 +89,11 @@ public class SleepingpillCommunicator {
             );
             speaker.put("spOtherTalks",otherTalks);
         }
+
+        JsonArray uniqueTags = JsonArray.fromStringStream(talk.arrayValue("tags").orElse(JsonFactory.jsonArray())
+                .stringStream().collect(Collectors.toSet())
+                .stream());
+        talk.put("tags",uniqueTags);
 
         return talk;
     }
