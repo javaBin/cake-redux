@@ -46,7 +46,7 @@ JourneyZone is open to all speakers and is a fantastic chance to experience the 
 Here you'll get a free Presentation Technique Course with Vibeke Holtskog, in addition to all you need to know about speaking at JavaZone! The workshop is held in Oslo the 21st of August 2018.
 
 5) Speakers dinner:
-As always we'll be hosting a speakers dinner the evening before JavaZone. This year we will be eating at Ekeberg restarant. The restaurant is a short ride with public transportation from the city center but we will provide a bus from Oslo spektrum. You can expect more information about this in August.
+As always we'll be hosting a speakers dinner the evening before JavaZone. This year we will be eating at Ekeberg restarant. The restaurant is a short ride away using public transportation from the city center but we will provide a bus from Oslo Spektrum. You can expect more information about this in August.
 
 For more information see: http://2018.javazone.no/speakers
 
