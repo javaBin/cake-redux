@@ -77,8 +77,12 @@ public class EntranceServlet extends HttpServlet {
         String userid = username + "<" + userEmail + ">";
         if (!haveAccess(userid)) {
             resp
-                    .sendError(HttpServletResponse.SC_FORBIDDEN, "User not registered " + userid);
+                    .sendError(HttpServletResponse.SC_FORBIDDEN, "User not registered " + userid + " got object " + userInfo.toJson());
             return;
+        }
+
+        if (username.trim().isEmpty()) {
+            username = userEmail;
         }
 
         req.getSession().setMaxInactiveInterval(-1); // Keep session open until browser closes (hopefully).
@@ -89,6 +93,9 @@ public class EntranceServlet extends HttpServlet {
     }
 
     private boolean haveAccess(String userid) {
+        if (userid.trim().isEmpty()) {
+            return false;
+        }
         if (Configuration.getAutorizedUsers().contains(userid)) {
             return true;
         }
