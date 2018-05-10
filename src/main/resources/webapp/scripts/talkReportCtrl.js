@@ -48,6 +48,12 @@ angular.module('cakeReduxModule')
 
             $scope.exportText = "xxx";
 
+            var reduceToSemicolonDiv = function(arr) {
+                return _.reduce(arr,function(a,b) {
+                    return a + ";" + b;
+                });
+            };
+
             $scope.exportCsv = function () {
                 var filteredTalks;
                 if ($scope.showEquipment) {
@@ -57,23 +63,55 @@ angular.module('cakeReduxModule')
                 } else {
                     filteredTalks = $scope.talks;
                 }
+                var headers = [];
+                if ($scope.showTitle) {
+                    headers.push("title");
+                }
+                if ($scope.showSpeakers) {
+                    headers.push("speakernames");
+                }
+                if ($scope.showEquipment) {
+                    headers.push("equipment");
+                }
+                if ($scope.showTags) {
+                    headers.push("tags");
+                }
+                if (headers.length === 0) {
+                    $scope.exportText = "Nothing to export";
+                    return;
+                }
+                var headerRow = reduceToSemicolonDiv(headers);
                 var mapped = _.map(filteredTalks,function (theTalk) {
-                    var speakerNames = _.reduce(_.map(theTalk.speakers,function (theSpeaker) {
-                        return theSpeaker.name;
-                    }), function (a, b) {
-                        return a + " and " + b;
-                    });
-                    var equip = "";
-                    if ($scope.showEquipment) {
-                        equip = ";" + theTalk.equipment;
+                    var theline = [];
+                    if ($scope.showTitle) {
+                        theline.push(theTalk.title);
                     }
-                    return theTalk.title + ";" + speakerNames + equip;
+                    if ($scope.showSpeakers) {
+                        var speakerNames = _.reduce(_.map(theTalk.speakers,function (theSpeaker) {
+                            return theSpeaker.name;
+                        }), function (a, b) {
+                            return a + " and " + b;
+                        });
+                        theline.push(speakerNames);
+                    }
+                    if ($scope.showEquipment) {
+                        theline.push(theTalk.equipment);
+                    }
+                    if ($scope.showTags) {
+                        if (theTalk.tags.length === 0) {
+                            theline.push("-");
+                        } else {
+                            var taglist = _.reduce(theTalk.tags,function (a, b) {
+                                return a + "+" + b;
+                            });
+                            theline.push(taglist);
+                        }
+
+                    }
+
+                    return reduceToSemicolonDiv(theline);
                 });
 
-                var headerRow = "title;speakernames";
-                if ($scope.showEquipment) {
-                    headerRow = headerRow + ";equipment";
-                }
                 $scope.exportText = headerRow + "\n" + _.reduce(mapped,function(a,b) {
                     return a + "\n" + b;
                 })
