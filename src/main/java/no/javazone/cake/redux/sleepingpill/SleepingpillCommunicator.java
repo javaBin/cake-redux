@@ -414,6 +414,11 @@ public class SleepingpillCommunicator {
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(startTimeStr);
         LocalDateTime startTime = zonedDateTime.withZoneSameInstant(ZoneId.of("Europe/Oslo")).toLocalDateTime();
 
+        updateSlotTime(talkref, startTime,userAccessType);
+    }
+
+    public void updateSlotTime(String talkref, LocalDateTime startTime,UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
         JsonObject jsonObject = oneTalkSleepingPillFormat(talkref);
         int length = Integer.parseInt(readValueFromProp(jsonObject, "length").stringValue());
         LocalDateTime endTime = startTime.plusMinutes(length);
