@@ -6,6 +6,7 @@ angular.module('cakeReduxModule')
 
 
             $scope.showTitle = true;
+            $scope.showId = true;
             $scope.showSummary = true;
             $scope.showAbstract = true;
             $scope.showPostcode = true;
@@ -16,6 +17,7 @@ angular.module('cakeReduxModule')
             $scope.showState = true;
             $scope.showPublished = true;
             $scope.showFormat = true;
+            $scope.showLength = true;
             $scope.showLevel = true;
             $scope.showLanguage = true;
             $scope.showRoom = true;
@@ -64,8 +66,14 @@ angular.module('cakeReduxModule')
                     filteredTalks = $scope.talks;
                 }
                 var headers = [];
+                if ($scope.showId) {
+                    headers.push("id");
+                }
                 if ($scope.showTitle) {
                     headers.push("title");
+                }
+                if ($scope.showLength) {
+                    headers.push("length")
                 }
                 if ($scope.showSpeakers) {
                     headers.push("speakernames");
@@ -83,8 +91,14 @@ angular.module('cakeReduxModule')
                 var headerRow = reduceToSemicolonDiv(headers);
                 var mapped = _.map(filteredTalks,function (theTalk) {
                     var theline = [];
+                    if ($scope.showId) {
+                        theline.push(theTalk.ref);
+                    }
                     if ($scope.showTitle) {
                         theline.push(theTalk.title);
+                    }
+                    if ($scope.showLength) {
+                        theline.push(theTalk.length);
                     }
                     if ($scope.showSpeakers) {
                         var speakerNames = _.reduce(_.map(theTalk.speakers,function (theSpeaker) {

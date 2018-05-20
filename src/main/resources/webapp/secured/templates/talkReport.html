@@ -1,6 +1,10 @@
 <form style="page-break-after:always;">
     <div class="form-group">
         <label>
+            Id
+            <input type="checkbox" ng-model="showId">
+        </label>
+        <label>
             Title
             <input type="checkbox" ng-model="showTitle">
         </label>
@@ -40,6 +44,11 @@
             Format
             <input type="checkbox" ng-model="showFormat">
         </label>
+        <label>
+            Length
+            <input type="checkbox" ng-model="showLength">
+        </label>
+
         <label>
             Level
             <input type="checkbox" ng-model="showLevel">
@@ -94,6 +103,10 @@
 <p><pre>{{exportText}}</pre></p>
 <div class="cake-margin" ng-repeat="aTalk in talks" style="page-break-after:always;">
     <h1 ng-show="$parent.showTitle">{{aTalk.title}}</h1>
+    <div class="row cake-row" ng-show="$parent.showId">
+        <div class="col-md-1 cake-margin"><strong>Id</strong></div>
+        <div class="col-md-10 preserve-newlines">{{aTalk.ref}}</div>
+    </div>
     <div class="row cake-row" ng-show="$parent.showSummary">
         <div class="col-md-1 cake-margin"><strong>Summary</strong></div>
         <div class="col-md-10 preserve-newlines">{{aTalk.summary}}</div>
@@ -129,6 +142,10 @@
     <div class="row cake-row" ng-show="$parent.showFormat">
         <div class="col-md-1 cake-margin"><strong>Format</strong></div>
         <div class="col-md-10">{{aTalk.format}}</div>
+    </div>
+    <div class="row cake-row" ng-show="$parent.showLength">
+        <div class="col-md-1 cake-margin"><strong>Length</strong></div>
+        <div class="col-md-10">{{aTalk.length}}</div>
     </div>
     <div class="row cake-row" ng-show="$parent.showLevel">
         <div class="col-md-1 cake-margin"><strong>Level</strong></div>
