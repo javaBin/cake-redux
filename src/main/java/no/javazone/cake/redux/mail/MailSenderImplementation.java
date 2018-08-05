@@ -8,6 +8,9 @@ public interface MailSenderImplementation {
         if ("dummy".equals(Configuration.mailSenderImplementation())) {
             return new DummyMailSender(mailToSend);
         }
+        if ("sendgrid".equals(Configuration.mailSenderImplementation())) {
+            return new SendGridSender(mailToSend);
+        }
         return new SmtpMailSender(mailToSend);
     }
     void send();

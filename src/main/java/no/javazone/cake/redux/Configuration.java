@@ -37,6 +37,8 @@ public class Configuration {
 
     }
 
+
+
     private synchronized void loadProps() {
         Map<String,String> readProps = new HashMap<>();
         String config = readConfigFile(System.getProperty("cake-redux-config-file"));
@@ -193,6 +195,10 @@ public class Configuration {
 
     public static String videoAdminConference() {
         return readConf("videoAdminConference","30d5c2f1cb214fc8b0649a44fdf3b4bf");
+    }
+
+    public static String sendGridKey() {
+        return readConf("sendGridKey",null);
     }
 
     public static void setConfigFile(String[] args) {
