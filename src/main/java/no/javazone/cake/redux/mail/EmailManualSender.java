@@ -4,6 +4,8 @@ import no.javazone.cake.redux.AcceptorSetter;
 import no.javazone.cake.redux.Configuration;
 import org.apache.commons.mail.SimpleEmail;
 
+import java.util.Collections;
+
 public class EmailManualSender {
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
@@ -17,11 +19,8 @@ public class EmailManualSender {
     }
 
     public static void send(String to,String content,String subject) throws Exception{
-        SimpleEmail simpleEmail = new SimpleEmail();
-        simpleEmail.setContent(content,"text/html");
-        AcceptorSetter.setupMailHeader(simpleEmail,subject);
-        simpleEmail.addTo(to);
-        MailSenderImplementation mailSenderImplementation = MailSenderImplementation.create(simpleEmail);
+        MailToSend mailToSend = new MailToSend(Collections.singletonList(to), subject, content);
+        MailSenderImplementation mailSenderImplementation = MailSenderImplementation.create(mailToSend);
         MailSenderService.get().sendMail(mailSenderImplementation);
     }
 }

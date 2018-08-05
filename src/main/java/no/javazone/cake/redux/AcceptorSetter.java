@@ -2,6 +2,7 @@ package no.javazone.cake.redux;
 
 import no.javazone.cake.redux.mail.MailSenderImplementation;
 import no.javazone.cake.redux.mail.MailSenderService;
+import no.javazone.cake.redux.mail.MailToSend;
 import no.javazone.cake.redux.mail.SmtpMailSender;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
 import org.apache.commons.mail.EmailException;
@@ -15,6 +16,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,42 +112,23 @@ public class AcceptorSetter {
         String title = jsonTalk.requiredString("title");
 
         SimpleEmail mail = new SimpleEmail();
-        String speakerName = addSpeakers(jsonTalk, mail);
+        List<String> sendTo = new ArrayList<>();
+        String speakerName = addSpeakers(jsonTalk, sendTo);
 
         String subject = generateMessage(subjectTemplate, title, talkType, speakerName, submitLink, confirmLocation,jsonTalk);
-        setupMailHeader(mail,subject);
 
         String message = generateMessage(template,title, talkType, speakerName, submitLink, confirmLocation,jsonTalk);
         mail.setMsg(message);
-        MailSenderService.get().sendMail(MailSenderImplementation.create(mail));
+
+        MailToSend mailToSend = new MailToSend(sendTo, subject, message);
+        MailSenderService.get().sendMail(MailSenderImplementation.create(mailToSend));
     }
 
 
 
 
-    public static SimpleEmail setupMailHeader(SimpleEmail mail,String subject) throws EmailException {
-        mail.setHostName(Configuration.smtpServer());
-        mail.setFrom("program@java.no", "Javazone program commitee");
-        mail.addBcc("program-auto@java.no");
-        mail.setSubject(subject);
 
-
-        if (Configuration.useMailSSL()) {
-            mail.setSSLOnConnect(true);
-            mail.setSslSmtpPort("" + Configuration.smtpPort());
-        } else {
-            mail.setSmtpPort(Configuration.smtpPort());
-
-        }
-        String mailUser = Configuration.mailUser();
-        if (mailUser != null) {
-            mail.setAuthentication(mailUser, Configuration.mailPassword());
-        }
-
-        return mail;
-    }
-
-    private String addSpeakers(JsonObject jsonTalk, SimpleEmail mail) throws EmailException {
+    private String addSpeakers(JsonObject jsonTalk, List<String> sendTo) throws EmailException {
         JsonArray jsonSpeakers = jsonTalk.requiredArray("speakers");
         StringBuilder speakerName=new StringBuilder();
         for (int j=0;j<jsonSpeakers.size();j++) {
@@ -157,7 +140,7 @@ public class AcceptorSetter {
             }
 
             speakerName.append(name);
-            mail.addTo(email);
+            sendTo.add(email);
         }
         return speakerName.toString();
     }

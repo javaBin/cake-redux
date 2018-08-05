@@ -4,11 +4,11 @@ import no.javazone.cake.redux.Configuration;
 import org.apache.commons.mail.SimpleEmail;
 
 public interface MailSenderImplementation {
-    static MailSenderImplementation create(SimpleEmail simpleEmail) {
+    static MailSenderImplementation create(MailToSend mailToSend) {
         if ("dummy".equals(Configuration.mailSenderImplementation())) {
-            return new DummyMailSender(simpleEmail);
+            return new DummyMailSender(mailToSend);
         }
-        return new SmtpMailSender(simpleEmail);
+        return new SmtpMailSender(mailToSend);
     }
     void send();
 }

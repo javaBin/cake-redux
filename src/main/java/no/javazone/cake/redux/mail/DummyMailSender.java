@@ -7,21 +7,20 @@ import java.util.List;
 
 public class DummyMailSender implements MailSenderImplementation {
 
-    private final SimpleEmail simpleEmail;
+    private final MailToSend mailToSend;
 
-    public DummyMailSender(SimpleEmail simpleEmail) {
-        this.simpleEmail = simpleEmail;
+    public DummyMailSender(MailToSend mailToSend) {
+        this.mailToSend = mailToSend;
     }
 
     @Override
     public void send() {
         StringBuilder message = new StringBuilder("Sending mail to ");
-        message.append(simpleEmail.getToAddresses().stream()
-                .map(InternetAddress::getAddress)
+        message.append(mailToSend.to.stream()
                 .reduce((a,b) -> a + ", " + b)
                 .orElse("UNKNOWN"));
         message.append(" -> ");
-        message.append(simpleEmail.getSubject());
+        message.append(mailToSend.subject);
         System.out.println(message);
 
     }

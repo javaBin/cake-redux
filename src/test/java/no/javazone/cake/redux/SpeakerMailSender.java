@@ -2,7 +2,7 @@ package no.javazone.cake.redux;
 
 import no.javazone.cake.redux.mail.MailSenderImplementation;
 import no.javazone.cake.redux.mail.MailSenderService;
-import no.javazone.cake.redux.mail.SmtpMailSender;
+import no.javazone.cake.redux.mail.MailToSend;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
@@ -94,12 +94,9 @@ public class SpeakerMailSender {
         return mail;
     }
 
-    private void sendMail(String email) throws EmailException {
-        SimpleEmail mail = new SimpleEmail();
-        mail = setupMailHeader(mail,"JavaZone 2016 Call for Speaker");
-        mail.addTo(email);
-        mail.setMsg(msg);
-        MailSenderService.get().sendMail(MailSenderImplementation.create(mail));
+    private void sendMail(String email) {
+        MailToSend mailToSend = new MailToSend(Collections.singletonList(email), "JavaZone 2016 Call for Speaker", msg);
+        MailSenderService.get().sendMail(MailSenderImplementation.create(mailToSend));
     }
 
     private Set<String> readSpeakerList() {
