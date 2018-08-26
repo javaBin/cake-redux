@@ -77,6 +77,9 @@ angular.module('cakeReduxModule')
                 }
                 if ($scope.showSpeakers) {
                     headers.push("speakernames");
+                    if ($scope.showSpeakerEmail) {
+                        headers.push("speakeremail");
+                    }
                 }
                 if ($scope.showEquipment) {
                     headers.push("equipment");
@@ -89,7 +92,14 @@ angular.module('cakeReduxModule')
                     return;
                 }
                 var headerRow = reduceToSemicolonDiv(headers);
-                var mapped = _.map(filteredTalks,function (theTalk) {
+                var allNonSpeakers = [$scope.showTitle, $scope.showId, $scope.showSummary, $scope.showAbstract, $scope.showPostcode, $scope.showOutline, $scope.showKeywords, $scope.showAudience, $scope.showEquipment, $scope.showState, $scope.showPublished, $scope.showFormat, $scope.showLength, $scope.showLevel, $scope.showLanguage, $scope.showRoom, $scope.showSlot,  $scope.showLastModified, $scope.showTags, $scope.showContactPhone];
+                var displaylines = filteredTalks;
+                if ($scope.showSpeakers && !_.some(allNonSpeakers,function (a) {return a;})) {
+                    displaylines = _.flatten(_.map(filteredTalks,function (talk) {
+                        return talk.speakers;
+                    }));
+                }
+                var mapped = _.map(displaylines,function (theTalk) {
                     var theline = [];
                     if ($scope.showId) {
                         theline.push(theTalk.ref);
@@ -101,12 +111,30 @@ angular.module('cakeReduxModule')
                         theline.push(theTalk.length);
                     }
                     if ($scope.showSpeakers) {
-                        var speakerNames = _.reduce(_.map(theTalk.speakers,function (theSpeaker) {
-                            return theSpeaker.name;
-                        }), function (a, b) {
-                            return a + " and " + b;
-                        });
-                        theline.push(speakerNames);
+                        if (theTalk.speakers) {
+                            var speakerNames = _.reduce(_.map(theTalk.speakers,function (theSpeaker) {
+                                return theSpeaker.name;
+                            }), function (a, b) {
+                                return a + " and " + b;
+                            });
+                            theline.push(speakerNames);
+                            if ($scope.showSpeakerEmail) {
+                                var speakeremail = _.reduce(_.map(theTalk.speakers,function (theSpeaker) {
+                                    return theSpeaker.email;
+                                }), function (a, b) {
+                                    return a + " and " + b;
+                                });
+                                theline.push(speakeremail);
+                            }
+                        } else {
+                            if ($scope.showSpeakername) {
+                                theline.push(theTalk.name);
+                            }
+                            if ($scope.showSpeakerEmail) {
+                                theline.push(theTalk.email);
+                            }
+                        }
+
                     }
                     if ($scope.showEquipment) {
                         theline.push(theTalk.equipment);
