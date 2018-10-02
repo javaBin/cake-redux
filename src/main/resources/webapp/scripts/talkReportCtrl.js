@@ -87,6 +87,12 @@ angular.module('cakeReduxModule')
                 if ($scope.showTags) {
                     headers.push("tags");
                 }
+                if ($scope.showRoom) {
+                    headers.push("room")
+                }
+                if ($scope.showSlot) {
+                    headers.push("slot")
+                }
                 if (headers.length === 0) {
                     $scope.exportText = "Nothing to export";
                     return;
@@ -149,6 +155,20 @@ angular.module('cakeReduxModule')
                             theline.push(taglist);
                         }
 
+                    }
+                    if ($scope.showRoom) {
+                        if (theTalk.room) {
+                            theline.push(theTalk.room.name);
+                        } else {
+                            theline.push("-");
+                        }
+                    }
+                    if ($scope.showSlot) {
+                        if (theTalk.slot) {
+                            theline.push(theTalk.slot.start);
+                        } else {
+                            theline.push("-");
+                        }
                     }
 
                     return reduceToSemicolonDiv(theline);
