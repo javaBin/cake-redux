@@ -5,6 +5,7 @@ import org.jsonbuddy.JsonFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,19 +54,38 @@ public class DataServletWriteTest {
 
     }
 
-    private void mockInputStream(String inputjson) throws IOException {
-        final ByteArrayInputStream inputStream = new ByteArrayInputStream(inputjson.getBytes("UTF-8"));
-        when(req.getInputStream()).thenReturn(new ServletInputStream() {
-            @Override
-            public int read() throws IOException {
-                return inputStream.read();
-            }
+    private static class MockServletStream extends ServletInputStream {
+        private final ByteArrayInputStream myStream;
+        private boolean finished = false;
+        public MockServletStream(String content) throws IOException {
+             myStream = new ByteArrayInputStream(content.getBytes("UTF-8"));
+        }
 
-            @Override
-            public void close() throws IOException {
-                inputStream.close();
-            }
-        });
+        @Override
+        public boolean isFinished() {
+            return finished;
+        }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+
+        @Override
+        public void setReadListener(ReadListener readListener) {
+
+        }
+
+        @Override
+        public int read() throws IOException {
+            int read = myStream.read();
+            finished = (read == -1);
+            return read;
+        }
+    }
+
+    private void mockInputStream(String inputjson) throws IOException {
+        when(req.getInputStream()).thenReturn(new MockServletStream(inputjson));
     }
 
 }

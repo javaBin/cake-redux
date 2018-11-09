@@ -43,7 +43,7 @@ public class WebServer {
     private WebAppContext createHandler() {
         WebAppContext webAppContext = new WebAppContext();
         webAppContext.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
-        webAppContext.getSessionHandler().getSessionManager().setMaxInactiveInterval(30);
+        webAppContext.getSessionHandler().setMaxInactiveInterval(30);
         webAppContext.setContextPath("/");
 
         if (isDevEnviroment()) {
@@ -53,6 +53,7 @@ public class WebServer {
             // Prod ie running from jar
             webAppContext.setBaseResource(Resource.newClassPathResource("webapp", true, false));
         }
+
 
         webAppContext.addServlet(new ServletHolder(new DataServlet()),"/secured/data/*");
         webAppContext.addServlet(new ServletHolder(new OpenDataServlet()),"/data/*");
