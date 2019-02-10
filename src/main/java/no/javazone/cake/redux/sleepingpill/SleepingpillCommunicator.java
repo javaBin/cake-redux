@@ -16,10 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.jsonbuddy.JsonFactory.jsonObject;
@@ -51,7 +48,10 @@ public class SleepingpillCommunicator {
     public String talkShortVersion(String conferenceid) {
         JsonArray result = JsonArray.fromNodeStream(allSubmittedTalksFromConference(conferenceid)
                 .objectStream()
-                .map(SleepingpillCommunicator::talkObj));
+                .map(SleepingpillCommunicator::talkObj)
+                .sorted(Comparator.comparing(o -> o.requiredString("submittedTime")))
+        );
+
 
         return jsonHackFix(result.toJson());
     }
@@ -159,6 +159,7 @@ public class SleepingpillCommunicator {
         talkob.put("length",readValueFromProp(jsonObject,"length"));
         talkob.put("summary","");
         talkob.put("level",readValueFromProp(jsonObject,"level"));
+        talkob.put("participation",readValueFromProp(jsonObject,"participation"));
         talkob.put("tags",readValueFromProp(jsonObject,"tags",JsonFactory.jsonArray()));
         talkob.put("published",new Boolean(Arrays.asList("APPROVED","HISTORIC").contains(jsonObject.requiredString("status"))).toString());
         talkob.put("body",readValueFromProp(jsonObject,"abstract"));
@@ -181,6 +182,7 @@ public class SleepingpillCommunicator {
                 .ifPresent(v -> talkob.put("emslocation",v));
 
         talkob.put("state",jsonObject.requiredString("status"));
+        talkob.put("submittedTime",jsonObject.stringValue("submittedTime").orElse("2017"));
 
         talkob.put("speakers",JsonArray.fromNodeStream(
             jsonObject.requiredArray("speakers").objectStream()
