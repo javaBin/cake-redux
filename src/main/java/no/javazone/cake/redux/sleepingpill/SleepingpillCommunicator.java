@@ -86,6 +86,13 @@ public class SleepingpillCommunicator {
                     speakerTalks.requiredArray("sessions").objectStream()
                             .filter(obj -> !(obj.stringValue("id").equals(Optional.of(talkid)) || obj.stringValue("status").equals(Optional.of("DRAFT"))))
                             .map(obj -> buildSimularTalk(obj,allConferences))
+                            .sorted((a,b) -> {
+                                int conf = a.stringValue("conference").orElse("").compareTo(b.stringValue("conference").orElse(""));
+                                if (conf != 0) {
+                                    return conf;
+                                }
+                                return a.stringValue("title").orElse("").compareTo(b.stringValue("title").orElse(""));
+                            })
             );
             speaker.put("spOtherTalks",otherTalks);
         }
