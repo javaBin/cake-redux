@@ -125,7 +125,7 @@ public class DataServlet extends HttpServlet {
         String lastModified = update.requiredString("lastModified");
         JsonObject jsonObject = sleepingpillCommunicator.addPublicComment(ref, comment, lastModified);
 
-        MailToSend simpleEmail = generateCommentEmail(jsonObject);
+        MailToSend simpleEmail = generateCommentEmail(jsonObject,comment);
         MailSenderService.get().sendMail(MailSenderImplementation.create(simpleEmail));
 
 
@@ -137,7 +137,7 @@ public class DataServlet extends HttpServlet {
 
     }
 
-    private MailToSend generateCommentEmail(JsonObject jsonObject) {
+    private MailToSend generateCommentEmail(JsonObject jsonObject, String comment) {
         SimpleEmail simpleEmail = new SimpleEmail();
         List<String> to = jsonObject.requiredArray("speakers").objectStream()
                 .map(ob -> ob.requiredString("email"))
@@ -145,9 +145,9 @@ public class DataServlet extends HttpServlet {
 
         String subject = "Regarding your JavaZone submission";
         String content = "Hello,\n\n" +
-                "The program committee has added a comment to your submission that requires your attention. " +
-                "Please head to https://submit.javazone.no to see the comment.\n" +
-                "\nRegards\nThe JavaZone program comittee";
+                "The program committee has added a comment to your submission that requires your attention: " +
+                comment;
+
 
         return new MailToSend(to,subject,content);
     }
