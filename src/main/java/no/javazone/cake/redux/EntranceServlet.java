@@ -71,8 +71,8 @@ public class EntranceServlet extends HttpServlet {
         String username = null;
         String userEmail = null;
         JsonObject userInfo = JsonParser.parseToObject(json);
-        username = userInfo.requiredString("name");
-        userEmail = userInfo.requiredString("email");
+        username = userInfo.stringValue("name").orElse("UnknownName");
+        userEmail = userInfo.stringValue("email").orElse("Unknown email");
 
         String userid = username + "<" + userEmail + ">";
         if (!haveAccess(userid)) {
