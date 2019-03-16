@@ -60,6 +60,8 @@ public class WebServer {
         webAppContext.addServlet(new ServletHolder(new SigninServlet()), "/signin/");
         webAppContext.addServlet(new ServletHolder(new EntranceServlet()), "/entrance");
         webAppContext.addServlet(new ServletHolder(new WhydaServlet()),"/whydalogin");
+        webAppContext.addServlet(new ServletHolder(new SlackServlet()),"/slack/signin");
+
 
         webAppContext.addFilter(new FilterHolder(new SecurityFilter()), "/secured/*", EnumSet.of(REQUEST));
 

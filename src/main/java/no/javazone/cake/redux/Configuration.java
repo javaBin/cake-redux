@@ -201,6 +201,18 @@ public class Configuration {
         return readConf("sendGridKey",null);
     }
 
+    public static String slackAppId() {
+        return readConf("slackAppId",null);
+    }
+
+    public static String slackClientSecret() {
+        return readConf("slackClientSecret",null);
+    }
+
+    public static String slackAuthChannel() {
+        return readConf("slackAuthChannel",null);
+    }
+
     public static void setConfigFile(String[] args) {
         System.setProperty("cake-redux-config-file",args[0]);
     }
