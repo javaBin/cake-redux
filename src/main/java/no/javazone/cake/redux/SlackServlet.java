@@ -20,7 +20,7 @@ public class SlackServlet extends HttpServlet {
         String secret= Configuration.slackClientSecret();
         String channel = Configuration.slackAuthChannel();
 
-        if (clientid == null || secret == null || channel == null) {
+        if (clientid == null || secret == null || channel == null || Configuration.slackApiToken() == null) {
             sendError(resp,"Server not setup for slack signin");
             return;
         }
@@ -38,19 +38,16 @@ public class SlackServlet extends HttpServlet {
             sendError(resp,"Could not read access token");
             return;
         }
-        String pkomReadUrl = "https://slack.com/api/conversations.members?token="+accessToken.get() + "&channel=" + channel;
-
-        Optional<JsonObject> optRes = fetchFromSlack(pkomReadUrl);
-        if (!optRes.isPresent()) {
-            sendError(resp,"Could not get list from slack");
+        Optional<String> userid = loginObject.objectValue("user").orElse(new JsonObject()).stringValue("id");
+        if (!userid.isPresent()) {
+            sendError(resp,"Could not read userid from slack");
             return;
         }
-        boolean ok = optRes.get().booleanValue("ok").orElse(false);
-        if (!ok) {
-            sendError(resp,"You are not authorized");
+        if (!SlackCheckAccess.hasAccess(userid.get())) {
+            sendError(resp,"No access found");
             return;
         }
-        String username = loginObject.objectValue("user").orElse(new JsonObject()).stringValue("name").orElse("Unkown user");
+        String username = loginObject.objectValue("user").orElse(new JsonObject()).stringValue("name").orElse("UnkownName");
         req.getSession().setMaxInactiveInterval(-1); // Keep session open until browser closes (hopefully).
         req.getSession().setAttribute("access_token", accessToken.get());
         req.getSession().setAttribute("username",username);
@@ -67,7 +64,7 @@ public class SlackServlet extends HttpServlet {
         response.getWriter().append(builder.toString());
     }
 
-    private Optional<JsonObject> fetchFromSlack(String urlAddr) throws IOException {
+    public static Optional<JsonObject> fetchFromSlack(String urlAddr) throws IOException {
         URL url = new URL(urlAddr);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         int responsecoee = conn.getResponseCode();

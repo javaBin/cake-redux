@@ -213,6 +213,10 @@ public class Configuration {
         return readConf("slackAuthChannel",null);
     }
 
+    public static String slackApiToken() {
+        return readConf("slackApiToken",null);
+    }
+
     public static void setConfigFile(String[] args) {
         System.setProperty("cake-redux-config-file",args[0]);
     }
