@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.Optional;
 
 public class EntranceServlet extends HttpServlet {
     @Override
@@ -68,48 +69,53 @@ public class EntranceServlet extends HttpServlet {
         }
 
 
-        String username = null;
-        String userEmail = null;
         JsonObject userInfo = JsonParser.parseToObject(json);
-        username = userInfo.stringValue("name").orElse("UnknownName");
-        userEmail = userInfo.stringValue("email").orElse("Unknown email");
+        String userEmail = userInfo.stringValue("email").orElse("Unknown email");
+        String id = userInfo.stringValue("id").orElse("Unknown id");
 
-        String userid = username + "<" + userEmail + ">";
-        if (!haveAccess(userid)) {
+        String userid = "<" + userEmail + ">";
+        Optional<String> access = readAccess(userid,"<" + id + ">");
+        if (!access.isPresent()) {
             resp
                     .sendError(HttpServletResponse.SC_FORBIDDEN, "User not registered " + userid + " got object " + userInfo.toJson());
             return;
         }
 
-        if (username.trim().isEmpty()) {
-            username = userEmail;
-        }
 
         req.getSession().setMaxInactiveInterval(-1); // Keep session open until browser closes (hopefully).
         req.getSession().setAttribute("access_token", userid);
-        req.getSession().setAttribute("username",username);
+        req.getSession().setAttribute("username",access.get());
 
-        writeLoginMessage(resp, writer, userid);
+        writeLoginMessage(resp, writer, access.get());
     }
 
-    private boolean haveAccess(String userid) {
+    private Optional<String> readAccess(String userid,String altuserid) {
         if (userid.trim().isEmpty()) {
-            return false;
+            return Optional.empty();
         }
         if (Configuration.getAutorizedUsers().contains(userid)) {
-            return true;
+            return Optional.empty();
         }
         String autorizedUserFile = Configuration.autorizedUserFile();
         if (autorizedUserFile == null) {
-            return false;
+            return Optional.empty();
         }
         String authUsers;
         try (FileInputStream inputStream = new FileInputStream(autorizedUserFile)) {
             authUsers = CommunicatorHelper.toString(inputStream);
         } catch (IOException e) {
-            return false;
+            return Optional.empty();
         }
-        return authUsers.contains(userid);
+        for (String line:authUsers.split("\n")) {
+            int ind = line.indexOf(userid);
+            if (ind == -1) {
+                ind = line.indexOf(altuserid);
+            }
+            if (ind != -1) {
+                return Optional.of(line.substring(0,ind));
+            }
+        }
+        return Optional.empty();
     }
 
     public static void writeLoginMessage(HttpServletResponse resp, PrintWriter writer, String userid) {
