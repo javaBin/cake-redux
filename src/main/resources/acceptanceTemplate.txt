@@ -39,6 +39,9 @@ JourneyZone is open to all speakers and is a fantastic chance to experience the 
 3) Speakers dinner:
 As always we'll be hosting a speakers dinner the evening before JavaZone. You can expect more information about this in August.
 
+4) Preparations for workshops:
+Please update the "Expected Audience" field in your submission to reflect any preparations your attendees should make before the workshop. Include any required downloads or dependancies, and don't forget hardware requirements!
+
 For more information see: http://2019.javazone.no/speakers
 
 If you have any more questions, reply to this email. Please be aware that the response time on emails during the summer holidays (in July) will be longer than normal.
