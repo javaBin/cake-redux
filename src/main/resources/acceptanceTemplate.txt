@@ -1,6 +1,6 @@
 Dear #speakername#
 
-We are pleased to inform you that your #talkType#, "#title#", has been accepted for JavaZone 2018!
+We are pleased to inform you that your #talkType#, "#title#", has been accepted for JavaZone 2019!
 
 
 CONFIRM YOUR TALK
@@ -18,7 +18,7 @@ Note that this #talkType# is accepted based upon both content and presenter as d
 UPDATING YOUR TALK
 -----------------------------------
 
-Once you have confirmed that you are attending, we will publish your #talkType# in the agenda at http://2018.javazone.no. You can continue to edit your abstract during the summer and should ensure that the following are updated:
+Once you have confirmed that you are attending, we will publish your #talkType# in the agenda at http://2019.javazone.no. You can continue to edit your abstract during the summer and should ensure that the following are updated:
 
 1) Be sure to upload a good quality picture or portrait so that people know what you look like!
 2) Tag your abstract with the relevant tags - this will make it easier for our attendees to find your #talkType#.
@@ -34,25 +34,22 @@ OTHER PRACTICAL INFORMATION
 -----------------------------------
 
 1) Reimbursements:
-Being a speaker at JavaZone does not automatically make you eligible for reimbursement. Instead, you have to apply for reimbursment. Please see https://2018.javazone.no/speakers/monetary-policy for information about how you can apply.
+Being a speaker at JavaZone does not automatically make you eligible for reimbursement. Instead, you have to apply for reimbursment. Please see https://2019.javazone.no/speakers/monetary-policy for information about how you can apply.
 
 2) Tickets:
-As stated at http://2018.javazone.no/speakers speakers of lightning talks will have to provide for their own admission to JavaZone.
+As stated at http://2019.javazone.no/speakers speakers of lightning talks will have to provide for their own admission to JavaZone.
 
 3) JourneyZone:
 JourneyZone is open to all speakers and is a fantastic chance to experience the nature of Norway and make new friends! JourneyZone will be held the weekend after the conference but at this time, we are not ready to hand out information. We will contact you once the details are confirmed.
 
-4) Speakers Workshop and Presentation Technique Course:
-Here you'll get a free Presentation Technique Course with Vibeke Holtskog, in addition to all you need to know about speaking at JavaZone! The workshop is held in Oslo the 21st of August 2018.
+4) Speakers dinner:
+As always we'll be hosting a speakers dinner the evening before JavaZone. You can expect more information about this in August.
 
-5) Speakers dinner:
-As always we'll be hosting a speakers dinner the evening before JavaZone. This year we will be eating at Ekeberg restaurant. The restaurant is a short ride away using public transportation from the city center but we will provide a bus from Oslo Spektrum. You can expect more information about this in August.
-
-For more information see: http://2018.javazone.no/speakers
+For more information see: http://2019.javazone.no/speakers
 
 If you have any more questions, reply to this email. Please be aware that the response time on emails during the summer holidays (in July) will be longer than normal.
 
 If you have any questions regarding the conference, please feel free to contact the Program Committee at program@java.no.
 
 Best regards,
-The JavaZone 2018 Program Committee
+The JavaZone 2019 Program Committee
