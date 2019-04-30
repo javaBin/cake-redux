@@ -18,16 +18,13 @@ Note that this #talkType# is accepted based upon both content and presenter as d
 UPDATING YOUR TALK
 -----------------------------------
 
-Once you have confirmed that you are attending, we will publish your #talkType# in the agenda at http://2019.javazone.no. You can continue to edit your abstract during the summer and should ensure that the following are updated:
+Once you have confirmed that you are attending, we will publish your #talkType# in the agenda at http://2019.javazone.no. You can continue to edit your abstract during the summer.
 
-1) Be sure to upload a good quality picture or portrait so that people know what you look like!
-2) Tag your abstract with the relevant tags - this will make it easier for our attendees to find your #talkType#.
-
-Remember that your abstract, title, bio and photo will be published once you confirm.
+Remember that your abstract, title and bio will be published once you confirm.
 
 You can update your talk here: 
 
-https://submit.javazone.no
+https://talks.javazone.no
 
 
 OTHER PRACTICAL INFORMATION
@@ -36,13 +33,10 @@ OTHER PRACTICAL INFORMATION
 1) Reimbursements:
 Being a speaker at JavaZone does not automatically make you eligible for reimbursement. Instead, you have to apply for reimbursement. Please see https://2019.javazone.no/speakers/monetary-policy for information about how you can apply.
 
-2) Tickets:
-As stated at http://2019.javazone.no/speakers, speakers of lightning talks will have to provide for their own admission to JavaZone.
-
-3) JourneyZone:
+2) JourneyZone:
 JourneyZone is open to all speakers and is a fantastic chance to experience the nature of Norway and make new friends! JourneyZone will be held the weekend after the conference, but at this time, we are not ready to hand out information. We will contact you once the details are confirmed.
 
-4) Speakers dinner:
+3) Speakers dinner:
 As always we'll be hosting a speakers dinner the evening before JavaZone. You can expect more information about this in August.
 
 For more information see: http://2019.javazone.no/speakers
