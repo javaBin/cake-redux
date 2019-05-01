@@ -114,6 +114,7 @@ public class SleepingpillCommunicator {
                 .map(ob -> ob.requiredString("name"))
                 .orElse("UNKNOWN");
         String title = obj.requiredObject("data").objectValue("title").orElse(JsonFactory.jsonObject().put("value", "xxx")).requiredString("value");
+        String format = obj.requiredObject("data").objectValue("format").orElse(JsonFactory.jsonObject()).stringValue("value").orElse("Unknown");
         JsonArray tags = obj.requiredObject("data").objectValue("tags").orElse(JsonFactory.jsonObject().put("value", JsonFactory.jsonArray())).requiredArray("value");
         String status = obj.requiredString("status");
 
@@ -123,6 +124,7 @@ public class SleepingpillCommunicator {
                 .put("title", title)
                 .put("conference",confname)
                 .put("tags",tags)
+                .put("format",format)
                 .put("status",status);
 
     }
