@@ -215,7 +215,7 @@ public class AcceptorSetter {
 
     private String loadTemplate() {
         String template;
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("acceptanceTemplate.txt")) {
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("acceptanceTemplate.html")) {
             template = CommunicatorHelper.toString(is);
 
         } catch (IOException e) {

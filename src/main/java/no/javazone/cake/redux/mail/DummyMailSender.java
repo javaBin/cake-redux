@@ -22,6 +22,8 @@ public class DummyMailSender implements MailSenderImplementation {
         message.append(" -> ");
         message.append(mailToSend.subject);
         System.out.println(message);
+        System.out.println(mailToSend.content);
+
 
     }
 }
