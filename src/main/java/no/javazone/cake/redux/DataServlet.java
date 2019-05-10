@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,9 +61,10 @@ public class DataServlet extends HttpServlet {
         } else if ("/updateroomslot".equals(pathInfo)) {
             updateRoomSlot(req,resp);
             resp.setContentType("application/json;charset=UTF-8");
-        } else if ("/readSlotForUpdate".equals(pathInfo)) {
-            readSlotForUpdate(req,resp);
+        } else if ("/smartTimeUpdate".equals(pathInfo)) {
+            smartUpdateTime(req,resp);
             resp.setContentType("application/json;charset=UTF-8");
+
         } else if ("/sendForRoomSlotUpdate".equals(pathInfo)) {
             roomSlotUpdate(req,resp);
             resp.setContentType("application/json;charset=UTF-8");
@@ -78,14 +81,6 @@ public class DataServlet extends HttpServlet {
         JsonFactory.jsonObject().toJson(resp.getWriter());
     }
 
-    private void readSlotForUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        JsonObject update;
-        try (InputStream inputStream = req.getInputStream()) {
-            update = JsonParser.parseToObject(inputStream);
-        }
-        JsonObject result = SlotUpdaterService.get().readDataOnTalks(update,computeAccessType(req));
-        result.toJson(resp.getWriter());
-    }
 
     private void updateRoomSlot(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         JsonObject update;
@@ -102,6 +97,33 @@ public class DataServlet extends HttpServlet {
         if (room.isPresent()) {
             sleepingpillCommunicator.updateRoom(talkref,room.get(),userAccessType);
         }
+
+        JsonFactory.jsonObject().toJson(resp.getWriter());
+    }
+
+    private void smartUpdateTime(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject update;
+        try (InputStream inputStream = req.getInputStream()) {
+            update = JsonParser.parseToObject(inputStream);
+        }
+        String talkref = update.requiredString("talkref");
+        String day = update.stringValue("smartDay").orElse("");
+        String smartTime = update.stringValue("smartTime").orElse("");
+
+        if (day.trim().isEmpty() || smartTime.trim().isEmpty()) {
+            JsonFactory.jsonObject().toJson(resp.getWriter());
+            return;
+        }
+
+        int dayoffset = "Wednesday".equalsIgnoreCase(day) ? 0 : 1;
+        int timslot = Integer.parseInt(smartTime)-1;
+        LocalDateTime startTime = Configuration.conferenceWednesday().atTime(9,0);
+
+        startTime = startTime.plusDays(dayoffset);
+        startTime = startTime.plusMinutes(80*timslot);
+
+        UserAccessType userAccessType = computeAccessType(req);
+        sleepingpillCommunicator.updateSlotTime(talkref,startTime,userAccessType);
 
         JsonFactory.jsonObject().toJson(resp.getWriter());
     }

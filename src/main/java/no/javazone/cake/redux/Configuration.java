@@ -2,6 +2,8 @@ package no.javazone.cake.redux;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -216,6 +218,11 @@ public class Configuration {
     public static String slackApiToken() {
         return readConf("slackApiToken",null);
     }
+
+    public static LocalDate conferenceWednesday() {
+        return LocalDate.parse(readConf("conferenceWednesday","2019-09-11"));
+    }
+
 
     public static void setConfigFile(String[] args) {
         System.setProperty("cake-redux-config-file",args[0]);

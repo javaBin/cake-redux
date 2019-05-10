@@ -78,16 +78,37 @@
                 <ul class="dropdown-menu">
                     <li><a ng-click="selectRoom('Room 1')">Room 1</a></li>
                     <li><a ng-click="selectRoom('Room 2')">Room 2</a></li>
-                    <li><a >Room 3</a></li>
-                    <li><a >Room 4</a></li>
-                    <li><a >Room 5</a></li>
-                    <li><a >Room 6</a></li>
-                    <li><a >Room 7</a></li>
+                    <li><a ng-click="selectRoom('Room 3')">Room 3</a></li>
+                    <li><a ng-click="selectRoom('Room 4')">Room 4</a></li>
+                    <li><a ng-click="selectRoom('Room 5')">Room 5</a></li>
+                    <li><a ng-click="selectRoom('Room 6')">Room 6</a></li>
+                    <li><a ng-click="selectRoom('Room 7')">Room 7</a></li>
                 </ul>
             </div><!-- /btn-group -->
             <input class="form-control" type="text" ng-model="newroom"/>
         </div><!-- /input-group -->
         <button class="btn btn-danger btn-lg" ng-click="newRoom()">Update room</button>
+    </div>
+    <div class="row cake-row">
+        <div class="input-group col-md-3">
+            <select class="form-control" ng-model="smartDay">
+                <option>Wednesday</option>
+                <option>Thursday</option>
+            </select>
+        </div><!-- /input-group -->
+        <div class="input-group col-md-2">
+            <select class="form-control" ng-model="smartTime">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+            </select>
+        </div><!-- /input-group -->
+        <button class="btn btn-danger btn-lg" ng-click="smartTimeUpdate()">Smart timeupdate</button>
     </div>
     <div class="row cake-row">
         <input type="datetime-local" ng-model="newstarttime"/>

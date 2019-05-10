@@ -86,12 +86,6 @@
             }
         };
 
-        $scope.setupSchedule = function () {
-            var selectedTalkRefs = _.pluck($scope.talks,"ref");
-            sessionStorage.setItem("selectedTalks",JSON.stringify(selectedTalkRefs));
-            window.location = "setupSchedule.html";
-        };
-
 
     }
 

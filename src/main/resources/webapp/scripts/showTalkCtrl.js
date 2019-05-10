@@ -211,7 +211,21 @@ angular.module('cakeReduxModule')
 
             $scope.selectRoom = function (selroom) {
                 $scope.newroom = selroom;
-            }
+            };
+
+            $scope.smartTimeUpdate = function () {
+                $http({
+                    method: "POST",
+                    url: "data/smartTimeUpdate",
+                    data: {
+                        talkref: talkRef,
+                        smartDay: $scope.smartDay,
+                        smartTime: $scope.smartTime
+                    }
+                }).success(function (data) {
+                    window.location.reload();
+                });
+            };
 
 
         }]);
