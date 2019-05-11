@@ -20,6 +20,7 @@ angular.module('cakeReduxModule')
             $scope.showLength = true;
             $scope.showLevel = true;
             $scope.showLanguage = true;
+            $scope.showParticipation = true;
             $scope.showRoom = true;
             $scope.showSlot = true;
             $scope.showSpeakers = true;
@@ -84,6 +85,9 @@ angular.module('cakeReduxModule')
                 if ($scope.showEquipment) {
                     headers.push("equipment");
                 }
+                if ($scope.showParticipation) {
+                    headers.push("participation");
+                }
                 if ($scope.showTags) {
                     headers.push("tags");
                 }
@@ -98,7 +102,7 @@ angular.module('cakeReduxModule')
                     return;
                 }
                 var headerRow = reduceToSemicolonDiv(headers);
-                var allNonSpeakers = [$scope.showTitle, $scope.showId, $scope.showSummary, $scope.showAbstract, $scope.showPostcode, $scope.showOutline, $scope.showKeywords, $scope.showAudience, $scope.showEquipment, $scope.showState, $scope.showPublished, $scope.showFormat, $scope.showLength, $scope.showLevel, $scope.showLanguage, $scope.showRoom, $scope.showSlot,  $scope.showLastModified, $scope.showTags, $scope.showContactPhone];
+                var allNonSpeakers = [$scope.showTitle, $scope.showId, $scope.showSummary, $scope.showAbstract, $scope.showPostcode, $scope.showOutline, $scope.showKeywords, $scope.showAudience, $scope.showEquipment,$scope.showParticipation, $scope.showState, $scope.showPublished, $scope.showFormat, $scope.showLength, $scope.showLevel, $scope.showLanguage, $scope.showRoom, $scope.showSlot,  $scope.showLastModified, $scope.showTags, $scope.showContactPhone];
                 var displaylines = filteredTalks;
                 if ($scope.showSpeakers && !_.some(allNonSpeakers,function (a) {return a;})) {
                     displaylines = _.flatten(_.map(filteredTalks,function (talk) {

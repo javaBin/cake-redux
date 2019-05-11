@@ -58,6 +58,10 @@
             <input type="checkbox" ng-model="showLanguage">
         </label>
         <label>
+            Participation
+            <input type="checkbox" ng-model="showParticipation">
+        </label>
+        <label>
             Room
             <input type="checkbox" ng-model="showRoom">
         </label>
@@ -154,6 +158,10 @@
     <div class="row cake-row" ng-show="$parent.showLanguage">
         <div class="col-md-1 cake-margin"><strong>Language</strong></div>
         <div class="col-md-10">{{aTalk.lang}}</div>
+    </div>
+    <div class="row cake-row" ng-show="$parent.showParticipation">
+        <div class="col-md-1 cake-margin"><strong>Paticipation</strong></div>
+        <div class="col-md-10">{{aTalk.participation}}</div>
     </div>
     <div class="row cake-row" ng-show="$parent.showRoom">
         <div class="col-md-1 cake-margin"><strong>Room</strong></div>
