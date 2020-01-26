@@ -1,12 +1,11 @@
 package no.javazone.cake.redux;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
-import java.util.TimeZone;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class SlotTimeFormatter {
     private String start;
@@ -19,37 +18,26 @@ public class SlotTimeFormatter {
         String startPart = split[0];
         String endPart = split[1];
 
-        DateTimeFormatter outputFormat = DateTimeFormat.forPattern("yyMMdd HH:mm");
+        LocalDateTime startTime = toLocalDate(startPart);
+        LocalDateTime endTime = toLocalDate(endPart);
 
-        DateTime startTime = toTime(startPart);
-        start = outputFormat.print(startTime);
-        DateTime endTime = toTime(endPart);
-        end = outputFormat.print(endTime);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyMMdd HH:mm");
+        this.start = startTime.format(dateTimeFormatter);
+        this.end = endTime.format(dateTimeFormatter);
 
-        Period period = new Period(startTime, endTime);
-        length = period.toStandardMinutes().getMinutes();
+        length = (int) startTime.until(endTime, ChronoUnit.MINUTES);
     }
 
 
-
-    public SlotTimeFormatter(String startPart,int duration) {
-
-        DateTimeFormatter outputFormat = DateTimeFormat.forPattern("yyMMdd HH:mm");
-
-        DateTime startTime = toTime(startPart);
-        start = outputFormat.print(startTime);
-        DateTime endTime = startTime.plusMinutes(duration);
-        end = outputFormat.print(endTime);
-
-        length = duration;
+    private LocalDateTime toLocalDate(String datestring) {
+        ZonedDateTime parsed = ZonedDateTime.parse(datestring);
+        ZoneId oslo = ZoneId.of("Europe/Oslo");
+        ZonedDateTime osloZone = parsed.withZoneSameInstant(oslo);
+        LocalDateTime localDateTime = osloZone.toLocalDateTime();
+        return localDateTime;
     }
 
-    private DateTime toTime(String startPart) {
-        DateTimeFormatter inputFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ").withZoneUTC();
-        DateTimeZone oslo = DateTimeZone.forID("Europe/Oslo");
-        DateTime dateTime = inputFormat.parseDateTime(startPart);
-        return dateTime.withZone(oslo);
-    }
+
 
     public String getStart() {
         return start;
