@@ -230,7 +230,7 @@
         <button class="btn" ng-click="newTagTyped()">Add</button>
         </p>
         <h3>
-            <span ng-repeat="tag in aTalk.tags" class="label label-info" style="margin-right: 0.2em">{{tag}} <a ng-click="removeTag(tag)">(x)</a></span>
+            <span ng-repeat="tag in aTalk.tagswithauthor" class="label label-info" style="margin-right: 0.2em">{{tag.tag}} ({{tag.author}}) <a ng-click="removeTag(tag)">(x)</a></span>
         </h3>
     </div>
 

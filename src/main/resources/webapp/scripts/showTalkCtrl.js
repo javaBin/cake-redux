@@ -36,7 +36,7 @@ angular.module('cakeReduxModule')
             $scope.toCommaSeperated = function(arr) {
                 return _.reduce(arr,function(a,b) {
                    return a + ", " + b;
-                });
+                },"-");
             }
 
             $scope.slotFilterUpdated = function() {
@@ -71,9 +71,9 @@ angular.module('cakeReduxModule')
 
 
             $scope.removeTag = function(tag) {
-                var index = $scope.aTalk.tags.indexOf(tag);
+                var index = $scope.aTalk.tagswithauthor.indexOf(tag);
                 if (index > -1) {
-                    $scope.aTalk.tags.splice(index,1);
+                    $scope.aTalk.tagswithauthor.splice(index,1);
                 }
             };
 

@@ -1,9 +1,6 @@
 package no.javazone.cake.redux.sleepingpill;
 
-import no.javazone.cake.redux.Base64Util;
-import no.javazone.cake.redux.Configuration;
-import no.javazone.cake.redux.NoUserAceessException;
-import no.javazone.cake.redux.UserAccessType;
+import no.javazone.cake.redux.*;
 import org.jsonbuddy.*;
 import org.jsonbuddy.parse.JsonParser;
 
@@ -137,7 +134,12 @@ public class SleepingpillCommunicator {
     public JsonObject oneTalkSleepingPillFormat(String talkid) {
         String talkurl = Configuration.sleepingPillBaseLocation() + "/data/session/" + talkid;
         URLConnection urlConnection = openConnection(talkurl);
-        return parseJsonFromConnection(urlConnection);
+        JsonObject returnValue = parseJsonFromConnection(urlConnection);
+        List<JsonObject> testtaglist = new ArrayList<>();
+        testtaglist.add(new JsonObject().put("tag","dummytag").put("author","Per"));
+        testtaglist.add(new JsonObject().put("tag","dummytag").put("author","Ole"));
+        returnValue.requiredObject("data").put("tagswithauthor",new JsonObject().put("privateDate",true).put("value",JsonArray.fromNodeList(testtaglist)));
+        return returnValue;
     }
 
     private JsonObject parseJsonFromConnection(URLConnection urlConnection) {
@@ -169,7 +171,11 @@ public class SleepingpillCommunicator {
         talkob.put("summary","");
         talkob.put("level",readValueFromProp(jsonObject,"level"));
         talkob.put("participation",readValueFromProp(jsonObject,"participation"));
-        talkob.put("tags",readValueFromProp(jsonObject,"tags",JsonFactory.jsonArray()));
+
+        TagsToDisplay tagsToDisplay = TagsHandler.INSTANCE.readTagsFromDataObject(jsonObject.requiredObject("data"));
+
+        talkob.put("tags",tagsToDisplay.getSummary());
+        talkob.put("tagswithauthor",tagsToDisplay.getFull());
         talkob.put("published",new Boolean(Arrays.asList("APPROVED","HISTORIC").contains(jsonObject.requiredString("status"))).toString());
         talkob.put("body",readValueFromProp(jsonObject,"abstract"));
         talkob.put("ref",jsonObject.requiredString("id"));
