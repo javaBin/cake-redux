@@ -13,6 +13,7 @@ import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonNull;
 import org.jsonbuddy.JsonObject;
 import org.jsonbuddy.parse.JsonParser;
+import org.jsonbuddy.pojo.PojoMapper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -284,7 +285,7 @@ public class DataServlet extends HttpServlet {
         String state = update.requiredString("state");
         String lastModified = update.stringValue("lastModified").orElse("xx");
 
-        List<String> taglist = tags.strings();
+        List<TagWithAuthor> taglist = tags.objectStream().map(a -> PojoMapper.map(a,TagWithAuthor.class)).collect(Collectors.toList());
         List<String> keywordlist = keywords.strings();
 
         //String newTalk = emsCommunicator.update(ref, taglist, state, lastModified,computeAccessType(req));
@@ -307,6 +308,7 @@ public class DataServlet extends HttpServlet {
             String encTalk = request.getParameter("talkId");
             JsonObject oneTalkAsJson = sleepingpillCommunicator.oneTalkAsJson(encTalk);
             appendFeedbacks(oneTalkAsJson,encTalk);
+            oneTalkAsJson.put("username",request.getSession().getAttribute("username"));
             // TODO Fix feedbacks
             appendUserFeedback(oneTalkAsJson, userFeedbackCommunicator.feedback(oneTalkAsJson.stringValue("emslocation")));
             writer.append(SleepingpillCommunicator.jsonHackFix(oneTalkAsJson.toJson()));

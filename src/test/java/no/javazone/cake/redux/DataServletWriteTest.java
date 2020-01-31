@@ -35,24 +35,6 @@ public class DataServletWriteTest {
         servlet.setSleepingpillCommunicator(sleepingpillCommunicator);
     }
 
-    @Test
-    public void shouldSaveTags() throws Exception {
-        when(req.getPathInfo()).thenReturn("/editTalk");
-        String inputjson = JsonFactory.jsonObject()
-                .put("ref","abra")
-                .put("lastModified","Tue, 04 Feb 2014 23:55:06 GMT")
-                .put("state","pending")
-                .put("tags",JsonFactory.jsonArray().add("test"))
-                .put("keywords",JsonFactory.jsonArray().add("keyone"))
-                .toJson();
-        //String inputjson = "{\"ref\":\"abra\",\"lastModified\":\"Tue, 04 Feb 2014 23:55:06 GMT\",\"tags\":[\"test\"],\"state\":\"pending\"}";
-        mockInputStream(inputjson);
-
-        servlet.service(req,resp);
-
-        verify(sleepingpillCommunicator).update("abra", Arrays.asList("test"),Arrays.asList("keyone"),"pending","Tue, 04 Feb 2014 23:55:06 GMT",UserAccessType.WRITE);
-
-    }
 
     private static class MockServletStream extends ServletInputStream {
         private final ByteArrayInputStream myStream;

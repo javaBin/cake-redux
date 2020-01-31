@@ -11,6 +11,7 @@ angular.module('cakeReduxModule')
             $scope.ratings = [];
 
             var updateFromServer = function(data) {
+                $scope.username = data.username;
                 if ($scope.aTalk) {
                     for (var prop in data) {
                         $scope.aTalk[prop] = data[prop];
@@ -60,7 +61,7 @@ angular.module('cakeReduxModule')
 
             $scope.newTagTyped = function() {
                 var n = $scope.newTag;
-                $scope.aTalk.tags.push(n);
+                $scope.aTalk.tagswithauthor.push({tag: n, author: $scope.username});
             };
 
             $scope.newKeywordTyped = function() {
@@ -94,7 +95,7 @@ angular.module('cakeReduxModule')
                 var postData = {
                     ref: t.ref,
                     lastModified: t.lastModified,
-                    tags : t.tags,
+                    tags : t.tagswithauthor,
                     state: t.state,
                     keywords: t.keywords
                 };

@@ -3,6 +3,7 @@ package no.javazone.cake.redux.sleepingpill;
 import no.javazone.cake.redux.*;
 import org.jsonbuddy.*;
 import org.jsonbuddy.parse.JsonParser;
+import org.jsonbuddy.pojo.JsonGenerator;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -135,10 +136,11 @@ public class SleepingpillCommunicator {
         String talkurl = Configuration.sleepingPillBaseLocation() + "/data/session/" + talkid;
         URLConnection urlConnection = openConnection(talkurl);
         JsonObject returnValue = parseJsonFromConnection(urlConnection);
+        /*
         List<JsonObject> testtaglist = new ArrayList<>();
         testtaglist.add(new JsonObject().put("tag","dummytag").put("author","Per"));
         testtaglist.add(new JsonObject().put("tag","dummytag").put("author","Ole"));
-        returnValue.requiredObject("data").put("tagswithauthor",new JsonObject().put("privateDate",true).put("value",JsonArray.fromNodeList(testtaglist)));
+        returnValue.requiredObject("data").put("tagswithauthor",new JsonObject().put("privateDate",true).put("value",JsonArray.fromNodeList(testtaglist)));*/
         return returnValue;
     }
 
@@ -294,20 +296,21 @@ public class SleepingpillCommunicator {
         sendTalkUpdate(ref,jsonObject().put("data",input).put("lastUpdated",lastModified));
     }
 
-    public String update(String ref, List<String> taglist, List<String> keywords,String state, String lastModified, UserAccessType userAccessType) {
+    public String update(String ref, List<TagWithAuthor> taglist, List<String> keywords,String state, String lastModified, UserAccessType userAccessType) {
         checkWriteAccess(userAccessType);
         JsonObject jsonObject = oneTalkStripped(ref);
-        JsonArray currenttags = jsonObject.requiredArray("tags");
         String currentstate = jsonObject.requiredString("state");
         JsonArray currentKeywords = jsonObject.requiredArray("keywords");
 
-        JsonArray newtags = JsonArray.fromStringList(taglist);
         JsonArray newkeywords = JsonArray.fromStringList(keywords);
 
         JsonObject payload = jsonObject();
-        if (!newtags.equals(currenttags)) {
+
+        JsonArray updatedTags = TagsHandler.INSTANCE.computeTagChanges(taglist,jsonObject.requiredArray("tagswithauthor"));
+        if (updatedTags != null) {
             JsonObject input = JsonFactory.jsonObject();
-            input.put("tags", jsonObject().put("value", newtags).put("privateData", true));
+            input.put("tagswithauthor", jsonObject().put("value", updatedTags).put("privateData", true));
+            input.put("tags", jsonObject().put("value", new JsonArray()).put("privateData", true));
             payload.put("data", input);
         }
 

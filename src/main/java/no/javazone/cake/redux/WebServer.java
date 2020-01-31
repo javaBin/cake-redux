@@ -24,7 +24,6 @@ public class WebServer {
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting cakeredux " + args);
-        System.out.println("Kotlin says " + HelloKotlin.INSTANCE.greeting());
         try {
             if (args == null || args.length < 1) {
                 System.out.println("Usage WebServer <Config file name> [war-file-path]");
@@ -83,7 +82,7 @@ public class WebServer {
         server.setHandler(createHandler());
 
         server.start();
-        System.out.println("Cakeredux started");
+        System.out.println("Cakeredux started port " + port);
     }
 
     private static int getPort(int defaultPort) {
