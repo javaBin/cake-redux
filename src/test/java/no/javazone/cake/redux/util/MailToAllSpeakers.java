@@ -5,6 +5,8 @@ import no.javazone.cake.redux.Configuration;
 import no.javazone.cake.redux.mail.EmailManualSender;
 
 import java.io.FileInputStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 public class MailToAllSpeakers {
@@ -16,7 +18,7 @@ public class MailToAllSpeakers {
         String mailfile = args[1];
         String subject = args[2];
         Configuration.setConfigFile(args);
-        Set<SpeakerAddr.SpeakerObj> allSpeakers = new SpeakerAddr().allSpeakersAllconferences();
+        Set<SpeakerAddr.SpeakerObj> allSpeakers = new SpeakerAddr().allSpeakersGivenConferences(new HashSet<>(Arrays.asList("javazone_2018","javazone_2019")));
 
         String content = CommunicatorHelper.toString(new FileInputStream(mailfile));
         System.out.println("Sending emails to " + allSpeakers.size());

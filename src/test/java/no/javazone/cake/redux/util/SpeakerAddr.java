@@ -2,6 +2,7 @@ package no.javazone.cake.redux.util;
 
 import no.javazone.cake.redux.Configuration;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
+import org.jetbrains.annotations.NotNull;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonObject;
 import org.jsonbuddy.parse.JsonParser;
@@ -35,8 +36,13 @@ public class SpeakerAddr {
 
     public Set<SpeakerObj> allSpeakersAllconferences() {
         JsonArray allEvents = JsonParser.parseToArray(sleepingpillCommunicator.allEvents());
-        Set<SpeakerObj> allSpeakers = new HashSet<>();
         List<String> allConf = allEvents.objectStream().map(ob -> ob.requiredString("ref")).collect(Collectors.toList());
+        return allSpeakersForConfId(allConf);
+    }
+
+    @NotNull
+    private Set<SpeakerObj> allSpeakersForConfId(List<String> allConf) {
+        Set<SpeakerObj> allSpeakers = new HashSet<>();
         for (String confid : allConf) {
             JsonArray jsonArray = sleepingpillCommunicator.allTalkFromConferenceSleepingPillFormat(confid);
             jsonArray.objectStream()
@@ -45,6 +51,13 @@ public class SpeakerAddr {
                     .forEach(allSpeakers::add);
         }
         return allSpeakers;
+    }
+
+    public Set<SpeakerObj> allSpeakersGivenConferences(Set<String> confref) {
+        JsonArray allEvents = JsonParser.parseToArray(sleepingpillCommunicator.allEvents());
+        List<String> confs = allEvents.objectStream().filter(a -> confref.contains(a.requiredString("slug"))).map(ob -> ob.requiredString("ref")).collect(Collectors.toList());
+        return allSpeakersForConfId(confs);
+
     }
 
     private void doApproved() {
