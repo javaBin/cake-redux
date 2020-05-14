@@ -23,7 +23,11 @@ public class MailToAllSpeakers {
         String content = CommunicatorHelper.toString(new FileInputStream(mailfile));
         System.out.println("Sending emails to " + allSpeakers.size());
         for (SpeakerAddr.SpeakerObj allSpeaker : allSpeakers) {
-            EmailManualSender.send(allSpeaker.email,content,subject);
+            try {
+                EmailManualSender.send(allSpeaker.email, content, subject);
+            } catch (Exception e) {
+                System.out.println("Could not send to '" + allSpeaker.email + "' " + e.getMessage() + "["  + e.getClass() + "]");
+            }
         }
 
     }

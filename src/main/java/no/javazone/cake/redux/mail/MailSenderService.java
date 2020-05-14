@@ -38,6 +38,10 @@ public class MailSenderService {
     private static final String syncobj = "sync";
 
     public void sendMail(MailSenderImplementation mail) {
+        if (Configuration.emailSleepTime() <= 0L) {
+            mail.send();
+            return;
+        }
         if (messages == null) {
             synchronized (syncobj) {
                 if (messages == null) {
