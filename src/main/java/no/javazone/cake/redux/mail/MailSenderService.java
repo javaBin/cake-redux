@@ -39,7 +39,11 @@ public class MailSenderService {
 
     public void sendMail(MailSenderImplementation mail) {
         if (Configuration.emailSleepTime() <= 0L) {
-            mail.send();
+            try {
+                mail.send();
+            } catch (Exception e) {
+                System.out.println("Error sending mail : " + e.getMessage());
+            }
             return;
         }
         if (messages == null) {

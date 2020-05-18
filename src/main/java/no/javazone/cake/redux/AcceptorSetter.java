@@ -3,7 +3,6 @@ package no.javazone.cake.redux;
 import no.javazone.cake.redux.mail.MailSenderImplementation;
 import no.javazone.cake.redux.mail.MailSenderService;
 import no.javazone.cake.redux.mail.MailToSend;
-import no.javazone.cake.redux.mail.SmtpMailSender;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
@@ -16,7 +15,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,9 +113,9 @@ public class AcceptorSetter {
         List<String> sendTo = new ArrayList<>();
         String speakerName = addSpeakers(jsonTalk, sendTo);
 
-        String subject = generateMessage(subjectTemplate, title, talkType, speakerName, submitLink, confirmLocation,jsonTalk);
+        String subject = generateMessage(subjectTemplate, title, talkType, speakerName, submitLink, confirmLocation,jsonTalk, encodedTalkRef);
 
-        String message = generateMessage(template,title, talkType, speakerName, submitLink, confirmLocation,jsonTalk);
+        String message = generateMessage(template,title, talkType, speakerName, submitLink, confirmLocation,jsonTalk,encodedTalkRef);
         mail.setMsg(message);
 
         MailToSend mailToSend = new MailToSend(sendTo, subject, message);
@@ -153,13 +151,15 @@ public class AcceptorSetter {
         return builder.toString();
     }
 
-    protected String generateMessage(String template, String title, String talkType, String speakerName, String submitLink, String confirmLocation,JsonObject jsonTalk) {
+    protected String generateMessage(String template, String title, String talkType, String speakerName, String submitLink, String confirmLocation, JsonObject jsonTalk, String encodedTalkRef) {
         String message = template;
         message = replaceAll(message,"#title#", title);
         message = replaceAll(message,"#speakername#", speakerName);
         message = replaceAll(message,"#talkType#", talkType);
         message = replaceAll(message,"#submititLink#", submitLink);
         message = replaceAll(message,"#confirmLink#", confirmLocation);
+        message = replaceAll(message,"#talkid#", encodedTalkRef);
+
 
         for (int pos=message.indexOf("#");pos!=-1;pos=message.indexOf("#",pos+1)) {
             if (pos == message.length()-1) {
