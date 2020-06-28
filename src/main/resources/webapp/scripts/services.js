@@ -176,6 +176,9 @@ angular.module('cakeReduxModule')
             if (!isMatch(filter.title,talk.title)) {
                 return false;
             }
+            if (!isMatch(filter.postcode,talk.postcode)) {
+                return false;
+            }
             if (filter.speaker && filter.speaker.length > 0) {
                 var foundSpeaker = false;
                 _.each(talk.speakers,function(speaker) {

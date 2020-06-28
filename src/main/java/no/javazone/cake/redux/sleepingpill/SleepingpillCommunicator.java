@@ -212,6 +212,9 @@ public class SleepingpillCommunicator {
                         )));
         talkob.put("pubcomments",jsonObject.arrayValue("comments").orElse(JsonFactory.jsonArray()));
 
+        talkob.put("postcode",talkob.requiredArray("speakers").objectStream().map(ob -> ob.stringValue("zip-code").orElse("")).filter(pc -> !pc.trim().isEmpty())
+                .reduce((a,b) -> a+","+b).orElse(""));
+
         return talkob;
 
 
