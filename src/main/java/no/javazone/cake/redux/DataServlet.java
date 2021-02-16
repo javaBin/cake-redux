@@ -310,7 +310,8 @@ public class DataServlet extends HttpServlet {
             appendFeedbacks(oneTalkAsJson,encTalk);
             oneTalkAsJson.put("username",request.getSession().getAttribute("username"));
             // TODO Fix feedbacks
-            appendUserFeedback(oneTalkAsJson, userFeedbackCommunicator.feedback(oneTalkAsJson.stringValue("emslocation")));
+            //appendUserFeedback(oneTalkAsJson, userFeedbackCommunicator.feedback(oneTalkAsJson.stringValue("emslocation")));
+            appendUserFeedback(oneTalkAsJson, Optional.empty());
             writer.append(SleepingpillCommunicator.jsonHackFix(oneTalkAsJson.toJson()));
         } else if ("/events".equals(pathInfo)) {
             writer.append(sleepingpillCommunicator.allEvents());
