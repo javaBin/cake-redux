@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.jsonbuddy.JsonFactory.jsonObject;
 
@@ -173,6 +174,14 @@ public class SleepingpillCommunicator {
         talkob.put("summary","");
         talkob.put("level",readValueFromProp(jsonObject,"level"));
         talkob.put("participation",readValueFromProp(jsonObject,"participation"));
+
+        final List<JsonObject> talkUpdates = jsonObject.requiredArray("talkUpdates")
+                .objectStream().collect(Collectors.toList());
+        String lastUpdateBy = "";
+        if (!talkUpdates.isEmpty()) {
+            lastUpdateBy = talkUpdates.get(talkUpdates.size()-1).requiredString("updatedBy");
+        }
+        talkob.put("lastChangedBy",lastUpdateBy);
 
         TagsToDisplay tagsToDisplay = TagsHandler.INSTANCE.readTagsFromDataObject(jsonObject.requiredObject("data"));
 
