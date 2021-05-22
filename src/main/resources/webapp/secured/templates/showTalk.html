@@ -144,6 +144,11 @@
 
     <p><b>Contact phone:</b> {{aTalk.contactPhone}}</p>
 
+    <h2>Change history</h2>
+    <ul>
+        <li ng-repeat="he in aTalk.talkUpdateHistory">{{he.updatedAt}} {{he.updatedBy}}</li>
+    </ul>
+
     <h2>Internal comments</h2>
     <p ng-repeat="acomment in comments"><b>{{acomment.author}}:</b> {{acomment.info}}</p>
 

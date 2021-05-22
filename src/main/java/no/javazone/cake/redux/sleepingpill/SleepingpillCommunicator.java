@@ -175,19 +175,21 @@ public class SleepingpillCommunicator {
         talkob.put("level",readValueFromProp(jsonObject,"level"));
         talkob.put("participation",readValueFromProp(jsonObject,"participation"));
 
-        final List<JsonObject> talkUpdates = jsonObject.requiredArray("talkUpdates")
+        final JsonArray talkUpdatesArray = jsonObject.requiredArray("talkUpdates");
+        final List<JsonObject> talkUpdates = talkUpdatesArray
                 .objectStream().collect(Collectors.toList());
         String lastUpdateBy = "";
         if (!talkUpdates.isEmpty()) {
             lastUpdateBy = talkUpdates.get(talkUpdates.size()-1).requiredString("updatedBy");
         }
         talkob.put("lastChangedBy",lastUpdateBy);
+        talkob.put("talkUpdateHistory",talkUpdatesArray);
 
         TagsToDisplay tagsToDisplay = TagsHandler.INSTANCE.readTagsFromDataObject(jsonObject.requiredObject("data"));
 
         talkob.put("tags",tagsToDisplay.getSummary());
         talkob.put("tagswithauthor",tagsToDisplay.getFull());
-        talkob.put("published",new Boolean(Arrays.asList("APPROVED","HISTORIC").contains(jsonObject.requiredString("status"))).toString());
+        talkob.put("published", Boolean.toString(Arrays.asList("APPROVED", "HISTORIC").contains(jsonObject.requiredString("status"))));
         talkob.put("body",readValueFromProp(jsonObject,"abstract"));
         talkob.put("ref",jsonObject.requiredString("id"));
         talkob.put("hasUnpublishedValues",jsonObject.requiredObject("sessionUpdates")
