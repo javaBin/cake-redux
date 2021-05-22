@@ -210,6 +210,9 @@ angular.module('cakeReduxModule')
             if (!isMatch(filter.hasUnpublishedValues,talk.hasUnpublishedValues)) {
                 return false;
             }
+            if (!isMatch(filter.lastChangedBy,talk.lastChangedBy)) {
+                return false;
+            }
             if (!findInArray(filter.keyword,talk.keywords)) {
                 return false;
             }
