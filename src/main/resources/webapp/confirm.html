@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="cakeOpen">
 <head>
-    <title>JavaZone 2019 speaker confirmation</title>
+    <title>JavaZone 2021 speaker confirmation</title>
     <script src="scripts/ext/jquery-2.1.0.min.js"></script>
     <script src="scripts/ext/underscore-min.js"></script>
     <!-- Latest compiled and minified CSS -->
@@ -19,38 +19,38 @@
 
 </head>
 <body ng-controller="ConfirmCtrl">
-     <h1 class="col-xs-offset-1">JavaZone speaker confirmation</h1>
-    <div class="col-xs-offset-1 col-md-9 row" ng-show="showMain">
-        <p>By pressing the button below you confirm that you will be speaking at JavaZone 2019.</p>
-        <p>We would also like to know if you are planning on attending the speakers dinner. The speakers dinner will be at 19:00 on September 10th.</p>
-        <p>
-            <div class="radio">
-                <label>
-                    <input type="radio" name="dinner" id="optionsRadios1" value="yes" ng-model="dinner">
-                    Yes, I plan to attend the speakers dinner.
-                </label>
-            </div>
-            <div class="radio">
-                <label>
-                    <input type="radio" name="dinner" id="optionsRadios2" value="no" ng-model="dinner">
-                    No, I am not able to attend the speakers dinner.
-                </label>
-            </div>
-            <div>
-                Please supply a mobile phone number (including country code if necessary).  This is so we can reach you during the conference if the need arises.<br/>
-                <input type="text" ng-model="contactPhone" id="mobilePhone" placeholder="Mobile phone">
-            </div>
-            <button type="button" class="btn btn-primary btn-lg" ng-click="confirmTalk()">Confirm</button>
-        </p>
+<h1 class="col-xs-offset-1">JavaZone speaker confirmation</h1>
+<div class="col-xs-offset-1 col-md-9 row" ng-show="showMain">
+    <p>By pressing the button below you confirm that you will be speaking at JavaZone 2021.</p>
+    <p>We would also like to know if you are planning on attending the speakers dinner. The speakers dinner will be at 19:00 on December 7th.</p>
+    <p>
+    <div class="radio">
+        <label>
+            <input type="radio" name="dinner" id="optionsRadios1" value="yes" ng-model="dinner">
+            Yes, I plan to attend the speakers dinner.
+        </label>
     </div>
-    <div class="row col-xs-offset-1">
-        <div class="alert alert-danger col-md-6 col-xs-offset-1" ng-show="showError">
-            {{message}}
-        </div>
-        <div class="alert alert-success col-md-6" ng-show="showSuccess">
-            Your talk has been confirmed.
-        </div>
+    <div class="radio">
+        <label>
+            <input type="radio" name="dinner" id="optionsRadios2" value="no" ng-model="dinner">
+            No, I am not able to attend the speakers dinner.
+        </label>
     </div>
-    <p class="col-xs-offset-1 row">If you have any questions, please contact us at program@java.no.</p>
+    <div>
+        Please supply a mobile phone number (including country code if necessary). This is so we can reach you during the conference if the need arises.<br/>
+        <input type="text" ng-model="contactPhone" id="mobilePhone" placeholder="Mobile phone">
+    </div>
+    <button type="button" class="btn btn-primary btn-lg" ng-click="confirmTalk()">Confirm</button>
+    </p>
+</div>
+<div class="row col-xs-offset-1">
+    <div class="alert alert-danger col-md-6 col-xs-offset-1" ng-show="showError">
+        {{message}}
+    </div>
+    <div class="alert alert-success col-md-6" ng-show="showSuccess">
+        Your talk has been confirmed.
+    </div>
+</div>
+<p class="col-xs-offset-1 row">If you have any questions, please contact us at program@java.no.</p>
 </body>
 </html>
