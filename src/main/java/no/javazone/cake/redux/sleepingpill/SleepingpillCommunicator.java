@@ -4,6 +4,7 @@ import no.javazone.cake.redux.*;
 import org.jsonbuddy.*;
 import org.jsonbuddy.parse.JsonParser;
 import org.jsonbuddy.pojo.JsonGenerator;
+import org.jsonbuddy.pojo.PojoMapper;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -303,30 +304,28 @@ public class SleepingpillCommunicator {
 
 
 
-    public void updateTags(String ref,List<String> tags,UserAccessType userAccessType, String lastModified) {
-        checkWriteAccess(userAccessType);
-        JsonObject input = JsonFactory.jsonObject()
-                .put("tags", jsonObject().put("value", JsonArray.fromStringList(tags)).put("privateData", true));
-        sendTalkUpdate(ref,jsonObject().put("data",input).put("lastUpdated",lastModified));
+    public void updateTags(String ref,List<TagWithAuthor> tags,UserWithAccess userWithAccess, String lastModified) {
+        checkWriteAccess(userWithAccess.userAccessType);
+
+        JsonObject oneTalkStripped = oneTalkStripped(ref);
+
+        final Optional<JsonObject> updatePayload = computeUpdatedTags(tags, oneTalkStripped);
+
+        if (updatePayload.isPresent()) {
+            sendTalkUpdate(ref,updatePayload.get().put("lastUpdated",lastModified));
+
+        }
     }
 
     public String update(String ref, List<TagWithAuthor> taglist, List<String> keywords,String state, String lastModified, UserAccessType userAccessType) {
         checkWriteAccess(userAccessType);
-        JsonObject jsonObject = oneTalkStripped(ref);
-        String currentstate = jsonObject.requiredString("state");
-        JsonArray currentKeywords = jsonObject.requiredArray("keywords");
+        JsonObject oneTalkStripped = oneTalkStripped(ref);
+        String currentstate = oneTalkStripped.requiredString("state");
+        JsonArray currentKeywords = oneTalkStripped.requiredArray("keywords");
 
         JsonArray newkeywords = JsonArray.fromStringList(keywords);
 
-        JsonObject payload = jsonObject();
-
-        JsonArray updatedTags = TagsHandler.INSTANCE.computeTagChanges(taglist,jsonObject.requiredArray("tagswithauthor"));
-        if (updatedTags != null) {
-            JsonObject input = JsonFactory.jsonObject();
-            input.put("tagswithauthor", jsonObject().put("value", updatedTags).put("privateData", true));
-            input.put("tags", jsonObject().put("value", new JsonArray()).put("privateData", true));
-            payload.put("data", input);
-        }
+        JsonObject payload = computeUpdatedTags(taglist, oneTalkStripped).orElse(new JsonObject());
 
         if (!newkeywords.equals(currentKeywords)) {
             JsonObject input = JsonFactory.jsonObject();
@@ -345,6 +344,19 @@ public class SleepingpillCommunicator {
         //payload.put("lastUpdated",lastModified);
         sendTalkUpdate(ref, payload);
         return fetchOneTalk(ref);
+    }
+
+    private Optional<JsonObject> computeUpdatedTags(List<TagWithAuthor> taglist, JsonObject oneTalkStripped) {
+        JsonArray updatedTags = TagsHandler.INSTANCE.computeTagChanges(taglist, oneTalkStripped.requiredArray("tagswithauthor"));
+        if (updatedTags == null) {
+            return Optional.empty();
+        }
+        JsonObject payload = new JsonObject();
+        JsonObject input = JsonFactory.jsonObject();
+        input.put("tagswithauthor", jsonObject().put("value", updatedTags).put("privateData", true));
+        input.put("tags", jsonObject().put("value", new JsonArray()).put("privateData", true));
+        payload.put("data", input);
+        return Optional.of(payload);
     }
 
     public JsonObject sendTalkUpdate(String ref, JsonObject payload) {
@@ -383,27 +395,24 @@ public class SleepingpillCommunicator {
         return jsonObject.toString();
     }
 
-    public String confirmTalk(String ref, String dinner,UserAccessType userAccessType) {
-        checkWriteAccess(userAccessType);
+    public String confirmTalk(String ref, String dinner,UserWithAccess userWithAccess) {
+        checkWriteAccess(userWithAccess.userAccessType);
         JsonObject jsonTalk = oneTalkStripped(ref);
 
-        JsonArray tagsarr = jsonTalk.requiredArray("tags");
-        List<String> tags = new ArrayList<>();
-        for (String atag : tagsarr.strings()) {
-            tags.add(atag);
-        }
-        if (tags.contains("confirmed")) {
+        List<TagWithAuthor> origtags = new ArrayList<>(jsonTalk.arrayValue("tagswithauthor").orElse(new JsonArray()).objectStream().map(a -> PojoMapper.map(a, TagWithAuthor.class)).collect(Collectors.toSet()));
+
+        if (origtags.stream().anyMatch(a -> "confirmed".equalsIgnoreCase(a.getTag()))) {
             return confirmTalkMessage("error","Talk has already been confirmed");
         }
-        if (!tags.contains("accepted")) {
+        if (origtags.stream().noneMatch(a -> "accepted".equalsIgnoreCase(a.getTag()))) {
             return confirmTalkMessage("error","Talk is not accepted");
         }
         if ("yes".equals(dinner)) {
-            tags.add("dinner");
+            origtags.add(new TagWithAuthor("dinner",userWithAccess.username));
         }
-        tags.add("confirmed");
+        origtags.add(new TagWithAuthor("confirmed",userWithAccess.username));
 
-        updateTags(ref,tags,userAccessType,jsonTalk.requiredString("lastModified"));
+        updateTags(ref,origtags,userWithAccess,jsonTalk.requiredString("lastModified"));
 
         return confirmTalkMessage("ok", "ok");
     }

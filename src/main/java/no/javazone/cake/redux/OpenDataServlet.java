@@ -91,7 +91,7 @@ public class OpenDataServlet extends HttpServlet {
         FeedbackDao feedbackDao = FeedbackDao.instance();
         feedbackDao.addFeedback(contact,lastModified);
 
-        String status = sleepingpillCommunicator.confirmTalk(encodedTalkUrl,dinner,UserAccessType.OPENSERVLET);
+        String status = sleepingpillCommunicator.confirmTalk(encodedTalkUrl,dinner,new UserWithAccess("Anonymous",UserAccessType.OPENSERVLET));
         resp.setContentType("text/json");
         resp.getWriter().append(status);
     }

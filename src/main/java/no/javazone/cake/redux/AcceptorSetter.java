@@ -9,14 +9,14 @@ import org.apache.commons.mail.SimpleEmail;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonObject;
+import org.jsonbuddy.pojo.PojoMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AcceptorSetter {
     //private EmsCommunicator emsCommunicator;
@@ -27,16 +27,16 @@ public class AcceptorSetter {
         //this.emsCommunicator = emsCommunicator;
     }
 
-    public String accept(JsonArray talks,UserAccessType userAccessType) {
+    public String accept(JsonArray talks,UserWithAccess userWithAccess) {
         String template = loadTemplate();
         String tagToAdd = "accepted";
         String tagExistsErrormessage = "Talk is already accepted";
         String subjectTemplate = "Javazone 2019 #talkType# accepted";
 
-        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType,false);
+        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userWithAccess,false);
     }
 
-    public String massUpdate(JsonObject jsonObject,UserAccessType userAccessType) {
+    public String massUpdate(JsonObject jsonObject,UserWithAccess userWithAccess) {
         JsonArray talks = jsonObject.requiredArray("talks");
 
         String template = null;
@@ -54,10 +54,10 @@ public class AcceptorSetter {
 
         boolean publishUpdates = "true".equals(jsonObject.stringValue("publishUpdates").orElse("false"));
 
-        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userAccessType,publishUpdates);
+        return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userWithAccess,publishUpdates);
     }
 
-    private String doUpdates(JsonArray talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage,UserAccessType userAccessType,boolean publishUpdates) {
+    private String doUpdates(JsonArray talks, String template, String subjectTemplate, String tagToAdd, String tagExistsErrormessage,UserWithAccess userWithAccess,boolean publishUpdates) {
         JsonArray statusAllTalks = JsonFactory.jsonArray();
         for (int i=0;i<talks.size();i++) {
             JsonObject accept = JsonFactory.jsonObject();
@@ -68,25 +68,29 @@ public class AcceptorSetter {
 
                 accept.put("title",jsonTalk.requiredString("title"));
 
-                List<String> tags = jsonTalk.requiredArray("tags").strings();
+                List<TagWithAuthor> origtags = new ArrayList<>(jsonTalk.arrayValue("tagswithauthor").orElse(new JsonArray()).objectStream().map(a -> PojoMapper.map(a, TagWithAuthor.class)).collect(Collectors.toSet()));
 
-                if (tagToAdd != null && tags.contains(tagToAdd)) {
-                    accept.put("status","error");
-                    accept.put("message", tagExistsErrormessage);
-                    continue;
+                if (tagToAdd != null) {
+                    Optional<TagWithAuthor> exisisting = origtags.stream().filter(a -> tagToAdd.equals(a.getTag())).findAny();
+                    if (exisisting.isPresent()) {
+                        accept.put("status","error");
+                        accept.put("message", tagExistsErrormessage);
+                        continue;
+                    }
                 }
+
 
                 if (template != null) {
                     generateAndSendMail(template, subjectTemplate, encodedTalkRef, jsonTalk);
                 }
 
                 if (tagToAdd != null) {
-                    tags.add(tagToAdd);
+                    origtags.add(new TagWithAuthor(tagToAdd,userWithAccess.username));
                     String lastModified = jsonTalk.requiredString("lastModified");
-                    sleepingpillCommunicator.updateTags(encodedTalkRef, tags, userAccessType,lastModified);
+                    sleepingpillCommunicator.updateTags(encodedTalkRef, origtags, userWithAccess,lastModified);
                 }
                 if (publishUpdates) {
-                    sleepingpillCommunicator.pubishChanges(encodedTalkRef,userAccessType);
+                    sleepingpillCommunicator.pubishChanges(encodedTalkRef,userWithAccess.userAccessType);
                 }
                 accept.put("status","ok");
                 accept.put("message","ok");

@@ -253,13 +253,17 @@ public class DataServlet extends HttpServlet {
         return UserAccessType.WRITE;
     }
 
+    private static UserWithAccess computeUserWithAccess(HttpServletRequest request) {
+        return new UserWithAccess(Optional.ofNullable(request.getSession().getAttribute("username")).map(Object::toString).orElse("Unknown"),computeAccessType(request));
+    }
+
     private void acceptTalks(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
             JsonObject obj = JsonParser.parseToObject(inputStream);
             JsonArray talks = obj.requiredArray("talks");
             String inputStr = CommunicatorHelper.toString(inputStream);
 
-            String statusJson = acceptorSetter.accept(talks,computeAccessType(req));
+            String statusJson = acceptorSetter.accept(talks,computeUserWithAccess(req));
             resp.getWriter().append(statusJson);
         }
     }
@@ -267,7 +271,7 @@ public class DataServlet extends HttpServlet {
     private void massUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (InputStream inputStream = req.getInputStream()) {
             JsonObject input = JsonParser.parseToObject(inputStream);
-            String statusJson = acceptorSetter.massUpdate(input,computeAccessType(req));
+            String statusJson = acceptorSetter.massUpdate(input,computeUserWithAccess(req));
             resp.getWriter().append(statusJson);
 
         }
