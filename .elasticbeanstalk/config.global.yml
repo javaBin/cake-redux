@@ -7,9 +7,8 @@ environment-defaults:
     repository: null
 global:
   application_name: cakeredux
-  default_platform: java-8
   default_ec2_keyname: javabin
-  default_platform: 64bit Amazon Linux 2016.09 v2.2.0 running Java 8
+  default_platform: 64bit Amazon Linux 2 v3.2.6 running Corretto 11
   default_region: eu-central-1
   profile: javabin
   sc: git
