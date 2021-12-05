@@ -118,7 +118,7 @@ public class DataServlet extends HttpServlet {
 
         int dayoffset = "Wednesday".equalsIgnoreCase(day) ? 0 : 1;
         int timslot = Integer.parseInt(smartTime)-1;
-        LocalDateTime startTime = Configuration.conferenceWednesday().atTime(9,10);
+        LocalDateTime startTime = Configuration.conferenceWednesday().atTime(9,30);
 
         startTime = startTime.plusDays(dayoffset);
         startTime = startTime.plusMinutes(70L*timslot);
