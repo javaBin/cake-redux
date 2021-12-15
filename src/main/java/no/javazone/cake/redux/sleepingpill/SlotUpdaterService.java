@@ -1,7 +1,6 @@
 package no.javazone.cake.redux.sleepingpill;
 
 import no.javazone.cake.redux.UserAccessType;
-import org.apache.log4j.lf5.util.StreamUtils;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonObject;
