@@ -14,7 +14,7 @@ public class SmtpMailSender implements MailSenderImplementation {
 
 
     @Override
-    public void send() {
+    public boolean send() {
         SimpleEmail simpleEmail = new SimpleEmail();
 
         try {
@@ -42,8 +42,10 @@ public class SmtpMailSender implements MailSenderImplementation {
 
 
             simpleEmail.send();
+            return true;
         } catch (EmailException e) {
             System.out.println("Email send error " + e);
+            return false;
         }
     }
 }

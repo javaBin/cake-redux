@@ -14,7 +14,7 @@ public class SendGridSender implements MailSenderImplementation {
     }
 
     @Override
-    public void send() {
+    public boolean send() {
         SendGrid sg = new SendGrid(Optional.ofNullable(Configuration.sendGridKey()).orElseThrow(() -> new RuntimeException("Send grid key not set")));
         Request request = new Request();
         try {
@@ -35,6 +35,7 @@ public class SendGridSender implements MailSenderImplementation {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sg.api(request);
+            return true;
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
