@@ -42,6 +42,7 @@ public class VideoAdminServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (!"/updatevideo".equals(req.getPathInfo())) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
         }
         JsonObject input;
         try (InputStream inputStream = req.getInputStream()) {
@@ -53,7 +54,14 @@ public class VideoAdminServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST,"Missing input");
             return;
         }
-        VideoAdminService.get().update(id.get(),video.get());
+        String videoval = video.get();
+        for (Character c : videoval.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST,"Videoid can only contain numbers");
+                return;
+            }
+        }
+        VideoAdminService.get().update(id.get(),videoval);
         resp.setContentType("application/json;charset=UTF-8");
         JsonFactory.jsonObject().toJson(resp.getWriter());
     }

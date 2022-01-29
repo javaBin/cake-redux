@@ -11,10 +11,11 @@ function getParameterByName(name) {
 var talkid = getParameterByName("id");
 
 function updateVideo() {
-    var vidval = $("#videoaddr").val();
+    let vidval = $("#videoaddr").val();
+    let $statustext = $("#statustext");
     if (vidval.endsWith("/")) {
-        $("#statustext").empty();
-        $("#statustext").append("Value can not end with /");
+        $statustext.empty();
+        $statustext.append("Value can not end with /");
         return;
     }
     $("#updatebutton").prop("disabled","true");
@@ -27,11 +28,13 @@ function updateVideo() {
         data: JSON.stringify(payload),
         url: "api/updatevideo",
         success: function( fromServer ) {
-            $("#statustext").empty();
-            $("#statustext").append("Video was updated")
+            $statustext.empty();
+            $statustext.append("Video was updated");
         },
         error: function( jqXHR, textStatus, errorThrown ){
-            window.alert(jqXHR);
+            $statustext.empty();
+            $statustext.append("Error: " + errorThrown);
+            $("#updatebutton").prop("disabled","false");
         }
     });
 
