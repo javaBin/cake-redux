@@ -1,7 +1,7 @@
 package no.javazone.cake.redux
 
-import no.javazone.cake.redux.mail.MailSenderImplementation
 import no.javazone.cake.redux.mail.MailToSend
+import no.javazone.cake.redux.util.KotlinFix
 import java.io.File
 
 private val fromEmail = "javazone@java.no"
@@ -48,7 +48,7 @@ class MassMailSender(emailsFileName:String,contentFileName:String) {
                 println("Send $num")
             }
             val mailToSend = MailToSend(fromEmail, fromEmailName, emptyList(), listOf(emailaddr), subject,content)
-            val impl = MailSenderImplementation.create(mailToSend)
+            val impl = KotlinFix().createMailImpl(mailToSend)
             try {
                 impl.send()
             } catch (e:Exception) {
