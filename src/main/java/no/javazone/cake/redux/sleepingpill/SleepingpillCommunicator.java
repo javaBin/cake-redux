@@ -221,6 +221,7 @@ public class SleepingpillCommunicator {
                                 .put("bio",readValueFromProp(ob,"bio"))
                                 .put("zip-code",readValueFromProp(ob,"zip-code"))
                                 .put("twitter",readValueFromProp(ob,"twitter"))
+                                .put("residence",readValueFromProp(ob,"residence"))
                         )));
         talkob.put("pubcomments",jsonObject.arrayValue("comments").orElse(JsonFactory.jsonArray()));
 

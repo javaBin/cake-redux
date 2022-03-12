@@ -134,6 +134,10 @@
             <div class="col-md-10">{{speaker["zip-code"]}}</div>
         </div>
         <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Residence</strong></div>
+            <div class="col-md-10">{{speaker["residence"]}}</div>
+        </div>
+        <div class="row cake-row">
             <div class="col-md-1 cake-margin"><strong>Other talks</strong></div>
             <ul class="col-md-10">
                 <li ng-repeat="otalk in speaker.spOtherTalks"><a ng-href="#/showTalk/{{otalk.sessionId}}">"{{otalk.title}}</a> {{otalk.format}} ({{otalk.conference}})[{{otalk.status}}]({{toCommaSeperated(otalk.tags)}})
