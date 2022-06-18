@@ -1,5 +1,6 @@
 package no.javazone.cake.redux.comments;
 
+import no.javazone.cake.redux.PkomFeedbackCompute;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonObject;
 
@@ -66,7 +67,7 @@ public class FeedbackService {
     }
 
     public JsonArray ratingsForTalk(String talkRef) {
-        return JsonArray.fromNodeStream(FeedbackDao.instance().feedbacksForTalk(talkRef)
+        List<Feedback> feedbacks = FeedbackDao.instance().feedbacksForTalk(talkRef)
                 .filter(fb -> fb.feedbackType() == FeedbackType.TALK_RATING)
                 .map(fb -> (TalkRating) fb)
                 .sorted((o1,o2)-> {
@@ -75,9 +76,9 @@ public class FeedbackService {
                         return val;
                     }
                     return o1.author.compareTo(o2.author);
-                })
-                .map(Feedback::asDisplayJson)
-        );
+                }).collect(Collectors.toList());
+        List<Feedback> filtered = PkomFeedbackCompute.INSTANCE.filterRatingsBySame(feedbacks);
+        return JsonArray.fromNodeStream(filtered.stream().map(Feedback::asDisplayJson));
     }
 
     public Optional<String> contactForTalk(String talkRef) {
