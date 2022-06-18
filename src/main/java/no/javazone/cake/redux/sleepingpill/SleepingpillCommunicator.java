@@ -161,6 +161,7 @@ public class SleepingpillCommunicator {
     }
 
     private static JsonObject talkObj(JsonObject jsonObject) {
+
         JsonObject talkob = JsonFactory.jsonObject();
         talkob.put("title",readValueFromProp(jsonObject,"title"));
         talkob.put("format",readValueFromProp(jsonObject,"format"));
@@ -193,6 +194,7 @@ public class SleepingpillCommunicator {
         talkob.put("published", Boolean.toString(Arrays.asList("APPROVED", "HISTORIC").contains(jsonObject.requiredString("status"))));
         talkob.put("body",readValueFromProp(jsonObject,"abstract"));
         talkob.put("ref",jsonObject.requiredString("id"));
+        talkob.put("ratingsummary",PkomFeedbackCompute.INSTANCE.compute(jsonObject));
         talkob.put("hasUnpublishedValues",jsonObject.requiredObject("sessionUpdates")
                 .requiredBoolean("hasUnpublishedChanges")
                 ? "Yes" : "No");

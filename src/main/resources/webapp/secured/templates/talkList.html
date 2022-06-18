@@ -69,6 +69,7 @@
             <th>Tags</th>
             <th>Keywords</th>
             <th>State</th>
+            <th>Rating</th>
             <th>Room</th>
             <th>Slot</th>
         </tr>
@@ -84,6 +85,7 @@
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.tag" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.keyword" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.state" ng-change="filterUpdated()"/></td>
+                <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.ratingsummary" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.room" ng-change="filterUpdated()"/></td>
                 <td ng-show="isFilterLine(filter)"><input class="form-control" type="text" ng-model="filter.slot" ng-change="filterUpdated()"/></td>
             </tr>
@@ -96,6 +98,7 @@
                 <td>{{joinArrs(talk.tags)}}</td>
                 <td>{{joinArrs(talk.keywords)}}</td>
                 <td>{{talk.state}}</td>
+                <td>{{talk.ratingsummary}}</td>
                 <td>{{talk.room.name}}</td>
                 <td>{{talk.slot.start}}-{{talk.slot.end}}</td>
             </tr>

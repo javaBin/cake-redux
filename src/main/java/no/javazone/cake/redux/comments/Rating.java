@@ -3,13 +3,14 @@ package no.javazone.cake.redux.comments;
 import java.util.Arrays;
 
 public enum Rating implements Comparable<Rating> {
-    VERY_POSITIVE("++"),
-    POSITIVE("+"),
-    NEUTRAL("0"),
-    NEGATIVE("-"),
-    VERY_NEGATIVE("--");
+    VERY_POSITIVE("++",5000),
+    POSITIVE("+",4000),
+    NEUTRAL("0",3000),
+    NEGATIVE("-",2000),
+    VERY_NEGATIVE("--",1000);
 
-    private String descrition;
+    private final String descrition;
+    public final int ratingValue;
 
     public static Rating fromText(String descrition) {
         return Arrays.asList(values()).stream()
@@ -18,8 +19,9 @@ public enum Rating implements Comparable<Rating> {
                 .orElseThrow(() -> new RuntimeException("Unknown description " + descrition));
     }
 
-    Rating(String description) {
+    Rating(String description,int ratingValue) {
         this.descrition = description;
+        this.ratingValue = ratingValue;
     }
 
     public String asText() {
