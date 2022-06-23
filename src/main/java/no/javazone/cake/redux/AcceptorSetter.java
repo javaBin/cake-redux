@@ -81,7 +81,12 @@ public class AcceptorSetter {
 
 
                 if (template != null) {
-                    generateAndSendMail(template, subjectTemplate, encodedTalkRef, jsonTalk);
+                    Optional<String> sendResult = generateAndSendMail(template, subjectTemplate, encodedTalkRef, jsonTalk);
+                    if (sendResult.isPresent()) {
+                        accept.put("status","error");
+                        accept.put("message", sendResult.get());
+                        continue;
+                    }
                 }
 
                 if (tagToAdd != null) {
@@ -103,7 +108,7 @@ public class AcceptorSetter {
         return statusAllTalks.toJson();
     }
 
-    private void generateAndSendMail(
+    private Optional<String> generateAndSendMail(
             String template,
             String subjectTemplate,
             String encodedTalkRef,
@@ -117,6 +122,16 @@ public class AcceptorSetter {
         List<String> sendTo = new ArrayList<>();
         String speakerName = addSpeakers(jsonTalk, sendTo);
 
+        for (String email : sendTo) {
+            if (email == null || email.isEmpty()) {
+                return Optional.of("Cannot send to empty email");
+            }
+            int ind = email.indexOf("@");
+            if (ind < 1 || ind >= email.length()-1) {
+                return Optional.of("Not a valid email: " + email);
+            }
+        }
+
         String subject = generateMessage(subjectTemplate, title, talkType, speakerName, submitLink, confirmLocation,jsonTalk, encodedTalkRef);
 
         String message = generateMessage(template,title, talkType, speakerName, submitLink, confirmLocation,jsonTalk,encodedTalkRef);
@@ -124,6 +139,7 @@ public class AcceptorSetter {
 
         MailToSend mailToSend = new MailToSend(sendTo, subject, message);
         MailSenderService.get().sendMail(MailSenderImplementation.create(mailToSend));
+        return Optional.empty();
     }
 
 
