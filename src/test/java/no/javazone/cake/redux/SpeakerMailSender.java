@@ -4,8 +4,6 @@ import no.javazone.cake.redux.mail.MailSenderImplementation;
 import no.javazone.cake.redux.mail.MailSenderService;
 import no.javazone.cake.redux.mail.MailToSend;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonObject;
@@ -72,27 +70,7 @@ public class SpeakerMailSender {
         return res;
     }
 
-    private SimpleEmail setupMailHeader(SimpleEmail mail, String subject) throws EmailException {
-        mail.setHostName(Configuration.smtpServer());
-        mail.setFrom("program@java.no", "Javazone program commitee");
-        mail.addBcc("program-auto@java.no");
-        mail.setSubject(subject);
 
-
-        if (Configuration.useMailSSL()) {
-            mail.setSSLOnConnect(true);
-            mail.setSslSmtpPort("" + Configuration.smtpPort());
-        } else {
-            mail.setSmtpPort(Configuration.smtpPort());
-
-        }
-        String mailUser = Configuration.mailUser();
-        if (mailUser != null) {
-            mail.setAuthentication(mailUser, Configuration.mailPassword());
-        }
-
-        return mail;
-    }
 
     private void sendMail(String email) {
         MailToSend mailToSend = new MailToSend(Collections.singletonList(email), "JavaZone 2016 Call for Speaker", msg);

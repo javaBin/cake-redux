@@ -6,8 +6,6 @@ import no.javazone.cake.redux.mail.MailSenderService;
 import no.javazone.cake.redux.mail.MailToSend;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
 import no.javazone.cake.redux.sleepingpill.SlotUpdaterService;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonNull;
@@ -162,7 +160,6 @@ public class DataServlet extends HttpServlet {
     }
 
     private MailToSend generateCommentEmail(JsonObject jsonObject, String comment) {
-        SimpleEmail simpleEmail = new SimpleEmail();
         List<String> to = jsonObject.requiredArray("speakers").objectStream()
                 .map(ob -> ob.requiredString("email"))
                 .collect(Collectors.toList());

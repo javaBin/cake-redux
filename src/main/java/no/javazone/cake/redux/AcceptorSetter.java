@@ -4,8 +4,6 @@ import no.javazone.cake.redux.mail.MailSenderImplementation;
 import no.javazone.cake.redux.mail.MailSenderService;
 import no.javazone.cake.redux.mail.MailToSend;
 import no.javazone.cake.redux.sleepingpill.SleepingpillCommunicator;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
 import org.jsonbuddy.JsonArray;
 import org.jsonbuddy.JsonFactory;
 import org.jsonbuddy.JsonObject;
@@ -100,7 +98,7 @@ public class AcceptorSetter {
                 accept.put("status","ok");
                 accept.put("message","ok");
 
-            } catch (EmailException e) {
+            } catch (Exception e) {
                     accept.put("status","error");
                     accept.put("message","Error: " + e.getMessage());
             }
@@ -112,13 +110,12 @@ public class AcceptorSetter {
             String template,
             String subjectTemplate,
             String encodedTalkRef,
-            JsonObject jsonTalk) throws EmailException {
+            JsonObject jsonTalk) {
         String talkType = talkTypeText(jsonTalk.requiredString("format"));
         String submitLink = Configuration.submititLocation() + encodedTalkRef;
         String confirmLocation = Configuration.cakeLocation() + "confirm.html?id=" + encodedTalkRef;
         String title = jsonTalk.requiredString("title");
 
-        SimpleEmail mail = new SimpleEmail();
         List<String> sendTo = new ArrayList<>();
         String speakerName = addSpeakers(jsonTalk, sendTo);
 
@@ -135,7 +132,6 @@ public class AcceptorSetter {
         String subject = generateMessage(subjectTemplate, title, talkType, speakerName, submitLink, confirmLocation,jsonTalk, encodedTalkRef);
 
         String message = generateMessage(template,title, talkType, speakerName, submitLink, confirmLocation,jsonTalk,encodedTalkRef);
-        mail.setMsg(message);
 
         MailToSend mailToSend = new MailToSend(sendTo, subject, message);
         MailSenderService.get().sendMail(MailSenderImplementation.create(mailToSend));
@@ -146,7 +142,7 @@ public class AcceptorSetter {
 
 
 
-    private String addSpeakers(JsonObject jsonTalk, List<String> sendTo) throws EmailException {
+    private String addSpeakers(JsonObject jsonTalk, List<String> sendTo) {
         JsonArray jsonSpeakers = jsonTalk.requiredArray("speakers");
         StringBuilder speakerName=new StringBuilder();
         for (int j=0;j<jsonSpeakers.size();j++) {

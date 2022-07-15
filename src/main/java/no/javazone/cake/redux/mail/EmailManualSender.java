@@ -1,8 +1,6 @@
 package no.javazone.cake.redux.mail;
 
-import no.javazone.cake.redux.AcceptorSetter;
 import no.javazone.cake.redux.Configuration;
-import org.apache.commons.mail.SimpleEmail;
 
 import java.util.Collections;
 

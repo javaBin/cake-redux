@@ -1,7 +1,6 @@
 package no.javazone.cake.redux.mail;
 
 import no.javazone.cake.redux.Configuration;
-import org.apache.commons.mail.EmailException;
 
 import java.util.LinkedList;
 

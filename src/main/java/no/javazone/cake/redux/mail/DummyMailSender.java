@@ -1,9 +1,5 @@
 package no.javazone.cake.redux.mail;
 
-import org.apache.commons.mail.SimpleEmail;
-
-import javax.mail.internet.InternetAddress;
-import java.util.List;
 
 public class DummyMailSender implements MailSenderImplementation {
 
