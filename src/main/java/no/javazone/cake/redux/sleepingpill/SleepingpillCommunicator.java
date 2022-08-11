@@ -176,6 +176,8 @@ public class SleepingpillCommunicator {
         talkob.put("summary","");
         talkob.put("level",readValueFromProp(jsonObject,"level"));
         talkob.put("participation",readValueFromProp(jsonObject,"participation"));
+        talkob.put("registerLoc",readValueFromProp(jsonObject,"registerLoc"));
+
 
         final JsonArray talkUpdatesArray = jsonObject.requiredArray("talkUpdates");
         final List<JsonObject> talkUpdates = talkUpdatesArray
@@ -479,6 +481,13 @@ public class SleepingpillCommunicator {
         checkWriteAccess(userAccessType);
         JsonObject payload = JsonFactory.jsonObject()
                 .put("room", JsonFactory.jsonObject().put("value", room).put("privateData", false));
+        sendTalkUpdate(talkref,JsonFactory.jsonObject().put("data",payload));
+    }
+
+    public void updateRegisterLoc(String talkref, String registerLoc, UserAccessType userAccessType) {
+        checkWriteAccess(userAccessType);
+        JsonObject payload = JsonFactory.jsonObject()
+                .put("registerLoc", JsonFactory.jsonObject().put("value", registerLoc).put("privateData", false));
         sendTalkUpdate(talkref,JsonFactory.jsonObject().put("data",payload));
     }
 

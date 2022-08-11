@@ -115,6 +115,13 @@
         <button class="btn btn-danger btn-lg" ng-click="newStarttime()">Update startime</button>
     </div>
 
+
+    <div class="row cake-row">
+        <p>Registerloc (for workshops): {{aTalk.registerLoc}}</p>
+        <input type="text" ng-model="newregisterloc"/>
+        <button class="btn btn-danger btn-lg" ng-click="newRegisterloc()">Update registerloc</button>
+    </div>
+
     <div ng-repeat="speaker in aTalk.speakers">
         <h3>{{speaker.name}}</h3>
         <div class="row cake-row">

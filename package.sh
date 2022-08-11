@@ -22,7 +22,7 @@ version=${2}
 echo "> Assembling files"
 secret_properties_file="config.properties"
 
-ansible-vault decrypt "config/${env}.properties.encrypted" --output=${secret_properties_file}
+ansible-vault decrypt "config/prod.properties.encrypted" --output=${secret_properties_file}
 if [ ! -f ${secret_properties_file} ]; then
     echo "Something went wrong with decrypting secret properties. File ${secret_properties_file} is missing. Can't deploy..."
     exit 1
@@ -30,7 +30,7 @@ fi
 
 authorization_file=cakeauthorized.txt
 
-ansible-vault decrypt "config/cakeauthorized.${env}.encrypted" --output=${authorization_file}
+ansible-vault decrypt "config/cakeauthorized.prod.encrypted" --output=${authorization_file}
 if [ ! -f ${secret_properties_file} ]; then
     echo "Something went wrong with decrypting secret properties. File ${authorization_file} is missing. Can't deploy..."
     exit 1

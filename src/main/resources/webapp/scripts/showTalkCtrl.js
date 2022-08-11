@@ -197,6 +197,22 @@ angular.module('cakeReduxModule')
                 });
             };
 
+            $scope.newRegisterloc = function () {
+                $http({
+                    method: "POST",
+                    url: "data/updateregisterloc",
+                    data: {
+                        talkref: talkRef,
+                        registerloc: $scope.newregisterloc
+                    }
+                }).success(function (data) {
+                    window.location.reload();
+                });
+            };
+
+
+
+
             $scope.newRoom = function () {
                 $http({
                     method: "POST",
