@@ -171,6 +171,7 @@ public class SleepingpillCommunicator {
         talkob.put("audience",readValueFromProp(jsonObject,"intendedAudience"));
         talkob.put("equipment",readValueFromProp(jsonObject,"equipment"));
         talkob.put("outline",readValueFromProp(jsonObject,"outline"));
+        talkob.put("workshopPrerequisites",readValueFromProp(jsonObject,"workshopPrerequisites"));
         talkob.put("infoToProgramCommittee",readValueFromProp(jsonObject,"infoToProgramCommittee"));
         talkob.put("length",readValueFromProp(jsonObject,"length"));
         talkob.put("summary","");
