@@ -295,14 +295,6 @@
             <input type="radio" name="options" id="option5" autocomplete="off"> ++
         </label>
     </div>
-    <h2>Public comments</h2>
-    <p ng-repeat="mycomm in aTalk.pubcomments"><b>{{mycomm.from}}({{mycomm.email}}):</b> {{mycomm.comment}}</p>
-    <div class="well">
-        <p>
-            <textarea ng-model="newPubCommentText" type="text" placeholder="Public comment - will be sent to speaker"/>
-            <button class="btn btn-primary" ng-click="addPubComment()">Add</button>
-        </p>
-    </div>
     <h2>Unpublished changes:</h2>
     <p>Has unpublished changes: {{aTalk.hasUnpublishedValues}}</p>
     <button id="publishValues" class="btn btn-danger btn-lg cake-margin" ng-click="publishChanges()">Publish changes</button></p>

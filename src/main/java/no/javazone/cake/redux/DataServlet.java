@@ -51,9 +51,6 @@ public class DataServlet extends HttpServlet {
         } else if ("/giveRating".equals(pathInfo)) {
             giveRating(req, resp);
             resp.setContentType("application/json;charset=UTF-8");
-        } else if ("/addPubComment".equals(pathInfo)) {
-            addPublicComment(req,resp);
-            resp.setContentType("application/json;charset=UTF-8");
         } else if ("/publishChanges".equals(pathInfo)) {
             publishChanges(req,resp);
             resp.setContentType("application/json;charset=UTF-8");
@@ -152,27 +149,6 @@ public class DataServlet extends HttpServlet {
         JsonFactory.jsonObject().toJson(resp.getWriter());
     }
 
-    private void addPublicComment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        JsonObject update;
-        try (InputStream inputStream = req.getInputStream()) {
-            update = JsonParser.parseToObject(inputStream);
-        }
-        String ref = update.requiredString("talkref");
-        String comment = update.requiredString("comment");
-        String lastModified = update.requiredString("lastModified");
-        JsonObject jsonObject = sleepingpillCommunicator.addPublicComment(ref, comment, lastModified);
-
-        MailToSend simpleEmail = generateCommentEmail(jsonObject,comment);
-        MailSenderService.get().sendMail(MailSenderImplementation.create(simpleEmail));
-
-
-        JsonArray updatedComments = jsonObject.requiredArray("comments");
-        updatedComments.toJson(resp.getWriter());
-
-
-
-
-    }
 
     private MailToSend generateCommentEmail(JsonObject jsonObject, String comment) {
         List<String> to = jsonObject.requiredArray("speakers").objectStream()
