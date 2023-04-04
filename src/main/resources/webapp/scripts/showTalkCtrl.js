@@ -181,6 +181,20 @@ angular.module('cakeReduxModule')
                 });
             };
 
+            $scope.speakerEmailAlias = function (id,emailAlias) {
+                $http({
+                    method: "POST",
+                    url: "data/updateSpeakerAlias",
+                    data: {
+                        talkref: talkRef,
+                        speakerid: id,
+                        emailAlias: emailAlias
+                    }
+                }).success(function (data) {
+                    window.location.reload();
+                });
+            }
+
             $scope.newRegisterloc = function () {
                 $http({
                     method: "POST",

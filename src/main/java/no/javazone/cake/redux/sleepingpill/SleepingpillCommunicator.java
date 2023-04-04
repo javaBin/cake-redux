@@ -76,16 +76,29 @@ public class SleepingpillCommunicator {
                 continue;
             }
             JsonObject speaker = (JsonObject) part;
-            String speakerEmail = speaker.requiredString("email");
-            try {
-                speakerEmail = URLEncoder.encode(speakerEmail,"UTF-8");
-            } catch (UnsupportedEncodingException ignored) {}
-            String url = Configuration.sleepingPillBaseLocation() + "/data/submitter/" + speakerEmail + "/session";
-            JsonObject speakerTalks = parseJsonFromConnection(openConnection(url));
+            String maimSpeakerEmail= speaker.requiredString("email");
+            List<String> allAlias = speaker.stringValue("emailAlias").filter(ea -> !ea.trim().isEmpty()).map(val -> Arrays.asList(val.split(","))).orElse(Collections.emptyList());
+            List<String> allSpeakerEmail = new ArrayList<>();
+            allSpeakerEmail.add(maimSpeakerEmail);
+            allSpeakerEmail.addAll(allAlias);
+            List<JsonObject> allFoundTalks = new ArrayList<>();
+            for (String speakerEmailOrig : allSpeakerEmail) {
+                String speakerEmail = speakerEmailOrig;
+                try {
+                    speakerEmail = URLEncoder.encode(speakerEmail, "UTF-8");
+                } catch (UnsupportedEncodingException ignored) {
+                }
+                String url = Configuration.sleepingPillBaseLocation() + "/data/submitter/" + speakerEmail + "/session";
+                JsonObject speakerTalks = parseJsonFromConnection(openConnection(url));
+                List<JsonObject> foundTalksThisEmail =
+                        speakerTalks.requiredArray("sessions").objectStream()
+                                .filter(obj -> !(obj.stringValue("id").equals(Optional.of(talkid)) || obj.stringValue("status").equals(Optional.of("DRAFT"))))
+                                .map(obj -> buildSimularTalk(obj, allConferences)).collect(Collectors.toList());
+                allFoundTalks.addAll(foundTalksThisEmail);
+            }
+
             JsonArray otherTalks = JsonArray.fromNodeStream(
-                    speakerTalks.requiredArray("sessions").objectStream()
-                            .filter(obj -> !(obj.stringValue("id").equals(Optional.of(talkid)) || obj.stringValue("status").equals(Optional.of("DRAFT"))))
-                            .map(obj -> buildSimularTalk(obj,allConferences))
+                            allFoundTalks.stream()
                             .sorted((a,b) -> {
                                 int conf = a.stringValue("conference").orElse("").compareTo(b.stringValue("conference").orElse(""));
                                 if (conf != 0) {
@@ -221,12 +234,14 @@ public class SleepingpillCommunicator {
         talkob.put("speakers",JsonArray.fromNodeStream(
             jsonObject.requiredArray("speakers").objectStream()
                 .map(ob -> JsonFactory.jsonObject()
+                                .put("id",ob.stringValue("id").orElse(""))
                                 .put("name",ob.stringValue("name").orElse(""))
                                 .put("email",ob.stringValue("email").orElse(""))
                                 .put("bio",readValueFromProp(ob,"bio"))
                                 .put("zip-code",readValueFromProp(ob,"zip-code"))
                                 .put("twitter",readValueFromProp(ob,"twitter"))
                                 .put("residence",readValueFromProp(ob,"residence"))
+                                .put("emailAlias",readValueFromProp(ob,"emailAlias"))
                         )));
         talkob.put("pubcomments",jsonObject.arrayValue("comments").orElse(JsonFactory.jsonArray()));
 
@@ -464,6 +479,29 @@ public class SleepingpillCommunicator {
         LocalDateTime startTime = zonedDateTime.withZoneSameInstant(ZoneId.of("Europe/Oslo")).toLocalDateTime();
 
         updateSlotTime(talkref, startTime,userAccessType);
+    }
+
+    public void updateSpeakerAlias(String talkref,String speakerref,String emailAlias, UserAccessType userAccessType) {
+        if (talkref == null ||speakerref == null ||emailAlias == null) {
+            return;
+        }
+
+        checkWriteAccess(userAccessType);
+
+        JsonObject origTalk = oneTalkSleepingPillFormat(talkref);
+
+        List<JsonObject> updatedSpeakers = origTalk.arrayValue("speakers").orElse(new JsonArray()).objects(origSpeaker -> {
+            String thisSpeakerId = origSpeaker.requiredString("id");
+            JsonObject speakerUpd = new JsonObject().put("id",thisSpeakerId);
+            if (!speakerref.equals(thisSpeakerId)) {
+                return speakerUpd;
+            }
+            speakerUpd.put("data",new JsonObject().put("emailAlias",new JsonObject().put("value",emailAlias).put("privateData",true)));
+            return speakerUpd;
+        });
+        JsonObject payload = new JsonObject()
+                .put("speakers",JsonArray.fromNodeList(updatedSpeakers));
+        sendTalkUpdate(talkref,payload);
     }
 
     public void updateSlotTime(String talkref, LocalDateTime startTime,UserAccessType userAccessType) {

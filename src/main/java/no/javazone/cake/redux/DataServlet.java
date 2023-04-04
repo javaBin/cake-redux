@@ -67,10 +67,22 @@ public class DataServlet extends HttpServlet {
         } else if ("/sendForRoomSlotUpdate".equals(pathInfo)) {
             roomSlotUpdate(req,resp);
             resp.setContentType("application/json;charset=UTF-8");
+        } else if ("/updateSpeakerAlias".equals(pathInfo)) {
+            updateSpeakerAlias(req,resp);
+            resp.setContentType("application/json;charset=UTF-8");
         }
 
     }
 
+    private void updateSpeakerAlias(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonObject update;
+        try (InputStream inputStream = req.getInputStream()) {
+            update = JsonParser.parseToObject(inputStream);
+        }
+        UserAccessType userAccessType = computeAccessType(req);
+        sleepingpillCommunicator.updateSpeakerAlias(update.stringValue("talkref").orElse(null),update.stringValue("speakerid").orElse(null),update.stringValue("emailAlias").orElse(null),userAccessType);
+        JsonFactory.jsonObject().toJson(resp.getWriter());
+    }
     private void roomSlotUpdate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         JsonObject update;
         try (InputStream inputStream = req.getInputStream()) {

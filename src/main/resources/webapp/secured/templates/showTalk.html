@@ -133,6 +133,11 @@
             <div class="col-md-10">{{speaker.email}}</div>
         </div>
         <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>AliasEmail</strong></div>
+            <input class="col-md-8" type="text" ng-model="speaker.emailAlias"/>
+            <button class="col-md-1 btn btn-danger" ng-click="speakerEmailAlias(speaker.id,speaker.emailAlias)">Update alias</button>
+        </div>
+        <div class="row cake-row">
             <div class="col-md-1 cake-margin"><strong>Bio</strong></div>
             <div class="col-md-10 preserve-newlines">{{speaker.bio}}</div>
         </div>
