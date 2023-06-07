@@ -4,13 +4,15 @@ import no.javazone.cake.redux.mail.MailToSend
 import no.javazone.cake.redux.util.KotlinFix
 import java.io.File
 
-private val fromEmail = "javazone@java.no"
-private val fromEmailName = "Javazone"
-private val subject = "Regarding JavaZone 2021"
 
 
 class MassMailSender(emailsFileName:String,contentFileName:String) {
+
     companion object {
+        private val fromEmail = "javazone@java.no"
+        private val fromEmailName = "Javazone"
+        private val subject = "Regarding JavaZone 2021"
+
         @JvmStatic
         fun main(args: Array<String>) {
             if (args.size < 3) {
