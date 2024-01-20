@@ -2,3 +2,4 @@
 cake-redux.iml
 target/
 .DS_Store
+.config.toml
