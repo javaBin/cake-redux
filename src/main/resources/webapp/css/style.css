@@ -1,5 +1,5 @@
 .cake-margin-well {
-    margin-left: 3%;
+    margin-left: 10%;
     margin-right: 10%;
 }
 .cake-margin {
@@ -9,3 +9,24 @@
     margin-bottom: 1%;
 }
 .preserve-newlines { white-space: pre-wrap; }
+
+.comments {
+    text-align: left;
+}
+.label-info {
+    display: block;
+}
+#selstate {
+    width: 100%;
+}
+
+.talk-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.talk-info {
+    display: grid;
+    gap: 2rem;
+}   

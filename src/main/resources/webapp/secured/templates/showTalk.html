@@ -1,288 +1,280 @@
-<div class="container">
-    <h1>{{aTalk.title}}</h1>
-    <div class="row cake-row cake-margin">
-        <button class="btn btn-primary" ng-click="reloadTalk()">Reload</button>
+<div class="container-fluid">
+    <div class="col-md-9">
+    <div class="row cake-row talk-info">
+        <div class="row cake-row cake-margin">
+            <div class="col-md-10 talk-heading">
+                <h1>{{aTalk.title}}</h1>
+                <button class="btn btn-primary" ng-click="reloadTalk()">Reload</button>
+            </div>
+        </div>
+        <div class="row cake-row cake-margin">
+            <div class="col-md-1 cake-margin"><strong>Summary</strong></div>
+            <div class="col-md-10 preserve-newlines">{{aTalk.summary}}</div>
+        </div>
+        <div class="row cake-margin">
+            <div class="col-md-1 cake-margin"><strong>Description</strong></div>
+            <div class="col-md-10 preserve-newlines">{{aTalk.body}}</div>
     </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Summary</strong></div>
-        <div class="col-md-10 preserve-newlines">{{aTalk.summary}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Description</strong></div>
-        <div class="col-md-10 preserve-newlines">{{aTalk.body}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Outline</strong></div>
+
+    <div class="row cake-rows cake-margin">
+        <div class="col-md-1"><strong>Outline</strong></div>
         <div class="col-md-10 preserve-newlines">{{aTalk.outline}}</div>
     </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Workshop Prerequisites</strong></div>
-        <div class="col-md-10 preserve-newlines">{{aTalk.workshopPrerequisites}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Info to program committee</strong></div>
-        <div class="col-md-10 preserve-newlines">{{aTalk.infoToProgramCommittee}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Participation</strong></div>
-        <div class="col-md-10 preserve-newlines">{{aTalk.participation}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Keywords</strong></div>
-        <div class="col-md-10">{{joinArr(aTalk.keywords)}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Suggested keywords</strong></div>
-        <div class="col-md-10">{{aTalk.suggestedKeywords}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Expected audience</strong></div>
-        <div class="col-md-10 preserve-newlines">{{aTalk.audience}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Equipment</strong></div>
-        <div class="col-md-10">{{aTalk.equipment}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>State</strong></div>
-        <div class="col-md-10">{{aTalk.state}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Published</strong></div>
-        <div class="col-md-10">{{aTalk.published}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Format</strong></div>
-        <div class="col-md-10">{{aTalk.format}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Length</strong></div>
-        <div class="col-md-10">{{aTalk.length}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Level</strong></div>
-        <div class="col-md-10">{{aTalk.level}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Language</strong></div>
-        <div class="col-md-10">{{aTalk.lang}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Room</strong></div>
-        <div class="col-md-10">{{aTalk.room.name}}</div>
-    </div>
-    <div class="row cake-row">
-        <div class="col-md-1 cake-margin"><strong>Slot</strong></div>
-        <div class="col-md-10">{{aTalk.slot.start}} - {{aTalk.slot.end}} <small>(yymmdd hhmm-yymmdd hhmm)</small></div>
-    </div>
-    <div class="row cake-row">
-        <div class="input-group col-md-5">
-            <div class="input-group-btn">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Room <span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <li><a ng-click="selectRoom('Room 1')">Room 1</a></li>
-                    <li><a ng-click="selectRoom('Room 2')">Room 2</a></li>
-                    <li><a ng-click="selectRoom('Room 3')">Room 3</a></li>
-                    <li><a ng-click="selectRoom('Room 4')">Room 4</a></li>
-                    <li><a ng-click="selectRoom('Room 5')">Room 5</a></li>
-                    <li><a ng-click="selectRoom('Room 6')">Room 6</a></li>
-                    <li><a ng-click="selectRoom('Room 7')">Room 7</a></li>
+
+    <div class="row cake-row cake-margin">
+
+        <div ng-repeat="speaker in aTalk.speakers">
+            <div class="cake-margin">
+                <h3>{{speaker.name}}</h3>
+            </div>
+            <div class="row cake-row">
+                <div class="col-md-1 cake-margin"><strong>Bio</strong></div>
+                <div class="col-md-10 preserve-newlines">{{speaker.bio}}</div>
+            </div>
+            <div class="row cake-row">
+                <div class="col-md-1 cake-margin"><strong>Email</strong></div>
+                <div class="col-md-10">{{speaker.email}}</div>
+            </div>
+            <div class="row cake-row">
+                <div class="col-md-1 cake-margin"><strong>AliasEmail</strong></div>
+                <input class="col-md-3" type="text" ng-model="speaker.emailAlias" />
+                <button class="col-md-1.5 btn btn-danger"
+                    ng-click="speakerEmailAlias(speaker.id,speaker.emailAlias)">Update alias</button>
+            </div>
+
+            <div class="row cake-row">
+                <div class="col-md-1 cake-margin"><strong>Twitter</strong></div>
+                <div class="col-md-10 preserve-newlines">{{speaker.twitter}}</div>
+            </div>
+            <div class="row cake-row">
+                <div class="col-md-1 cake-margin"><strong>Postcode</strong></div>
+                <div class="col-md-10">{{speaker["zip-code"]}}</div>
+            </div>
+            <div class="row cake-row">
+                <div class="col-md-1 cake-margin"><strong>Residence</strong></div>
+                <div class="col-md-10">{{speaker["residence"]}}</div>
+            </div>
+            <div class="row cake-row">
+                <div class="col-md-1 cake-margin"><strong>Other talks</strong></div>
+                <ul class="col-md-10">
+                    <li ng-repeat="otalk in speaker.spOtherTalks"><a
+                            ng-href="#/showTalk/{{otalk.sessionId}}">"{{otalk.title}}</a> {{otalk.format}}
+                        ({{otalk.conference}})[{{otalk.status}}]({{toCommaSeperated(otalk.tags)}})
+                    </li>
                 </ul>
-            </div><!-- /btn-group -->
-            <input class="form-control" type="text" ng-model="newroom"/>
-        </div><!-- /input-group -->
-        <button class="btn btn-danger btn-lg" ng-click="newRoom()">Update room</button>
-    </div>
-    <div class="row cake-row">
-        <div class="input-group col-md-3">
-            <select class="form-control" ng-model="smartDay">
-                <option>Wednesday</option>
-                <option>Thursday</option>
-            </select>
-        </div><!-- /input-group -->
-        <div class="input-group col-md-2">
-            <select class="form-control" ng-model="smartTime">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-            </select>
-        </div><!-- /input-group -->
-        <button class="btn btn-danger btn-lg" ng-click="smartTimeUpdate()">Smart timeupdate</button>
-    </div>
-    <div class="row cake-row">
-        <input type="datetime-local" ng-model="newstarttime"/>
-        <button class="btn btn-danger btn-lg" ng-click="newStarttime()">Update startime</button>
-    </div>
+            </div>
+        </div>
+
+        <div class="row cake-margin">
+            <p><b>Contact phone:</b> {{aTalk.contactPhone}}</p>
+        </div>
+
+        <div class="row cake-margin">
+            <h3>Additional Information</h3>
+        </div>
+
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Workshop Prerequisites</strong></div>
+            <div class="col-md-10 preserve-newlines">{{aTalk.workshopPrerequisites}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Info to program committee</strong></div>
+            <div class="col-md-10 preserve-newlines">{{aTalk.infoToProgramCommittee}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Participation</strong></div>
+            <div class="col-md-10 preserve-newlines">{{aTalk.participation}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Keywords</strong></div>
+            <div class="col-md-10">{{joinArr(aTalk.keywords)}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Suggested keywords</strong></div>
+            <div class="col-md-10">{{aTalk.suggestedKeywords}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Expected audience</strong></div>
+            <div class="col-md-10 preserve-newlines">{{aTalk.audience}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Equipment</strong></div>
+            <div class="col-md-10">{{aTalk.equipment}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>State</strong></div>
+            <div class="col-md-10">{{aTalk.state}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Published</strong></div>
+            <div class="col-md-10">{{aTalk.published}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Format</strong></div>
+            <div class="col-md-10">{{aTalk.format}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Length</strong></div>
+            <div class="col-md-10">{{aTalk.length}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Level</strong></div>
+            <div class="col-md-10">{{aTalk.level}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Language</strong></div>
+            <div class="col-md-10">{{aTalk.lang}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Room</strong></div>
+            <div class="col-md-10">{{aTalk.room.name}}</div>
+        </div>
+        <div class="row cake-row">
+            <div class="col-md-1 cake-margin"><strong>Slot</strong></div>
+            <div class="col-md-10">{{aTalk.slot.start}} - {{aTalk.slot.end}} <small>(yymmdd hhmm-yymmdd hhmm)</small>
+            </div>
+        </div>
+        <div class="row cake-row cake-margin">
+            <div class="input-group col-md-5 cake-margin">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">Room <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="selectRoom('Room 1')">Room 1</a></li>
+                        <li><a ng-click="selectRoom('Room 2')">Room 2</a></li>
+                        <li><a ng-click="selectRoom('Room 3')">Room 3</a></li>
+                        <li><a ng-click="selectRoom('Room 4')">Room 4</a></li>
+                        <li><a ng-click="selectRoom('Room 5')">Room 5</a></li>
+                        <li><a ng-click="selectRoom('Room 6')">Room 6</a></li>
+                        <li><a ng-click="selectRoom('Room 7')">Room 7</a></li>
+                    </ul>
+                </div><!-- /btn-group -->
+                <input class="form-control" type="text" ng-model="newroom" />
+            </div><!-- /input-group -->
+            <button class="btn btn-danger btn-mid" ng-click="newRoom()">Update room</button>
+        </div>
+        <div class="row cake-row cake-margin">
+            <div class="input-group col-md-3">
+                <select class="form-control" ng-model="smartDay">
+                    <option>Wednesday</option>
+                    <option>Thursday</option>
+                </select>
+            </div><!-- /input-group -->
+            <div class="input-group col-md-2">
+                <select class="form-control" ng-model="smartTime">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                </select>
+            </div><!-- /input-group -->
+            <button class="btn btn-danger btn-mid" ng-click="smartTimeUpdate()">Smart timeupdate</button>
+        </div>
+        <div class="row cake-row cake-margin">
+            <input type="datetime-local" ng-model="newstarttime" />
+            <button class="btn btn-danger btn-mid" ng-click="newStarttime()">Update startime</button>
+        </div>
 
 
-    <div class="row cake-row">
-        <p>Registerloc (for workshops): {{aTalk.registerLoc}}</p>
-        <input type="text" ng-model="newregisterloc"/>
-        <button class="btn btn-danger btn-lg" ng-click="newRegisterloc()">Update registerloc</button>
-    </div>
+        <div class="row cake-row cake-margin">
+            <p>Registerloc (for workshops): {{aTalk.registerLoc}}</p>
+            <input type="text" ng-model="newregisterloc" />
+            <button class="btn btn-danger btn-mid" ng-click="newRegisterloc()">Update registerloc</button>
+        </div>
 
-    <div ng-repeat="speaker in aTalk.speakers">
-        <h3>{{speaker.name}}</h3>
-        <div class="row cake-row">
-            <div class="col-md-1 cake-margin"><strong>Email</strong></div>
-            <div class="col-md-10">{{speaker.email}}</div>
+        <h2>Change history</h2>
+        <ul>
+            <li ng-repeat="he in aTalk.talkUpdateHistory">{{he.updatedAt}} {{he.updatedBy}}</li>
+        </ul>
+        <h2>DevNull feedbacks</h2>
+        <div class="row cake-row cake-margin">
+            <h3>Online</h3>
+            <table class="table">
+                <tr>
+                    <th>Type </th>
+                    <th>Session</th>
+                    <th>Conference</th>
+                </tr>
+                <tr>
+                    <td>Count</td>
+                    <td>{{aTalk.userFeedback.session.online.count}}</td>
+                    <td>{{aTalk.userFeedback.conference.online.count}}</td>
+                </tr>
+                <tr>
+                    <td>Overall</td>
+                    <td>{{aTalk.userFeedback.session.online.overall}}</td>
+                    <td>{{aTalk.userFeedback.conference.online.overall}}</td>
+                </tr>
+                <tr>
+                    <td>Relevance</td>
+                    <td>{{aTalk.userFeedback.session.online.relevance}}</td>
+                    <td>{{aTalk.userFeedback.conference.online.relevance}}</td>
+                </tr>
+                <tr>
+                    <td>Content</td>
+                    <td>{{aTalk.userFeedback.session.online.content}}</td>
+                    <td>{{aTalk.userFeedback.conference.online.content}}</td>
+                </tr>
+                <tr>
+                    <td>Quality</td>
+                    <td>{{aTalk.userFeedback.session.online.quality}}</td>
+                    <td>{{aTalk.userFeedback.conference.online.quality}}</td>
+                </tr>
+            </table>
+            <h3>Paper</h3>
+            <table class="table">
+                <tr>
+                    <th>Type </th>
+                    <th>Session</th>
+                    <th>Conference</th>
+                </tr>
+                <tr>
+                    <td>Green</td>
+                    <td>{{aTalk.userFeedback.session.paper.green}}</td>
+                    <td>{{aTalk.userFeedback.conference.paper.green}}</td>
+                </tr>
+                <tr>
+                    <td>Yellow</td>
+                    <td>{{aTalk.userFeedback.session.paper.yellow}}</td>
+                    <td>{{aTalk.userFeedback.conference.paper.yellow}}</td>
+                </tr>
+                <tr>
+                    <td>Red</td>
+                    <td>{{aTalk.userFeedback.session.paper.red}}</td>
+                    <td>{{aTalk.userFeedback.conference.paper.red}}</td>
+                </tr>
+            </table>
         </div>
-        <div class="row cake-row">
-            <div class="col-md-1 cake-margin"><strong>AliasEmail</strong></div>
-            <input class="col-md-8" type="text" ng-model="speaker.emailAlias"/>
-            <button class="col-md-1 btn btn-danger" ng-click="speakerEmailAlias(speaker.id,speaker.emailAlias)">Update alias</button>
-        </div>
-        <div class="row cake-row">
-            <div class="col-md-1 cake-margin"><strong>Bio</strong></div>
-            <div class="col-md-10 preserve-newlines">{{speaker.bio}}</div>
-        </div>
-        <div class="row cake-row">
-            <div class="col-md-1 cake-margin"><strong>Twitter</strong></div>
-            <div class="col-md-10 preserve-newlines">{{speaker.twitter}}</div>
-        </div>
-        <div class="row cake-row">
-            <div class="col-md-1 cake-margin"><strong>Postcode</strong></div>
-            <div class="col-md-10">{{speaker["zip-code"]}}</div>
-        </div>
-        <div class="row cake-row">
-            <div class="col-md-1 cake-margin"><strong>Residence</strong></div>
-            <div class="col-md-10">{{speaker["residence"]}}</div>
-        </div>
-        <div class="row cake-row">
-            <div class="col-md-1 cake-margin"><strong>Other talks</strong></div>
-            <ul class="col-md-10">
-                <li ng-repeat="otalk in speaker.spOtherTalks"><a ng-href="#/showTalk/{{otalk.sessionId}}">"{{otalk.title}}</a> {{otalk.format}} ({{otalk.conference}})[{{otalk.status}}]({{toCommaSeperated(otalk.tags)}})
+
+        <h2>Unpublished changes:</h2>
+        <p>Has unpublished changes: {{aTalk.hasUnpublishedValues}}</p>
+        <button id="publishValues" class="btn btn-danger btn-lg cake-margin" ng-click="publishChanges()">Publish
+            changes</button></p>
+        <ul>
+            <li ng-repeat="propchange in aTalk.sessionUpdates.oldValues"><b>{{propchange.key}}</b> :
+                {{propchange.value}}</li>
+        </ul>
+        <h3>Speaker update</h3>
+        <span ng-repeat="speakchange in aTalk.sessionUpdates.speakerUpdates">
+            <h4>{{speakchange.updateType}}</h4>
+            <ul>
+                <li ng-repeat="propchange in speakchange.publicValues"><b>{{propchange.key}}</b> : {{propchange.value}}
                 </li>
             </ul>
-        </div>
+        </span>
+        <h6>Last modified: {{aTalk.lastModified}}</h6>
     </div>
+    </div>
+</div>
 
-    <p><b>Contact phone:</b> {{aTalk.contactPhone}}</p>
-
-    <h2>Change history</h2>
-    <ul>
-        <li ng-repeat="he in aTalk.talkUpdateHistory">{{he.updatedAt}} {{he.updatedBy}}</li>
-    </ul>
-
-    <h2>Internal comments</h2>
+<div class="col-md-3 comments">
+    <h3>Internal comments</h3>
     <p ng-repeat="acomment in comments"><b>{{acomment.author}}:</b> {{acomment.info}}</p>
-
-    <h2>Internal ratings</h2>
-    <ul>
-        <li ng-repeat="arating in ratings"><b>{{arating.author}}:</b> {{arating.info}}</li>
-    </ul>
-
-    <h2>DevNull feedbacks</h2>
-    <div class="row cake-row">
-        <h3>Online</h3>
-        <table class="table">
-            <tr>
-                <th>Type </th>
-                <th>Session</th>
-                <th>Conference</th>
-            </tr>
-            <tr>
-                <td>Count</td>
-                <td>{{aTalk.userFeedback.session.online.count}}</td>
-                <td>{{aTalk.userFeedback.conference.online.count}}</td>
-            </tr>
-            <tr>
-                <td>Overall</td>
-                <td>{{aTalk.userFeedback.session.online.overall}}</td>
-                <td>{{aTalk.userFeedback.conference.online.overall}}</td>
-            </tr>
-            <tr>
-                <td>Relevance</td>
-                <td>{{aTalk.userFeedback.session.online.relevance}}</td>
-                <td>{{aTalk.userFeedback.conference.online.relevance}}</td>
-            </tr>
-            <tr>
-                <td>Content</td>
-                <td>{{aTalk.userFeedback.session.online.content}}</td>
-                <td>{{aTalk.userFeedback.conference.online.content}}</td>
-            </tr>
-            <tr>
-                <td>Quality</td>
-                <td>{{aTalk.userFeedback.session.online.quality}}</td>
-                <td>{{aTalk.userFeedback.conference.online.quality}}</td>
-            </tr>
-        </table>
-        <h3>Paper</h3>
-        <table class="table">
-            <tr>
-                <th>Type </th>
-                <th>Session</th>
-                <th>Conference</th>
-            </tr>
-            <tr>
-                <td>Green</td>
-                <td>{{aTalk.userFeedback.session.paper.green}}</td>
-                <td>{{aTalk.userFeedback.conference.paper.green}}</td>
-            </tr>
-            <tr>
-                <td>Yellow</td>
-                <td>{{aTalk.userFeedback.session.paper.yellow}}</td>
-                <td>{{aTalk.userFeedback.conference.paper.yellow}}</td>
-            </tr>
-            <tr>
-                <td>Red</td>
-                <td>{{aTalk.userFeedback.session.paper.red}}</td>
-                <td>{{aTalk.userFeedback.conference.paper.red}}</td>
-            </tr>
-        </table>
-    </div>
-
-    <h2>Keywords</h2>
-    <div class="well" class="cake-margin-well">
-        <p>
-            <input ng-model="newKeyword" type="text" placeholder="New keyword"/>
-            <button class="btn" ng-click="newKeywordTyped()">Add keyword</button>
-        </p>
-        <h3>
-            <span ng-repeat="keyword in aTalk.keywords" class="label label-info" style="margin-right: 0.2em">{{keyword}} <a ng-click="removeKeyword(keyword)">(x)</a></span>
-        </h3>
-    </div>
-
-    <h2>Tags</h2>
-    <div class="well" class="cake-margin-well">
-        <p>
-        <input ng-model="newTag" type="text" placeholder="New tag"/>
-        <button class="btn" ng-click="newTagTyped()">Add</button>
-        </p>
-        <h3>
-            <span ng-repeat="tag in aTalk.tagswithauthor" class="label label-info" style="margin-right: 0.2em">{{tag.tag}} ({{tag.author}}) <a ng-click="removeTag(tag)">(x)</a></span>
-        </h3>
-    </div>
-
-    <div class="row">
-        <div class="cake-margin col-md-3">
-
-            <label for="selstate">State</label>
-            <select id="selstate" class="form-control" ng-model="aTalk.state">
-                <option>DRAFT</option>
-                <option>SUBMITTED</option>
-                <option>APPROVED</option>
-                <option>REJECTED</option>
-                <option>HISTORIC</option>
-            </select>
-        </div>
-    </div>
-    <div class="alert alert-danger" ng-show="showError"><strong>Error saving: {{errormessage}}</strong></div>
-    <p><button id="saveButton" class="btn btn-danger btn-lg cake-margin" ng-click="saveTalk()">Save</button></p>
-
-    <h2>Add comment</h2>
-    <div class="well">
-        <p>
-            <textarea ng-model="newCommentText" type="text" placeholder="Comment"/>
-            <button class="btn btn-primary" ng-click="addComment()">Add</button>
-        </p>
-    </div>
-    <h2>My rating</h2>
+    <h3>My rating</h3>
     <div class="btn-group" data-toggle="buttons">
         <label class="btn btn-info btn-lg" ng-click="ratingClicked('--')">
             <input type="radio" name="options" id="option1" autocomplete="off"> --
@@ -300,18 +292,57 @@
             <input type="radio" name="options" id="option5" autocomplete="off"> ++
         </label>
     </div>
-    <h2>Unpublished changes:</h2>
-    <p>Has unpublished changes: {{aTalk.hasUnpublishedValues}}</p>
-    <button id="publishValues" class="btn btn-danger btn-lg cake-margin" ng-click="publishChanges()">Publish changes</button></p>
-    <ul>
-        <li ng-repeat="propchange in aTalk.sessionUpdates.oldValues"><b>{{propchange.key}}</b> : {{propchange.value}}</li>
-    </ul>
-    <h3>Speaker update</h3>
-    <span ng-repeat="speakchange in aTalk.sessionUpdates.speakerUpdates">
-        <h4>{{speakchange.updateType}}</h4>
+    <div>
+        <h2>Internal ratings</h2>
         <ul>
-            <li ng-repeat="propchange in speakchange.publicValues"><b>{{propchange.key}}</b> : {{propchange.value}}</li>
+            <li ng-repeat="arating in ratings"><b>{{arating.author}}:</b> {{arating.info}}</li>
         </ul>
-    </span>
-    <h6>Last modified: {{aTalk.lastModified}}</h6>
+    </div>
+    <h2>Add comment</h2>
+    <div class="well">
+        <p>
+            <textarea ng-model="newCommentText" type="text" placeholder="Comment" />
+            <button class="btn btn-primary" ng-click="addComment()">Add</button>
+        </p>
+    </div>
+    <h2>Keywords</h2>
+    <div class="well" class="cake-margin-well">
+        <p>
+            <input ng-model="newKeyword" type="text" placeholder="New keyword" />
+            <button class="btn" ng-click="newKeywordTyped()">Add keyword</button>
+        </p>
+        <h3>
+            <span ng-repeat="keyword in aTalk.keywords" class="label label-info"
+                style="margin-right: 0.2em">{{keyword}} <a ng-click="removeKeyword(keyword)">(x)</a></span>
+        </h3>
+    </div>
+
+    <h2>Tags</h2>
+    <div class="well" class="cake-margin-well">
+        <p>
+            <input ng-model="newTag" type="text" placeholder="New tag" />
+            <button class="btn" ng-click="newTagTyped()">Add</button>
+        </p>
+        <h3>
+            <span ng-repeat="tag in aTalk.tagswithauthor" class="label label-info"
+                style="margin-right: 0.2em; display: block;">{{tag.tag}} ({{tag.author}}) <a ng-click="removeTag(tag)">(x)</a></span>
+        </h3>
+    </div>
+    <div class="row">
+        <div class="cake-margin">
+            <label for="selstate">State</label>
+            <select id="selstate" class="form-control" ng-model="aTalk.state">
+                <option>DRAFT</option>
+                <option>SUBMITTED</option>
+                <option>APPROVED</option>
+                <option>REJECTED</option>
+                <option>HISTORIC</option>
+            </select>
+        </div>
+    </div>
+    <div class="alert alert-danger" ng-show="showError"><strong>Error saving: {{errormessage}}</strong></div>
+    <p><button id="saveButton" class="btn btn-danger btn-lg cake-margin" ng-click="saveTalk()">Save</button></p>
+
+    
 </div>
+
