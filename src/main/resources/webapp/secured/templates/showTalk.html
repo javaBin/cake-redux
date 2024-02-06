@@ -7,20 +7,20 @@
                 <button class="btn btn-primary" ng-click="reloadTalk()">Reload</button>
             </div>
         </div>
-        <div class="row cake-row cake-margin">
-            <div class="col-md-1 cake-margin"><strong>Summary</strong></div>
-            <div class="col-md-10 preserve-newlines">{{aTalk.summary}}</div>
-        </div>
-        <div class="row cake-margin">
-            <div class="col-md-1 cake-margin"><strong>Description</strong></div>
+        
+    <div class="row cake-rows cake-margin">
+            <div class="col-md-1"><strong>Description</strong></div>
             <div class="col-md-10 preserve-newlines">{{aTalk.body}}</div>
     </div>
-
+</br>
     <div class="row cake-rows cake-margin">
         <div class="col-md-1"><strong>Outline</strong></div>
         <div class="col-md-10 preserve-newlines">{{aTalk.outline}}</div>
     </div>
-
+    <div class="row cake-row cake-margin">
+        <div class="col-md-1"><strong>Info to program committee</strong></div>
+        <div class="col-md-10 preserve-newlines">{{aTalk.infoToProgramCommittee}}</div>
+    </div>
     <div class="row cake-row cake-margin">
 
         <div ng-repeat="speaker in aTalk.speakers">
@@ -77,10 +77,7 @@
             <div class="col-md-1 cake-margin"><strong>Workshop Prerequisites</strong></div>
             <div class="col-md-10 preserve-newlines">{{aTalk.workshopPrerequisites}}</div>
         </div>
-        <div class="row cake-row">
-            <div class="col-md-1 cake-margin"><strong>Info to program committee</strong></div>
-            <div class="col-md-10 preserve-newlines">{{aTalk.infoToProgramCommittee}}</div>
-        </div>
+
         <div class="row cake-row">
             <div class="col-md-1 cake-margin"><strong>Participation</strong></div>
             <div class="col-md-10 preserve-newlines">{{aTalk.participation}}</div>
@@ -249,7 +246,7 @@
                 </tr>
             </table>
         </div>
-
+        
         <h2>Unpublished changes:</h2>
         <p>Has unpublished changes: {{aTalk.hasUnpublishedValues}}</p>
         <button id="publishValues" class="btn btn-danger btn-lg cake-margin" ng-click="publishChanges()">Publish
@@ -267,6 +264,18 @@
             </ul>
         </span>
         <h6>Last modified: {{aTalk.lastModified}}</h6>
+
+        <h2>Keywords</h2>
+        <div class="well" class="cake-margin-well">
+            <p>
+                <input ng-model="newKeyword" type="text" placeholder="New keyword" />
+                <button class="btn" ng-click="newKeywordTyped()">Add keyword</button>
+            </p>
+            <h3>
+                <span ng-repeat="keyword in aTalk.keywords" class="label label-info"
+                    style="margin-right: 0.2em">{{keyword}} <a ng-click="removeKeyword(keyword)">(x)</a></span>
+            </h3>
+        </div>
     </div>
     </div>
 </div>
@@ -274,6 +283,12 @@
 <div class="col-md-3 comments">
     <h3>Internal comments</h3>
     <p ng-repeat="acomment in comments"><b>{{acomment.author}}:</b> {{acomment.info}}</p>
+    <div>
+        <h2>Internal ratings</h2>
+        <ul>
+            <li ng-repeat="arating in ratings"><b>{{arating.author}}:</b> {{arating.info}}</li>
+        </ul>
+    </div>
     <h3>My rating</h3>
     <div class="btn-group" data-toggle="buttons">
         <label class="btn btn-info btn-lg" ng-click="ratingClicked('--')">
@@ -292,12 +307,7 @@
             <input type="radio" name="options" id="option5" autocomplete="off"> ++
         </label>
     </div>
-    <div>
-        <h2>Internal ratings</h2>
-        <ul>
-            <li ng-repeat="arating in ratings"><b>{{arating.author}}:</b> {{arating.info}}</li>
-        </ul>
-    </div>
+
     <h2>Add comment</h2>
     <div class="well">
         <p>
@@ -305,17 +315,7 @@
             <button class="btn btn-primary" ng-click="addComment()">Add</button>
         </p>
     </div>
-    <h2>Keywords</h2>
-    <div class="well" class="cake-margin-well">
-        <p>
-            <input ng-model="newKeyword" type="text" placeholder="New keyword" />
-            <button class="btn" ng-click="newKeywordTyped()">Add keyword</button>
-        </p>
-        <h3>
-            <span ng-repeat="keyword in aTalk.keywords" class="label label-info"
-                style="margin-right: 0.2em">{{keyword}} <a ng-click="removeKeyword(keyword)">(x)</a></span>
-        </h3>
-    </div>
+   
 
     <h2>Tags</h2>
     <div class="well" class="cake-margin-well">
