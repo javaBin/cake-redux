@@ -9,9 +9,9 @@ import java.io.File
 class MassMailSender(emailsFileName:String,contentFileName:String) {
 
     companion object {
-        private val fromEmail = "javazone@java.no"
+        private val fromEmail = "partner@java.no"
         private val fromEmailName = "Javazone"
-        private val subject = "Regarding JavaZone 2021"
+        private val subject = "JavaZone Partnermeeding #2"
 
         @JvmStatic
         fun main(args: Array<String>) {
