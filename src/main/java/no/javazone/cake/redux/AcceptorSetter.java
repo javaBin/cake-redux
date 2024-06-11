@@ -29,7 +29,7 @@ public class AcceptorSetter {
         String template = loadTemplate();
         String tagToAdd = "accepted";
         String tagExistsErrormessage = "Talk is already accepted";
-        String subjectTemplate = "JavaZone 2023 #talkType# accepted";
+        String subjectTemplate = "JavaZone 2024 #talkType# accepted";
 
         return doUpdates(talks, template, subjectTemplate, tagToAdd, tagExistsErrormessage,userWithAccess,false);
     }
@@ -168,6 +168,16 @@ public class AcceptorSetter {
     }
 
     protected String generateMessage(String template, String title, String talkType, String speakerName, String submitLink, String confirmLocation, JsonObject jsonTalk, String encodedTalkRef) {
+        String length = jsonTalk.stringValue("length").orElse("NA");
+        String language;
+        switch (jsonTalk.stringValue("language").orElse("x")) {
+            case "en": language = "English";
+            case "no": language = "Norwegian";
+            default:
+                language = "English";
+                break;
+        }
+
         String message = template;
         message = replaceAll(message,"#title#", title);
         message = replaceAll(message,"#speakername#", speakerName);
@@ -175,7 +185,8 @@ public class AcceptorSetter {
         message = replaceAll(message,"#submititLink#", submitLink);
         message = replaceAll(message,"#confirmLink#", confirmLocation);
         message = replaceAll(message,"#talkid#", encodedTalkRef);
-
+        message = replaceAll(message,"#length#", length);
+        message = replaceAll(message,"#language#", language);
 
         for (int pos=message.indexOf("#");pos!=-1;pos=message.indexOf("#",pos+1)) {
             if (pos == message.length()-1) {
