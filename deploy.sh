@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+export LANG=en_US.UTF-8
 BASEDIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
 # resolve symlinks
