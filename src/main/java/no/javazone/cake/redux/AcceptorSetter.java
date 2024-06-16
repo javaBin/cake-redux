@@ -170,11 +170,16 @@ public class AcceptorSetter {
     protected String generateMessage(String template, String title, String talkType, String speakerName, String submitLink, String confirmLocation, JsonObject jsonTalk, String encodedTalkRef) {
         String length = jsonTalk.stringValue("length").orElse("NA");
         String language;
-        switch (jsonTalk.stringValue("language").orElse("x")) {
-            case "en": language = "English";
-            case "no": language = "Norwegian";
-            default:
+        String langRead = jsonTalk.stringValue("lang").orElse("x");
+        switch (langRead) {
+            case "en":
                 language = "English";
+                break;
+            case "no":
+                language = "Norwegian";
+                break;
+            default:
+                language = "Not registered";
                 break;
         }
 
