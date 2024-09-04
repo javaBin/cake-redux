@@ -27,11 +27,11 @@ private class EmailWithTemplate(
 class MassMailSenderTemplate(emailsFileName:String, contentFileName:String) {
 
     companion object {
-        private val fromEmail = "partner@java.no"
+        private val fromEmail = "program@java.no"
         private val fromEmailName = "Javazone"
-        private val subject = "Partner ticket confirmation  "
+        private val subject = "JavaZone workshops tomorrow"
 
-        private val templateVariables = listOf("number")
+        private val templateVariables = listOf("PARTICIPANT_ID")
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -76,13 +76,13 @@ class MassMailSenderTemplate(emailsFileName:String, contentFileName:String) {
     fun sendAll() {
         println("Sending ${emails.size} emails")
         var num = 0
-        for (emailwithtemplate in emails) {
+        for (emailwithtemplate:EmailWithTemplate in emails) {
             num++
             if (num % 10 == 0) {
                 println("Send $num")
             }
 
-            val mailToSend = MailToSend(fromEmail, fromEmailName, listOf(fromEmail), listOf(emailwithtemplate.email), subject,emailwithtemplate.genMail(content))
+            val mailToSend = MailToSend(fromEmail, fromEmailName, listOf(), listOf(emailwithtemplate.email), subject,emailwithtemplate.genMail(content))
             val impl = KotlinFix().createMailImpl(mailToSend)
             try {
                 impl.send()
