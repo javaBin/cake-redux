@@ -38,7 +38,7 @@ serverPort=<Pick a free port for example 8081>
 
 From project root:
 ```shell
-mvn clean install
+mvn clean package
 java -jar target/cake-redux-0.1-SNAPSHOT-jar-with-dependencies.jar <config file location>
 ```
 
