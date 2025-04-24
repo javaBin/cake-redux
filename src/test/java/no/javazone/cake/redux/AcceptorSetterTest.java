@@ -36,7 +36,6 @@ public class AcceptorSetterTest {
 
     @Test
     public void shouldHandleSlot() throws Exception {
-        JsonObject roomObj = JsonParser.parseToObject("{\"ref\":\"dgdg\",\"name\":\"Room 5\"}");
         JsonObject slotObj = JsonParser.parseToObject("{\"ref\":\"dgdg\",\"start\":\"2017-09-07T13:00\",\"end\":\"2017-09-07T13:20\"}");
         JsonObject jsonTalk = JsonFactory.jsonObject().put("slot",slotObj);
         String message = acceptorSetter.generateMessage("This is #slot# hoi", null, null, null, null, null, jsonTalk, encodedTalkRef);

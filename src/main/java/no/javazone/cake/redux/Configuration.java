@@ -3,7 +3,6 @@ package no.javazone.cake.redux;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +10,7 @@ import java.util.Optional;
 public class Configuration {
 
     private Map<String,String> properties = null;
-    private static Configuration instance = new Configuration();
+    private static final Configuration instance = new Configuration();
 
     private Configuration() {
 
@@ -28,18 +27,24 @@ public class Configuration {
         }
     }
 
-    private static String getProperty(String key) {
+    public static void setProps(Map<String,String> props) {
+        instance.properties = props;
+    }
+
+    private static String getProperty(String prop, String env) {
         if (instance.properties == null) {
             instance.loadProps();
             if (instance.properties == null) {
-                throw new IllegalStateException("Properties not initalized getting " +key);
+                throw new IllegalStateException("Properties not initalized getting " +prop);
             }
         }
-        return instance.properties.get(key);
+        return instance.properties.getOrDefault(prop, System.getenv(env));
 
     }
 
-
+    private static String readConf(String prop, String env, String defaultValue) {
+        return Optional.ofNullable(getProperty(prop, env)).orElse(defaultValue);
+    }
 
     private synchronized void loadProps() {
         Map<String,String> readProps = new HashMap<>();
@@ -58,27 +63,27 @@ public class Configuration {
     }
 
     public static String getEmsUser() {
-        return getProperty("emsUser");
+        return getProperty("emsUser", "EMS_USER");
     }
 
     public static String getEmsPassword() {
-        return getProperty("emsPassword");
+        return getProperty("emsPassword", "EMS_PASSWORD");
     }
 
     public static String getGoogleClientId() {
-        return getProperty("googleClientId");
+        return getProperty("googleClientId", "GOOGLE_CLIENT_ID");
     }
 
     public static String getGoogleClientSecret() {
-        return getProperty("googleClientSecret");
+        return getProperty("googleClientSecret", "GOOGLE_CLIENT_SECRET");
     }
 
     public static String getGoogleRedirectUrl() {
-        return getProperty("googleRedirectUrl");
+        return getProperty("googleRedirectUrl", "GOOGLE_REDIRECT_URL");
     }
 
     public static String getAutorizedUsers() {
-        String authorizedUsers = getProperty("authorizedUsers");
+        String authorizedUsers = getProperty("authorizedUsers", "AUTHORIZED_USERS");
         if (authorizedUsers == null) {
             return "";
         }
@@ -86,27 +91,27 @@ public class Configuration {
     }
 
     public static String autorizedUserFile() {
-        return getProperty("autorizedUserFile");
+        return getProperty("autorizedUserFile", "AUTORIZED_USER_FILE");
     }
 
     public static String fullUsers() {
-        return getProperty("fullUsers");
+        return getProperty("fullUsers", "FULL_USERS");
     }
 
     public static boolean noAuthMode() {
-        return "true".equals(getProperty("noAuthMode"));
+        return "true".equals(getProperty("noAuthMode", "NO_AUTH_MODE"));
     }
 
     public static String emsEventLocation() {
-        return getProperty("emsEventLocation");
+        return getProperty("emsEventLocation", "EMS_EVENT_LOCATION");
     }
 
     public static String submititLocation() {
-        return getProperty("submititLocation");
+        return getProperty("submititLocation", "SUBMITIT_LOCATION");
     }
 
     public static Integer serverPort() {
-        String serverPortStr = getProperty("serverPort");
+        String serverPortStr = getProperty("serverPort", "SERVER_PORT");
         if (serverPortStr == null || serverPortStr.isEmpty()) {
             return null;
         }
@@ -114,113 +119,85 @@ public class Configuration {
     }
 
     public static String mailSenderImplementation() {
-        return readConf("mailSenderImplementation","smtp");
-    }
-
-    public static String smtpServer() {
-        return getProperty("smthost");
-    }
-
-    public static int smtpPort() {
-        return Integer.parseInt(getProperty("smtpport"));
-    }
-
-    public static boolean useMailSSL() {
-        return "true".equals(getProperty("mailSsl"));
-    }
-
-    public static String mailUser() {
-        return getProperty("mailUser");
-    }
-
-    public static String mailPassword() {
-        return getProperty("mailPassword");
+        return readConf("mailSenderImplementation", "MAIL_SENDER_IMPLEMENTATION","smtp");
     }
 
     public static String cakeLocation() {
-        return getProperty("cakeLocation");
-    }
-
-    private static String readConf(String prop,String defaultValue) {
-        return Optional.ofNullable(getProperty(prop)).orElse(defaultValue);
+        return getProperty("cakeLocation", "CAKE_LOCATION");
     }
 
     public static boolean whydaSupported() {
-        return "true".equals(readConf("supportWhyda","false"));
+        return "true".equals(readConf("supportWhyda", "SUPPORT_WHYDA","false"));
     }
 
     public static String logonRedirectUrl() {
-        return readConf("logonRedirectUrl", "http://localhost:9997/sso/login?redirectURI=http://localhost:8088/admin/");
+        return readConf("logonRedirectUrl",  "LOGON_REDIRECT_URL", "http://localhost:9997/sso/login?redirectURI=http://localhost:8088/admin/");
     }
 
     public static String tokenServiceUrl() {
-        return readConf("tokenServiceUrl", "http://localhost:9998/tokenservice");
+        return readConf("tokenServiceUrl", "TOKEN_SERIVCE_URL","http://localhost:9998/tokenservice");
     }
 
     public static String applicationId() {
-        return readConf("applicationId", "99");
+        return readConf("applicationId", "APPLICATION_ID", "99");
     }
 
     public static String feedbackStoreFilename() {
-        return readConf("feedbackStoreFilename",null);
+        return readConf("feedbackStoreFilename", "FEEDBACK_STORE_FILENAME",null);
     }
 
-    public static String applicationSecret() { return readConf("applicationSecret", "33879936R6Jr47D4Hj5R6p9qT");}
-
-    public static void setProps(Map<String,String> props) {
-        instance.properties = props;
-    }
+    public static String applicationSecret() { return readConf("applicationSecret", "APPLICATION_SECRET", "33879936R6Jr47D4Hj5R6p9qT");}
 
     public static long emailSleepTime() {
-        return Long.parseLong(readConf("emailSleepTime","5000"));
+        return Long.parseLong(readConf("emailSleepTime", "EMAIL_SLEEP_TIME","5000"));
     }
 
     public static String sleepingPillBaseLocation() {
-        return readConf("sleepingPillBaseLocation","http://localhost:8082");
+        return readConf("sleepingPillBaseLocation", "SLEEPINGPILL_BASE_LOCATION","http://localhost:8082");
     }
 
     public static String sleepingpillUser() {
-        return readConf("sleepingpillUser",null);
+        return readConf("sleepingpillUser", "SLEEPINGPILL_USER",null);
     }
 
     public static String sleepingpillPassword() {
-        return readConf("sleepingpillPassword",null);
+        return readConf("sleepingpillPassword", "SLEEPINGPILL_PASSWORD",null);
     }
 
     public static String feedbackDaoImpl() {
-        return readConf("feedbackDaoImpl","sleepingpill");
+        return readConf("feedbackDaoImpl", "FEEDBACK_DAO_IMPL","sleepingpill");
     }
 
     public static String videoAdminPassword() {
-        return readConf("videoAdminPassword","dummy:bingo");
+        return readConf("videoAdminPassword", "VIDEO_ADMIN_PASSWORD","dummy:bingo");
     }
 
     public static String videoAdminConference() {
-        return readConf("videoAdminConference","30d5c2f1cb214fc8b0649a44fdf3b4bf");
+        return readConf("videoAdminConference", "VIDEO_ADMIN_CONFERENCE","30d5c2f1cb214fc8b0649a44fdf3b4bf");
     }
 
     public static String sendGridKey() {
-        return readConf("sendGridKey",null);
+        return readConf("sendGridKey", "SENDGRID_KEY",null);
     }
 
     public static String slackAppId() {
-        return readConf("slackAppId",null);
+        return readConf("slackAppId", "SLACK_APP_ID", null);
     }
 
     public static String slackClientSecret() {
-        return readConf("slackClientSecret",null);
+        return readConf("slackClientSecret", "SLACK_CLIENT_SECRET",null);
     }
 
     public static String slackAuthChannel() {
-        return readConf("slackAuthChannel",null);
+        return readConf("slackAuthChannel", "SLACK_AUTH_CHANNEL",null);
     }
 
     public static String slackApiToken() {
-        return readConf("slackApiToken",null);
+        return readConf("slackApiToken", "SLACK_API_TOKEN",null);
     }
 
     public static LocalDate conferenceWednesday() {
-        return LocalDate.parse(readConf("conferenceWednesday","2019-09-11"));
+        return LocalDate.parse(readConf("conferenceWednesday", "CONFERENCE_WEDNESDAY","2019-09-11"));
     }
 
 
