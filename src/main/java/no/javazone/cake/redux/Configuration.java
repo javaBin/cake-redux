@@ -48,16 +48,19 @@ public class Configuration {
 
     private synchronized void loadProps() {
         Map<String,String> readProps = new HashMap<>();
-        String config = readConfigFile(System.getProperty("cake-redux-config-file"));
-        for (String line : config.split("\n")) {
-            if (line.startsWith("#")) {
-                continue;
+        String filename = System.getProperty("cake-redux-config-file");
+        if (!filename.equals("env-only")) {
+            String config = readConfigFile(filename);
+            for (String line : config.split("\n")) {
+                if (line.startsWith("#")) {
+                    continue;
+                }
+                int eqpos = line.indexOf("=");
+                if (eqpos == -1) {
+                    throw new IllegalArgumentException("Illegal line : " + line);
+                }
+                readProps.put(line.substring(0, eqpos), line.substring(eqpos + 1));
             }
-            int eqpos = line.indexOf("=");
-            if (eqpos == -1) {
-                throw new IllegalArgumentException("Illegal line : " + line);
-            }
-            readProps.put(line.substring(0,eqpos),line.substring(eqpos+1));
         }
         properties = readProps;
     }

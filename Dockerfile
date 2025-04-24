@@ -12,4 +12,4 @@ EXPOSE 8082
 
 COPY --from=fetch /target/application.jar /work/application.jar
 
-CMD ["java", "-jar", "/work/application.jar"]
+ENTRYPOINT ["java", "-jar", "/work/application.jar"]
