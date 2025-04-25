@@ -240,6 +240,8 @@ public class SleepingpillCommunicator {
                                 .put("bio",readValueFromProp(ob,"bio"))
                                 .put("zip-code",readValueFromProp(ob,"zip-code"))
                                 .put("twitter",readValueFromProp(ob,"twitter"))
+                                .put("bluesky",readValueFromProp(ob,"bluesky"))
+                                .put("linkedin",readValueFromProp(ob,"linkedin"))
                                 .put("residence",readValueFromProp(ob,"residence"))
                                 .put("emailAlias",readValueFromProp(ob,"emailAlias"))
                         )));
