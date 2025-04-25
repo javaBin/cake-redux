@@ -330,20 +330,20 @@
         <p ng-if="aTalk.tagswithauthor.length == 0">
             <button class="btn btn-danger" ng-click="appendTag('nei')" title="ikke videre">nei</button>
             <button ng-if="aTalk.suggestedCategory != ''" class="btn btn-primary" ng-click="appendTag(aTalk.suggestedCategory)">{{aTalk.suggestedCategory}}</button>
-            <button class="btn" ng-click="appendTag('ai')" title="AI / machine learning">ai</button>
-            <button class="btn" ng-click="appendTag('arch')" title="Architecture">arch</button>
-            <button class="btn" ng-click="appendTag('core')" title="JVM / Java (core) / compilers">core</button>
-            <button class="btn" ng-click="appendTag('data')" title="database / data processing">data</button>
-            <button class="btn" ng-click="appendTag('devex')" title="developer experience">devex</button>
-            <button class="btn" ng-click="appendTag('exp')" title="Experience report / software application">exp</button>
-            <button class="btn" ng-click="appendTag('front')" title="Frontend / design / UX">front</button>
-            <button class="btn" ng-click="appendTag('infra')" title="infrastructure, cloud">infra</button>
-            <button class="btn" ng-click="appendTag('lang')" title="Language / framework / API">lang</button>
-            <button class="btn" ng-click="appendTag('misc')" title="alt annet">misc</button>
-            <button class="btn" ng-click="appendTag('ops')" title="CI, DevOps">ops</button>
-            <button class="btn" ng-click="appendTag('proc')" title="Process / methodology">proc</button>
-            <button class="btn" ng-click="appendTag('qa')" title="testing">qa</button>
-            <button class="btn" ng-click="appendTag('sec')" title="security">sec</button>
+            <button ng-if="aTalk.suggestedCategory != 'ai'" class="btn" ng-click="appendTag('ai')" title="AI / machine learning">ai</button>
+            <button ng-if="aTalk.suggestedCategory != 'arch'" class="btn" ng-click="appendTag('arch')" title="Architecture">arch</button>
+            <button ng-if="aTalk.suggestedCategory != 'core'" class="btn" ng-click="appendTag('core')" title="JVM / Java (core) / compilers">core</button>
+            <button ng-if="aTalk.suggestedCategory != 'data'" class="btn" ng-click="appendTag('data')" title="database / data processing">data</button>
+            <button ng-if="aTalk.suggestedCategory != 'devex'" class="btn" ng-click="appendTag('devex')" title="developer experience">devex</button>
+            <button ng-if="aTalk.suggestedCategory != 'exp'" class="btn" ng-click="appendTag('exp')" title="Experience report / software application">exp</button>
+            <button ng-if="aTalk.suggestedCategory != 'front'" class="btn" ng-click="appendTag('front')" title="Frontend / design / UX">front</button>
+            <button ng-if="aTalk.suggestedCategory != 'infra'" class="btn" ng-click="appendTag('infra')" title="infrastructure, cloud">infra</button>
+            <button ng-if="aTalk.suggestedCategory != 'land'" class="btn" ng-click="appendTag('lang')" title="Language / framework / API">lang</button>
+            <button ng-if="aTalk.suggestedCategory != 'misc'" class="btn" ng-click="appendTag('misc')" title="alt annet">misc</button>
+            <button ng-if="aTalk.suggestedCategory != 'ops'" class="btn" ng-click="appendTag('ops')" title="CI, DevOps">ops</button>
+            <button ng-if="aTalk.suggestedCategory != 'proc'" class="btn" ng-click="appendTag('proc')" title="Process / methodology">proc</button>
+            <button ng-if="aTalk.suggestedCategory != 'qa'" class="btn" ng-click="appendTag('qa')" title="testing">qa</button>
+            <button ng-if="aTalk.suggestedCategory != 'sec'" class="btn" ng-click="appendTag('sec')" title="security">sec</button>
         </p>
         <p>
             <input ng-model="newTag" type="text" placeholder="New tag" />
