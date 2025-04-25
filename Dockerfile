@@ -8,7 +8,7 @@ RUN mv /target/*-with-dependencies.jar /target/application.jar
 # Actual image to run the application
 FROM amazoncorretto:21-al2023-headless
 
-EXPOSE 8082
+EXPOSE 8081
 
 COPY --from=fetch /target/application.jar /work/application.jar
 
