@@ -60,9 +60,14 @@ angular.module('cakeReduxModule')
             };
 
             $scope.newTagTyped = function() {
-                var n = $scope.newTag;
-                $scope.aTalk.tagswithauthor.push({tag: n, author: $scope.username});
+                $scope.appendTag($scope.newTag)
             };
+            $scope.appendTag = function(tag) {
+                if ($scope.aTalk.tagswithauthor.length == 0)
+                    $scope.aTalk.tagswithauthor.push({tag: String(new Date().getMonth() + 1).padStart(2, "0") + String(new Date().getDate()).padStart(2, "0"), author: $scope.username});
+
+                $scope.aTalk.tagswithauthor.push({tag: tag, author: $scope.username});
+            }
 
             $scope.newKeywordTyped = function() {
                 var n = $scope.newKeyword;

@@ -207,6 +207,7 @@ public class SleepingpillCommunicator {
 
         talkob.put("tags",tagsToDisplay.getSummary());
         talkob.put("tagswithauthor",tagsToDisplay.getFull());
+        talkob.put("suggestedCategory", readValueFromProp(jsonObject, "suggestedCategory"));
         talkob.put("published", Boolean.toString(Arrays.asList("APPROVED", "HISTORIC").contains(jsonObject.requiredString("status"))));
         talkob.put("body",readValueFromProp(jsonObject,"abstract"));
         talkob.put("ref",jsonObject.requiredString("id"));
