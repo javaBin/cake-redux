@@ -10,6 +10,7 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.EnumSet;
 
 import static javax.servlet.DispatcherType.REQUEST;
@@ -23,7 +24,7 @@ public class WebServer {
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Starting cakeredux " + args);
+        System.out.println("Starting cakeredux: " + Arrays.toString(args));
         try {
             if (args == null || args.length < 1) {
                 System.out.println("Usage WebServer <Config file name> [war-file-path]");
