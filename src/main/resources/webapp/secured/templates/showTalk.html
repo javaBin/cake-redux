@@ -139,7 +139,7 @@
             <div class="col-md-10">{{aTalk.slot.start}} - {{aTalk.slot.end}} <small>(yymmdd hhmm-yymmdd hhmm)</small>
             </div>
         </div>
-        <div class="row cake-row cake-margin">
+        <div ng-if="aTalk.tags.includes('accepted')" class="row cake-row cake-margin">
             <div class="input-group col-md-5 cake-margin">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
@@ -158,7 +158,7 @@
             </div><!-- /input-group -->
             <button class="btn btn-danger btn-mid" ng-click="newRoom()">Update room</button>
         </div>
-        <div class="row cake-row cake-margin">
+        <div ng-if="aTalk.tags.includes('accepted')" class="row cake-row cake-margin">
             <div class="input-group col-md-3">
                 <select class="form-control" ng-model="smartDay">
                     <option>Wednesday</option>
@@ -179,7 +179,7 @@
             </div><!-- /input-group -->
             <button class="btn btn-danger btn-mid" ng-click="smartTimeUpdate()">Smart timeupdate</button>
         </div>
-        <div class="row cake-row cake-margin">
+        <div ng-if="aTalk.tags.includes('accepted')" class="row cake-row cake-margin">
             <input type="datetime-local" ng-model="newstarttime" />
             <button class="btn btn-danger btn-mid" ng-click="newStarttime()">Update startime</button>
         </div>
@@ -195,7 +195,7 @@
         <ul>
             <li ng-repeat="he in aTalk.talkUpdateHistory">{{he.updatedAt}} {{he.updatedBy}}</li>
         </ul>
-        <h2>DevNull feedbacks</h2>
+        <!-- <h2>DevNull feedbacks</h2>
         <div class="row cake-row cake-margin">
             <h3>Online</h3>
             <table class="table">
@@ -253,7 +253,7 @@
                     <td>{{aTalk.userFeedback.conference.paper.red}}</td>
                 </tr>
             </table>
-        </div>
+        </div> -->
         
         <h2>Unpublished changes:</h2>
         <p>Has unpublished changes: {{aTalk.hasUnpublishedValues}}</p>
