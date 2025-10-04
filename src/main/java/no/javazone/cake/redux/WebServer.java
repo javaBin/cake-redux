@@ -26,12 +26,12 @@ public class WebServer {
     public static void main(String[] args) throws Exception {
         System.out.println("Starting cakeredux: " + Arrays.toString(args));
         try {
-            if (args == null || args.length < 1) {
-                System.out.println("Usage WebServer <Config file name> [war-file-path]");
-                return;
+            if (args != null && args.length > 0) {
+                System.setProperty("cake-redux-config-file", args[0]);
+            } else {
+                System.out.println("No config file specified");
             }
 
-            System.setProperty("cake-redux-config-file", args[0]);
             new WebServer(getPort(8081)).start();
         } catch (Exception ex) {
             ex.printStackTrace();

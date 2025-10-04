@@ -49,7 +49,7 @@ public class Configuration {
     private synchronized void loadProps() {
         Map<String,String> readProps = new HashMap<>();
         String filename = System.getProperty("cake-redux-config-file");
-        if (!filename.equals("env-only")) {
+        if (filename != null && !filename.equals("env-only")) {
             String config = readConfigFile(filename);
             for (String line : config.split("\n")) {
                 if (line.startsWith("#")) {
