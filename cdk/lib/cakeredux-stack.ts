@@ -7,7 +7,7 @@ import { importExistingResources } from './existing-resources';
 
 const port = 8081;
 const healthCheckPath = '/';
-const priority = 15;
+const priority = 16;
 const desiredCount = 2;
 const clusterName = 'cakeredux';
 
