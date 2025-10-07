@@ -1,0 +1,23 @@
+{
+  "name": "ia_c-testing",
+  "version": "0.1.0",
+  "bin": {
+    "ia_c-testing": "bin/ia_c-testing.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/node": "22.7.9",
+    "aws-cdk": "2.1029.2",
+    "tsx": "4.20.5",
+    "typescript": "5.9.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-elastic-load-balancing-v2": "^3.896.0",
+    "aws-cdk-lib": "2.216.0",
+    "constructs": "10.4.2"
+  }
+}

@@ -1,0 +1,46 @@
+name: Deploy infrastructure
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch, tag or commit SHA to deploy'
+        required: false
+        default: 'master'
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-central-1
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: 'cdk/package-lock.json'
+
+      - name: Install CDK dependencies
+        working-directory: ./cdk
+        run: npm ci
+
+      - name: Install AWS CDK CLI
+        run: npm install -g aws-cdk
+
+      - name: CDK Deploy
+        working-directory: ./cdk
+        run: cdk deploy --require-approval never
