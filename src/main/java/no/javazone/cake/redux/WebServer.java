@@ -31,7 +31,7 @@ public class WebServer {
             } else {
                 System.out.println("No config file specified");
             }
-
+            System.out.println("Enviroment : *" + Configuration.cakeLocation() + "*");
             new WebServer(getPort(8081)).start();
         } catch (Exception ex) {
             ex.printStackTrace();
