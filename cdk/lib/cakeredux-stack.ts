@@ -63,6 +63,8 @@ export class CakeReduxStack extends cdk.Stack {
       healthCheck: {
         path: healthCheckPath,
       },
+      stickinessCookieDuration: cdk.Duration.days(1),
+      stickinessCookieName: 'CAKEREDUX_SESSION',
     });
 
     existingListener.addTargetGroups('AddTargetGroup', {
