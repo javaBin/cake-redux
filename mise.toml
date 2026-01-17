@@ -15,13 +15,14 @@ run = [
     ""
 ]
 
-[tasks.destroy-infrastructure]
+[tasks.infrastructure-destroy]
 run = [
     "docker compose down -v"
 ]
 
 [tasks.start]
-env = {SLEEPINGPILL_BASE_LOCATION="http://localhost:8082", NO_AUTH_MODE="true", SERVER_PORT="5000", CAKE_LOCATION="localhost"}
+Addepends = ["infrastructure"]
+env = { SLEEPINGPILL_BASE_LOCATION = "http://localhost:8082", NO_AUTH_MODE = "true", SERVER_PORT = "5000", CAKE_LOCATION = "localhost" }
 run = [
     "mvn clean package",
     "java -jar -Xmx512m -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 target/cake-redux.jar-jar-with-dependencies.jar env-only"
