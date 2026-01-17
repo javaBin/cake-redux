@@ -9,7 +9,7 @@ COPY src ./src
 RUN mvn clean package -Dmaven.test.skip=true
 
 # Stage 2: Create the final runtime image
-FROM eclipse-temurin:21-jre-jammy AS final
+FROM eclipse-temurin:25-jre-jammy AS final
 
 # Install SOPS
 RUN curl -L -o /usr/local/bin/sops https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.linux.amd64 && \
