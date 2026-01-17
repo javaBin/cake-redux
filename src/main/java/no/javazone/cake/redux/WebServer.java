@@ -3,12 +3,10 @@ package no.javazone.cake.redux;
 import no.javazone.cake.redux.videoadmin.VideoAdminFilter;
 import no.javazone.cake.redux.videoadmin.VideoAdminServlet;
 import no.javazone.cake.redux.whyda.WhydaServlet;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.ee10.servlet.FilterHolder;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;
-import org.eclipse.jetty.util.resource.PathResourceFactory;
-import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.resource.ResourceFactory;
 
 import java.io.File;
