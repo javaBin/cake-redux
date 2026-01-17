@@ -1,7 +1,7 @@
 package no.javazone.cake.redux;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class SecurityFilter implements Filter {
