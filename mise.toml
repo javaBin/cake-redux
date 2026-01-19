@@ -21,7 +21,7 @@ run = [
 ]
 
 [tasks.start]
-Addepends = ["infrastructure"]
+depends = ["infrastructure"]
 env = { SLEEPINGPILL_BASE_LOCATION = "http://localhost:8082", NO_AUTH_MODE = "true", SERVER_PORT = "5000", CAKE_LOCATION = "localhost" }
 run = [
     "mvn clean package",
