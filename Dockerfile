@@ -27,7 +27,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/aws
     rm -rf /tmp/aws /tmp/awscliv2.zip
 
 WORKDIR /app
-COPY --from=build /app/target/cake-redux-0.3-SNAPSHOT-jar-with-dependencies.jar app.jar
+COPY --from=build /app/target/cake-redux-jar-with-dependencies.jar app.jar
 COPY ./config/.enc.prod.env /app/.enc.env
 
 # Remove AWS profile from SOPS config to use container's AWS credentials
