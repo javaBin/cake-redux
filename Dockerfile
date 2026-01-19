@@ -2,7 +2,7 @@
 # Run: docker run  --name moresleep-container -p 5000:5000 moresleep-app:latest
 # Check localhost:5000 and you should get a homepage
 # Stage 1: Build the application
-FROM maven:3.9.11-eclipse-temurin-21 AS build
+FROM maven:3.9.12-eclipse-temurin-25 AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
