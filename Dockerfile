@@ -10,6 +10,7 @@ RUN mvn clean package -Dmaven.test.skip=true
 
 # Stage 2: Create the final runtime image
 FROM eclipse-temurin:25-jre-jammy AS final
+ARG TARGETARCH
 
 # Install unzip and curl
 RUN apt-get update -y && \
@@ -17,7 +18,7 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 # Install SOPS
-RUN curl -L -o /usr/local/bin/sops https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64 && \
+RUN curl -L -o /usr/local/bin/sops https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.$TARGETARCH && \
     chmod +x /usr/local/bin/sops
 
     # Install AWS CLI v2
