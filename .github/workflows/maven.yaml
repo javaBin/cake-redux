@@ -39,14 +39,10 @@ jobs:
       - name: Build with Maven
         run: mvn -B --no-transfer-progress clean package
 
-      - name: Upload artifact [uber-jar]
-        uses: actions/upload-artifact@v4
-        with:
-          name: uber-jar
-          path: target/*-jar-with-dependencies.jar
-          if-no-files-found: error
-          retention-days: 7
-
       - name: Build and push docker image [edge]
         if: github.ref == 'refs/heads/master'
         run: docker buildx build --push -t ghcr.io/javabin/cake-redux:edge --platform linux/amd64,linux/arm64 .
+
+      - name: Build docker image [edge]
+        if: github.ref != 'refs/heads/master'
+        run: docker buildx build -t ghcr.io/javabin/cake-redux:edge --platform linux/amd64,linux/arm64 .
