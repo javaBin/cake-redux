@@ -1,6 +1,13 @@
 package no.javazone.cake.redux.mail;
 
-import com.sendgrid.*;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import no.javazone.cake.redux.Configuration;
 
 import java.io.IOException;
@@ -18,7 +25,7 @@ public class SendGridSender implements MailSenderImplementation {
         SendGrid sg = new SendGrid(Optional.ofNullable(Configuration.sendGridKey()).orElseThrow(() -> new RuntimeException("Send grid key not set")));
         Request request = new Request();
         try {
-            Email from = new Email(mailToSend.from,mailToSend.fromName);
+            Email from = new Email(mailToSend.from, mailToSend.fromName);
             Content content = new Content("text/html", mailToSend.content);
 
             Mail mail = new Mail();
@@ -35,7 +42,8 @@ public class SendGridSender implements MailSenderImplementation {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sg.api(request);
-            return true;
+            int statusCode = response.getStatusCode();
+            return statusCode >= 200 && statusCode < 300;
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
