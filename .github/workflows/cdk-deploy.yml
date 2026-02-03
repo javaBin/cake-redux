@@ -34,12 +34,22 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'cdk/package-lock.json'
 
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: corretto
+          cache: maven
+
       - name: Install CDK dependencies
         working-directory: ./cdk
         run: npm ci
 
       - name: Install AWS CDK CLI
         run: npm install -g aws-cdk
+
+      - name: Build with Maven
+        run: mvn -B --no-transfer-progress clean package
 
       - name: CDK Deploy
         working-directory: ./cdk
