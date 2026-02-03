@@ -48,4 +48,5 @@ jobs:
           retention-days: 7
 
       - name: Build and push docker image [edge]
+        if: github.ref == 'refs/heads/master'
         run: docker buildx build --push -t ghcr.io/javabin/cake-redux:edge --platform linux/amd64,linux/arm64 .
