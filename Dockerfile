@@ -1,15 +1,5 @@
-# Build: docker build -t moresleep-app:latest .
-# Run: docker run  --name moresleep-container -p 5000:5000 moresleep-app:latest
-# Check localhost:5000 and you should get a homepage
-# Stage 1: Build the application
-FROM maven:3.9.12-eclipse-temurin-25 AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -Dmaven.test.skip=true
-
-# Stage 2: Create the final runtime image
-FROM eclipse-temurin:25-jre-jammy AS final
+FROM eclipse-temurin:25-jre-jammy
+ARG TARGETARCH
 
 # Install unzip and curl
 RUN apt-get update -y && \
@@ -17,7 +7,7 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 # Install SOPS
-RUN curl -L -o /usr/local/bin/sops https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64 && \
+RUN curl -L -o /usr/local/bin/sops https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.$TARGETARCH && \
     chmod +x /usr/local/bin/sops
 
     # Install AWS CLI v2
@@ -27,7 +17,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/aws
     rm -rf /tmp/aws /tmp/awscliv2.zip
 
 WORKDIR /app
-COPY --from=build /app/target/cake-redux-jar-with-dependencies.jar app.jar
+COPY target/cake-redux-jar-with-dependencies.jar app.jar
 COPY ./config/.enc.prod.env /app/.enc.env
 
 # Remove AWS profile from SOPS config to use container's AWS credentials
