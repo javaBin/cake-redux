@@ -3,17 +3,17 @@ package no.javazone.cake.redux;
 import no.javazone.cake.redux.videoadmin.VideoAdminFilter;
 import no.javazone.cake.redux.videoadmin.VideoAdminServlet;
 import no.javazone.cake.redux.whyda.WhydaServlet;
-import org.eclipse.jetty.ee10.servlet.FilterHolder;
-import org.eclipse.jetty.ee10.servlet.ServletHolder;
-import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.resource.ResourceFactory;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.EnumSet;
 
-import static jakarta.servlet.DispatcherType.REQUEST;
+import static javax.servlet.DispatcherType.REQUEST;
 
 public class WebServer {
 
@@ -49,25 +49,25 @@ public class WebServer {
 
         if (isDevEnviroment()) {
             // Development ie running in ide
-            webAppContext.setBaseResource(ResourceFactory.root().newResource("src/main/resources/webapp"));
+            webAppContext.setResourceBase("src/main/resources/webapp");
         } else {
             // Prod ie running from jar
-            webAppContext.setBaseResource(ResourceFactory.root().newClassLoaderResource("webapp", false));
+            webAppContext.setBaseResource(Resource.newClassPathResource("webapp", true, false));
         }
 
 
-        webAppContext.addServlet(new ServletHolder(new DataServlet()), "/secured/data/*");
-        webAppContext.addServlet(new ServletHolder(new OpenDataServlet()), "/data/*");
+        webAppContext.addServlet(new ServletHolder(new DataServlet()),"/secured/data/*");
+        webAppContext.addServlet(new ServletHolder(new OpenDataServlet()),"/data/*");
         webAppContext.addServlet(new ServletHolder(new SigninServlet()), "/signin/");
         webAppContext.addServlet(new ServletHolder(new EntranceServlet()), "/entrance");
-        webAppContext.addServlet(new ServletHolder(new WhydaServlet()), "/whydalogin");
-        webAppContext.addServlet(new ServletHolder(new SlackServlet()), "/slack/signin");
+        webAppContext.addServlet(new ServletHolder(new WhydaServlet()),"/whydalogin");
+        webAppContext.addServlet(new ServletHolder(new SlackServlet()),"/slack/signin");
 
 
         webAppContext.addFilter(new FilterHolder(new SecurityFilter()), "/secured/*", EnumSet.of(REQUEST));
 
         webAppContext.addFilter(new FilterHolder(new VideoAdminFilter()), "/videoadmin/*", EnumSet.of(REQUEST));
-        webAppContext.addServlet(new ServletHolder(new VideoAdminServlet()), "/videoadmin/api/*");
+        webAppContext.addServlet(new ServletHolder(new VideoAdminServlet()),"/videoadmin/api/*");
 
 
         return webAppContext;

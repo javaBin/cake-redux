@@ -26,7 +26,7 @@ object PkomFeedbackCompute {
         }
         val allRatings:List<Rating> = allRatingsJson.map { Rating.fromText(it.requiredString("info")) }
 
-        val sum = allRatings.sumOf { it.ratingValue }
+        val sum = allRatings.sumBy { it.ratingValue }
         val count = allRatings.size
 
         val mean:Int = sum / count
