@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-elastic-load-balancing-v2": "^3.896.0",
-    "aws-cdk-lib": "2.216.0",
+    "aws-cdk-lib": "2.240.0",
     "constructs": "10.4.2"
   }
 }
