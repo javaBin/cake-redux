@@ -48,9 +48,7 @@ public class SlackServlet extends HttpServlet {
             return;
         }
         String username = loginObject.objectValue("user").orElse(new JsonObject()).stringValue("name").orElse("UnkownName");
-        req.getSession().setMaxInactiveInterval(-1); // Keep session open until browser closes (hopefully).
-        req.getSession().setAttribute("access_token", accessToken.get());
-        req.getSession().setAttribute("username",username);
+        resp.addCookie(JwtUtil.createCookie(username));
 
         EntranceServlet.writeLoginMessage(resp, resp.getWriter(), username);
     }

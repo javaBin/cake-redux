@@ -177,12 +177,12 @@ public class DataServlet extends HttpServlet {
     }
 
     private void giveRating(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        JsonArray ratings = FeedbackService.get().giveRating(JsonParser.parseToObject(req.getInputStream()), req.getSession().getAttribute("username").toString());
+        JsonArray ratings = FeedbackService.get().giveRating(JsonParser.parseToObject(req.getInputStream()), req.getAttribute("username").toString());
         ratings.toJson(resp.getWriter());
     }
 
     private void addComment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        JsonArray comments = FeedbackService.get().addComment(JsonParser.parseToObject(req.getInputStream()), req.getSession().getAttribute("username").toString());
+        JsonArray comments = FeedbackService.get().addComment(JsonParser.parseToObject(req.getInputStream()), req.getAttribute("username").toString());
         comments.toJson(resp.getWriter());
     }
 
@@ -246,7 +246,7 @@ public class DataServlet extends HttpServlet {
 
     private static UserAccessType computeAccessType(HttpServletRequest request) {
         String fullusers = Optional.ofNullable(Configuration.fullUsers()).orElse("");
-        if (Optional.ofNullable(request.getSession().getAttribute("username"))
+        if (Optional.ofNullable(request.getAttribute("username"))
             .filter(un -> fullusers.contains((String) un))
             .isPresent()) {
             return UserAccessType.FULL;
@@ -255,7 +255,7 @@ public class DataServlet extends HttpServlet {
     }
 
     private static UserWithAccess computeUserWithAccess(HttpServletRequest request) {
-        return new UserWithAccess(Optional.ofNullable(request.getSession().getAttribute("username")).map(Object::toString).orElse("Unknown"),computeAccessType(request));
+        return new UserWithAccess(Optional.ofNullable(request.getAttribute("username")).map(Object::toString).orElse("Unknown"),computeAccessType(request));
     }
 
     private void acceptTalks(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -313,7 +313,7 @@ public class DataServlet extends HttpServlet {
             String encTalk = request.getParameter("talkId");
             JsonObject oneTalkAsJson = sleepingpillCommunicator.oneTalkAsJson(encTalk);
             appendFeedbacks(oneTalkAsJson,encTalk);
-            oneTalkAsJson.put("username",request.getSession().getAttribute("username"));
+            oneTalkAsJson.put("username",request.getAttribute("username"));
             // TODO Fix feedbacks
             //appendUserFeedback(oneTalkAsJson, userFeedbackCommunicator.feedback(oneTalkAsJson.stringValue("emslocation")));
             appendUserFeedback(oneTalkAsJson, Optional.empty());

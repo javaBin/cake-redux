@@ -3,6 +3,7 @@ package no.javazone.cake.redux;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Optional;
 
 public class SecurityFilter implements Filter {
     @Override
@@ -13,14 +14,15 @@ public class SecurityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         if (Configuration.noAuthMode()) {
-            ((HttpServletRequest) req).getSession().setAttribute("username","Dummyuser");
-            chain.doFilter(req,resp);
+            ((HttpServletRequest) req).setAttribute("username", "Dummyuser");
+            chain.doFilter(req, resp);
             return;
         }
         HttpServletRequest request = (HttpServletRequest) req;
-        String token = (String) request.getSession().getAttribute("access_token");
-        if (token != null) {
-            chain.doFilter(req,resp);
+        Optional<String> username = JwtUtil.getUsernameFromRequest(request);
+        if (username.isPresent()) {
+            request.setAttribute("username", username.get());
+            chain.doFilter(req, resp);
             return;
         }
         resp.setContentType("text/html");

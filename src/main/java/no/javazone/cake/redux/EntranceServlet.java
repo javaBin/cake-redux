@@ -82,9 +82,7 @@ public class EntranceServlet extends HttpServlet {
         }
 
 
-        req.getSession().setMaxInactiveInterval(-1); // Keep session open until browser closes (hopefully).
-        req.getSession().setAttribute("access_token", userid);
-        req.getSession().setAttribute("username",access.get());
+        resp.addCookie(JwtUtil.createCookie(access.get()));
 
         writeLoginMessage(resp, writer, access.get());
     }

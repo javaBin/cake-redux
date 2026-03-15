@@ -2,7 +2,6 @@ package no.javazone.cake.redux;
 
 import no.javazone.cake.redux.videoadmin.VideoAdminFilter;
 import no.javazone.cake.redux.videoadmin.VideoAdminServlet;
-import no.javazone.cake.redux.whyda.WhydaServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -60,7 +59,6 @@ public class WebServer {
         webAppContext.addServlet(new ServletHolder(new OpenDataServlet()),"/data/*");
         webAppContext.addServlet(new ServletHolder(new SigninServlet()), "/signin/");
         webAppContext.addServlet(new ServletHolder(new EntranceServlet()), "/entrance");
-        webAppContext.addServlet(new ServletHolder(new WhydaServlet()),"/whydalogin");
         webAppContext.addServlet(new ServletHolder(new SlackServlet()),"/slack/signin");
 
 
